@@ -1,0 +1,48 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include/gtkmm-4.0",
+                "/usr/lib64/gtkmm-4.0/include",
+                "/usr/include/pangomm-2.48",
+                "/usr/lib64/pangomm-2.48/include",
+                "/usr/include/giomm-2.68",
+                "/usr/lib64/giomm-2.68/include",
+                "/usr/include/glibmm-2.68",
+                "/usr/lib64/glibmm-2.68/include",
+                "/usr/include/gio-unix-2.0",
+                "/usr/include/cairomm-1.16",
+                "/usr/lib64/cairomm-1.16/include",
+                "/usr/include/sigc++-3.0",
+                "/usr/lib64/sigc++-3.0/include",
+                "/usr/include/gtk-4.0/unix-print",
+                "/usr/include/gtk-4.0",
+                "/usr/include/pango-1.0",
+                "/usr/include/fribidi",
+                "/usr/include/harfbuzz",
+                "/usr/include/gdk-pixbuf-2.0",
+                "/usr/include/webp",
+                "/usr/include/cairo",
+                "/usr/include/libxml2",
+                "/usr/include/freetype2",
+                "/usr/include/libpng16",
+                "/usr/include/pixman-1",
+                "/usr/include/graphene-1.0",
+                "/usr/lib64/graphene-1.0/include",
+                "/usr/include/glib-2.0",
+                "/usr/lib64/glib-2.0/include",
+                "/usr/include/libmount",
+                "/usr/include/blkid",
+                "/usr/include/sysprof-6"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/g++",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}

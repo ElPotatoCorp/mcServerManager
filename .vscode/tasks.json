@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build with gtkmm",
+            "type": "shell",
+            "command": "/bin/bash",
+            "args": [
+                "-c",
+                "g++ -o main main.cpp window/window.cpp Utils/Utils.cpp -std=c++17 $(pkg-config --cflags --libs gtkmm-4.0)"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
