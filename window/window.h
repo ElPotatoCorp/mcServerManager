@@ -3,6 +3,8 @@
 
 #include <gtkmm.h>
 #include <iostream>
+#include <fstream>
+#include <cpr/cpr.h>
 #include "../Utils/Utils.h"
 #include "../Utils/Constants.h"
 
@@ -16,6 +18,8 @@ namespace MCSM
 
     protected:
         std::string current_server;
+
+        std::fstream server_properties_file;
 
         // Member widgets:
         Gtk::Grid m_Grid;

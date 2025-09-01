@@ -37,12 +37,20 @@ namespace MCSM
 
         set_child(m_Grid);
 
+        // Init important values 
+        m_StringList = Gtk::StringList::create(list_servers(SERVER_FOLDER));
+
+        current_server = m_StringList.get()->get_string(0);
+        server_properties_file.open(SERVER_FOLDER + "/" + current_server + "/" + "server.properties");
+
         // Add widgets to the grid
         // - Top IP-PORT part
         m_IP_address_Entry.set_can_focus(false);
         m_IP_address_Entry.set_editable(false);
+        m_IP_address_Entry.set_text(cpr::Get(cpr::Url{"https://ipinfo.io/ip"}).text);
         m_Port_Entry.set_can_focus(false);
         m_Port_Entry.set_editable(false);
+        m_Port_Entry.set_text(findValueInFileByParameterName(server_properties_file, PORT_PARAMETER));
         m_copy_address_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_copy_button_clicked));
     
         m_ip_port_HBox.append(m_IP_address_Entry);
@@ -53,13 +61,9 @@ namespace MCSM
 
         // - Left Part
         //    - Server List
-        m_StringList = Gtk::StringList::create(list_servers(SERVER_FOLDER));
-        
         m_server_name_DropDown.set_model(m_StringList);
         m_server_name_DropDown.set_selected(0);
-
-        current_server = m_StringList.get()->get_string(0);
-
+        
         m_server_parameters_VBox.append(m_server_name_DropDown);
 
         //    - Start Script
@@ -74,26 +78,36 @@ namespace MCSM
         m_server_parameters_VBox.append(m_start_script_HBox);
 
         //    - World Name
+        m_world_name_Entry.set_text(findValueInFileByParameterName(server_properties_file, WORLD_NAME_PARAMETER));
+
         m_world_name_HBox.append(m_world_name_Label);
         m_world_name_HBox.append(m_world_name_Entry);
 
         m_server_parameters_VBox.append(m_world_name_HBox);
 
         //    - Description
+        m_description_Entry.set_text(findValueInFileByParameterName(server_properties_file, DESCRIPTION_PARAMETER));
+
         m_description_HBox.append(m_description_Label);
         m_description_HBox.append(m_description_Entry);
 
         m_server_parameters_VBox.append(m_description_HBox);
 
         //    - Port
+        m_editable_port_Entry.set_text(findValueInFileByParameterName(server_properties_file, PORT_PARAMETER));
+
         m_editable_port_HBox.append(m_editable_port_Label);
         m_editable_port_HBox.append(m_editable_port_Entry);
 
         m_server_parameters_VBox.append(m_editable_port_HBox);
 
         //    - Max Players
+        m_max_players_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(atoi(findValueInFileByParameterName(server_properties_file, MAX_PLAYERS_PARAMETER).data()), 1, 20));
+
         m_max_players_HBox.append(m_max_players_Label);
         m_max_players_HBox.append(m_max_players_SpinButton);
+
+        m_server_parameters_VBox.append(m_max_players_HBox);
 
         //    - View Distance
 
@@ -127,6 +141,8 @@ namespace MCSM
     MCServerManagerWindow::~MCServerManagerWindow()
     {
         // Cleanup code here
+        if (server_properties_file.is_open())
+            server_properties_file.close();
     }
 
     void MCServerManagerWindow::on_copy_button_clicked() 
