@@ -8,8 +8,6 @@
 #include "../Utils/Utils.h"
 #include "../Utils/Constants.h"
 
-// TODO: Rename all parameters by 'properties'
-// TODO: Remove the parameters' box to replace it with a grid for better layout.
 namespace MCSM
 {
     class MCServerManagerWindow : public Gtk::Window
@@ -19,14 +17,12 @@ namespace MCSM
         ~MCServerManagerWindow() override;
 
     protected:
-        std::string current_server;
-
-        std::fstream server_properties_file;
+        std::string current_server, serv_props_path;
 
         // Member widgets:
         Gtk::Grid m_Grid;
 
-        Gtk::Box m_ip_port_HBox, m_server_parameters_VBox, m_run_VBox;
+        Gtk::Box m_ip_port_HBox, m_server_properties_VBox, m_run_VBox;
 
         Gtk::Entry m_IP_address_Entry, m_Port_Entry;
 

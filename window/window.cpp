@@ -4,7 +4,7 @@ namespace MCSM
 {
     MCServerManagerWindow::MCServerManagerWindow()
         : m_ip_port_HBox(Gtk::Orientation::HORIZONTAL),
-          m_server_parameters_VBox(Gtk::Orientation::VERTICAL),
+          m_server_properties_VBox(Gtk::Orientation::VERTICAL),
           m_run_VBox(Gtk::Orientation::VERTICAL),
           m_run_from_backup_CheckButton("Run from Backup"),
           m_run_Button("Launch"),
@@ -41,7 +41,7 @@ namespace MCSM
         m_StringList = Gtk::StringList::create(list_servers(SERVER_FOLDER));
 
         current_server = m_StringList.get()->get_string(0);
-        server_properties_file.open(SERVER_FOLDER + "/" + current_server + "/" + "server.properties");
+        serv_props_path = SERVER_FOLDER + "/" + current_server + "/" + "server.properties";
 
         // Add widgets to the grid
         // - Top IP-PORT part
@@ -50,7 +50,7 @@ namespace MCSM
         m_IP_address_Entry.set_text(cpr::Get(cpr::Url{"https://ipinfo.io/ip"}).text);
         m_Port_Entry.set_can_focus(false);
         m_Port_Entry.set_editable(false);
-        m_Port_Entry.set_text(findValueInFileByParameterName(server_properties_file, PORT_PARAMETER));
+        m_Port_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
         m_copy_address_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_copy_button_clicked));
     
         m_ip_port_HBox.append(m_IP_address_Entry);
@@ -64,7 +64,7 @@ namespace MCSM
         m_server_name_DropDown.set_model(m_StringList);
         m_server_name_DropDown.set_selected(0);
         
-        m_server_parameters_VBox.append(m_server_name_DropDown);
+        m_server_properties_VBox.append(m_server_name_DropDown);
 
         //    - Start Script
         m_start_script_Entry.set_editable(false);
@@ -75,39 +75,39 @@ namespace MCSM
         m_start_script_HBox.append(m_start_script_Entry);
         m_start_script_HBox.append(m_open_start_script_Button);
 
-        m_server_parameters_VBox.append(m_start_script_HBox);
+        m_server_properties_VBox.append(m_start_script_HBox);
 
         //    - World Name
-        m_world_name_Entry.set_text(findValueInFileByParameterName(server_properties_file, WORLD_NAME_PARAMETER));
+        m_world_name_Entry.set_text(find_val_in_file_by_prop(serv_props_path, WORLD_NAME_PROPERTY));
 
         m_world_name_HBox.append(m_world_name_Label);
         m_world_name_HBox.append(m_world_name_Entry);
 
-        m_server_parameters_VBox.append(m_world_name_HBox);
+        m_server_properties_VBox.append(m_world_name_HBox);
 
         //    - Description
-        m_description_Entry.set_text(findValueInFileByParameterName(server_properties_file, DESCRIPTION_PARAMETER));
+        m_description_Entry.set_text(find_val_in_file_by_prop(serv_props_path, DESCRIPTION_PROPERTY));
 
         m_description_HBox.append(m_description_Label);
         m_description_HBox.append(m_description_Entry);
 
-        m_server_parameters_VBox.append(m_description_HBox);
+        m_server_properties_VBox.append(m_description_HBox);
 
         //    - Port
-        m_editable_port_Entry.set_text(findValueInFileByParameterName(server_properties_file, PORT_PARAMETER));
+        m_editable_port_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
 
         m_editable_port_HBox.append(m_editable_port_Label);
         m_editable_port_HBox.append(m_editable_port_Entry);
 
-        m_server_parameters_VBox.append(m_editable_port_HBox);
+        m_server_properties_VBox.append(m_editable_port_HBox);
 
         //    - Max Players
-        m_max_players_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(atoi(findValueInFileByParameterName(server_properties_file, MAX_PLAYERS_PARAMETER).data()), 1, 20));
+        m_max_players_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(atoi(find_val_in_file_by_prop(serv_props_path, MAX_PLAYERS_PROPERTY).data()), 1, 20));
 
         m_max_players_HBox.append(m_max_players_Label);
         m_max_players_HBox.append(m_max_players_SpinButton);
 
-        m_server_parameters_VBox.append(m_max_players_HBox);
+        m_server_properties_VBox.append(m_max_players_HBox);
 
         //    - View Distance
 
@@ -133,7 +133,7 @@ namespace MCSM
         //    - Whitelist
 
 
-        m_Grid.attach(m_server_parameters_VBox, 0, 1, 1, 1);
+        m_Grid.attach(m_server_properties_VBox, 0, 1, 1, 1);
 
         m_Grid.attach(m_run_VBox, 1, 1, 1, 1);
     }
@@ -141,8 +141,6 @@ namespace MCSM
     MCServerManagerWindow::~MCServerManagerWindow()
     {
         // Cleanup code here
-        if (server_properties_file.is_open())
-            server_properties_file.close();
     }
 
     void MCServerManagerWindow::on_copy_button_clicked() 
