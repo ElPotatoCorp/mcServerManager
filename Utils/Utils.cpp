@@ -18,11 +18,13 @@ namespace MCSM
         return servers;
     }
 
+    // TODO: Rename all parameters by 'properties'
     const std::string findValueInFileByParameterName(std::string parameter_name, std::string file_path)
     {
         
     }
 
+    // TODO: Rename all parameters by 'properties'
     void rewrite_parameter(const std::string& file_path, const std::string& parameter, const std::string& new_value) 
     {
         std::ifstream infile(file_path);
