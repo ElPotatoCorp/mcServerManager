@@ -61,7 +61,7 @@ namespace MCSM
 
         //    - Start Script
         m_start_script_Entry.set_editable(false);
-        m_start_script_Entry.set_focusable(false);
+        m_start_script_Entry.set_can_focus(false);
 
         m_open_start_script_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_open_start_script_button_clicked));
 
