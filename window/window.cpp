@@ -30,7 +30,7 @@ namespace MCSM
 
         set_child(m_Grid);
 
-        // Init important values 
+        // Init important values
         m_StringList = Gtk::StringList::create(list_servers(SERVER_FOLDER));
 
         current_server = m_StringList.get()->get_string(0);
@@ -45,7 +45,7 @@ namespace MCSM
         m_PORT_Entry.set_editable(false);
         m_PORT_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
         m_copy_address_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_copy_button_clicked));
-    
+
         m_ip_port_HBox.append(m_IP_address_Entry);
         m_ip_port_HBox.append(m_PORT_Entry);
         m_ip_port_HBox.append(m_copy_address_Button);
@@ -56,7 +56,7 @@ namespace MCSM
         //    - Server List
         m_server_name_DropDown.set_model(m_StringList);
         m_server_name_DropDown.set_selected(0);
-        
+
         m_server_properties_VBox.append(m_server_name_DropDown);
 
         //    - Start Script
@@ -164,13 +164,61 @@ namespace MCSM
         // Cleanup code here
     }
 
-    void MCServerManagerWindow::on_copy_button_clicked() 
+    void MCServerManagerWindow::on_copy_button_clicked()
     {
         get_clipboard()->set_text(m_IP_address_Entry.get_text() + ":" + m_PORT_Entry.get_text());
     }
 
-    void MCServerManagerWindow::on_open_start_script_button_clicked() 
+    void MCServerManagerWindow::on_open_start_script_button_clicked()
     {
-        std::cout << "on_open_start_script_button_clicked" << std::endl;
+        auto dialog = Gtk::FileDialog::create();
+
+        // Add filters, so that only certain file types can be selected:
+        auto filters = Gio::ListStore<Gtk::FileFilter>::create();
+
+        Glib::RefPtr<Gtk::FileFilter> filter_sh = Gtk::FileFilter::create();
+        filter_sh->set_name("Bash scripts");
+        filter_sh->add_pattern("*.sh");
+        filters->append(filter_sh);
+
+        Glib::RefPtr<Gtk::FileFilter> filter_text = Gtk::FileFilter::create();
+        filter_text->set_name("Text files");
+        filter_text->add_mime_type("text/plain");
+        filters->append(filter_text);
+
+        Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
+        filter_any->set_name("Any files");
+        filter_any->add_pattern("*");
+        filters->append(filter_any);
+
+        dialog->set_filters(filters);
+        dialog->set_initial_folder(Gio::File::create_for_path(SERVER_FOLDER + "/" + current_server));
+
+        // Show the dialog and wait for a user response:
+        dialog->open(sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_file_dialog_finish), dialog));
+    }
+
+    void MCServerManagerWindow::on_file_dialog_finish(const Glib::RefPtr<Gio::AsyncResult> &result, const Glib::RefPtr<Gtk::FileDialog> &dialog)
+    {
+        // Handle the response:
+        try
+        {
+            Glib::RefPtr<Gio::File> file = dialog->open_finish(result);
+
+            start_script_path = file->get_path();
+
+            std::string file_name = start_script_path.substr(start_script_path.find_last_of('/') + 1);
+
+            m_start_script_Entry.set_text(file_name);
+        }
+        catch (const Gtk::DialogError &err)
+        {
+            // Can be thrown by dialog->open_finish(result).
+            std::cout << "No file selected. " << err.what() << std::endl;
+        }
+        catch (const Glib::Error &err)
+        {
+            std::cout << "Unexpected exception. " << err.what() << std::endl;
+        }
     }
 }

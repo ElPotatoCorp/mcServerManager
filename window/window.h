@@ -17,7 +17,7 @@ namespace MCSM
         ~MCServerManagerWindow() override;
 
     protected:
-        std::string current_server, serv_props_path;
+        std::string current_server, start_script_path, serv_props_path;
 
         // Member widgets:
         Gtk::Grid m_Grid, m_properties_Grid;
@@ -54,6 +54,8 @@ namespace MCSM
         void on_copy_button_clicked();
 
         void on_open_start_script_button_clicked();
+
+        void on_file_dialog_finish(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gtk::FileDialog>& dialog);
     };
 }
 
