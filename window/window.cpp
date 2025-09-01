@@ -133,7 +133,7 @@ namespace MCSM
 
     void MCServerManagerWindow::on_copy_button_clicked() 
     {
-        std::cout << "on_copy_button_clicked" << std::endl;
+        get_clipboard()->set_text(m_IP_address_Entry.get_text() + ":" + m_PORT_Entry.get_text());
     }
 
     void MCServerManagerWindow::on_open_start_script_button_clicked() 
