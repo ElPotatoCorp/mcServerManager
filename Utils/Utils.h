@@ -11,7 +11,11 @@ namespace MCSM
 {
     const std::vector<Glib::ustring> list_servers(const std::string& path_to_folder);
 
-    const std::string findValueInFileByParameterName(std::fstream& file, const std::string& parameter);
+    // TODO: Rename all parameters by 'properties'
+    const std::string findValueInFileByParameterName(std::string parameter_name, std::string file_path);
+
+    // TODO: Rename all parameters by 'properties'
+    void rewrite_parameter(const std::string& file_path, const std::string& parameter, const std::string& new_value);
 }
 
 #endif // UTILS_H

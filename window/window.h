@@ -8,6 +8,8 @@
 #include "../Utils/Utils.h"
 #include "../Utils/Constants.h"
 
+// TODO: Rename all parameters by 'properties'
+// TODO: Remove the parameters' box to replace it with a grid for better layout.
 namespace MCSM
 {
     class MCServerManagerWindow : public Gtk::Window
