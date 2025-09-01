@@ -41,13 +41,13 @@ namespace MCSM
         m_IP_address_Entry.set_can_focus(false);
         m_IP_address_Entry.set_editable(false);
         m_IP_address_Entry.set_text(cpr::Get(cpr::Url{"https://ipinfo.io/ip"}).text);
-        m_Port_Entry.set_can_focus(false);
-        m_Port_Entry.set_editable(false);
-        m_Port_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
+        m_PORT_Entry.set_can_focus(false);
+        m_PORT_Entry.set_editable(false);
+        m_PORT_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
         m_copy_address_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_copy_button_clicked));
     
         m_ip_port_HBox.append(m_IP_address_Entry);
-        m_ip_port_HBox.append(m_Port_Entry);
+        m_ip_port_HBox.append(m_PORT_Entry);
         m_ip_port_HBox.append(m_copy_address_Button);
 
         m_Grid.attach(m_ip_port_HBox, 0, 0, 2, 1);

@@ -24,7 +24,7 @@ namespace MCSM
 
         Gtk::Box m_ip_port_HBox, m_server_properties_VBox, m_run_VBox;
 
-        Gtk::Entry m_IP_address_Entry, m_Port_Entry;
+        Gtk::Entry m_IP_address_Entry, m_PORT_Entry;
 
         Glib::RefPtr<Gtk::StringList> m_StringList;
 
