@@ -74,51 +74,84 @@ namespace MCSM
         m_properties_Grid.set_column_spacing(5);
 
         //    - World Name
+        m_world_name_Label.set_halign(Gtk::Align::START);
         m_world_name_Entry.set_text(find_val_in_file_by_prop(serv_props_path, WORLD_NAME_PROPERTY));
 
         m_properties_Grid.attach(m_world_name_Label, 0, 0);
         m_properties_Grid.attach(m_world_name_Entry, 1, 0);
 
         //    - Description
+        m_description_Label.set_halign(Gtk::Align::START);
         m_description_Entry.set_text(find_val_in_file_by_prop(serv_props_path, DESCRIPTION_PROPERTY));
 
         m_properties_Grid.attach(m_description_Label, 0, 1);
         m_properties_Grid.attach(m_description_Entry, 1, 1);
 
         //    - Port
+        m_editable_port_Label.set_halign(Gtk::Align::START);
         m_editable_port_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
 
         m_properties_Grid.attach(m_editable_port_Label, 0, 2);
         m_properties_Grid.attach(m_editable_port_Entry, 1, 2);
 
         //    - Max Players
+        m_max_players_Label.set_halign(Gtk::Align::START);
         m_max_players_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(atoi(find_val_in_file_by_prop(serv_props_path, MAX_PLAYERS_PROPERTY).data()), 1, 20));
 
         m_properties_Grid.attach(m_max_players_Label, 0, 3);
         m_properties_Grid.attach(m_max_players_SpinButton, 1, 3);
 
         //    - View Distance
+        m_view_distance_Label.set_halign(Gtk::Align::START);
+        m_view_distance_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(atoi(find_val_in_file_by_prop(serv_props_path, VIEW_DISTANCE_PROPERTY).data()), 1, 64));
 
+        m_properties_Grid.attach(m_view_distance_Label, 0, 4);
+        m_properties_Grid.attach(m_view_distance_SpinButton, 1, 4);
 
         //    - Gamemode
+        m_game_mode_Label.set_halign(Gtk::Align::START);
+        m_game_mode_DropDown.set_model(Gtk::StringList::create({"survival", "creative", "spectator", "adventure"}));
+        m_game_mode_DropDown.set_selected(0);
 
+        m_properties_Grid.attach(m_game_mode_Label, 0, 5);
+        m_properties_Grid.attach(m_game_mode_DropDown, 1, 5);
 
         //    - Difficulty
+        m_difficulty_Label.set_halign(Gtk::Align::START);
+        m_difficulty_DropDown.set_model(Gtk::StringList::create({"peaceful", "easy", "normal", "hard"}));
 
+        m_properties_Grid.attach(m_difficulty_Label, 0, 6);
+        m_properties_Grid.attach(m_difficulty_DropDown, 1, 6);
 
         //    - Hardcore
+        m_hardcore_CheckButton.set_direction(Gtk::TextDirection::RTL);
+        m_hardcore_CheckButton.set_margin(-4);
 
+        m_properties_Grid.attach(m_hardcore_CheckButton, 0, 7, 2, 1);
 
         //    - PVP
+        m_pvp_CheckButton.set_direction(Gtk::TextDirection::RTL);
+        m_pvp_CheckButton.set_margin(-4);
 
+        m_properties_Grid.attach(m_pvp_CheckButton, 0, 8, 2, 1);
 
         //    - Fly
+        m_fly_CheckButton.set_direction(Gtk::TextDirection::RTL);
+        m_fly_CheckButton.set_margin(-4);
 
+        m_properties_Grid.attach(m_fly_CheckButton, 0, 9, 2, 1);
 
         //    - Nether
+        m_nether_CheckButton.set_direction(Gtk::TextDirection::RTL);
+        m_nether_CheckButton.set_margin(-4);
 
+        m_properties_Grid.attach(m_nether_CheckButton, 0, 10, 2, 1);
 
         //    - Whitelist
+        m_whitelist_CheckButton.set_direction(Gtk::TextDirection::RTL);
+        m_whitelist_CheckButton.set_margin(-4);
+
+        m_properties_Grid.attach(m_whitelist_CheckButton, 0, 11, 2, 1);
 
         m_server_properties_VBox.append(m_properties_Grid);
 
