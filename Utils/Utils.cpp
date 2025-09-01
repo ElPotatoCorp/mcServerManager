@@ -37,9 +37,3 @@ namespace MCSM
         throw std::runtime_error("Parameter not found");
     }
 }
-
-    const std::string findValueInFileByParameterName(std::string parameter_name, std::string file_path)
-    {
-        
-    }
-}
