@@ -22,14 +22,7 @@ namespace MCSM
           m_fly_CheckButton("Allow Flight"),
           m_nether_CheckButton("Allow Nether"),
           m_whitelist_CheckButton("Enable Whitelist"),
-          m_start_script_HBox(Gtk::Orientation::HORIZONTAL),
-          m_world_name_HBox(Gtk::Orientation::HORIZONTAL),
-          m_description_HBox(Gtk::Orientation::HORIZONTAL),
-          m_editable_port_HBox(Gtk::Orientation::HORIZONTAL),
-          m_max_players_HBox(Gtk::Orientation::HORIZONTAL),
-          m_view_distance_HBox(Gtk::Orientation::HORIZONTAL),
-          m_game_mode_HBox(Gtk::Orientation::HORIZONTAL),
-          m_difficulty_HBox(Gtk::Orientation::HORIZONTAL)
+          m_start_script_HBox(Gtk::Orientation::HORIZONTAL)
     {
         set_title("MC Server Manager++");
 
@@ -77,37 +70,32 @@ namespace MCSM
 
         m_server_properties_VBox.append(m_start_script_HBox);
 
+        //    - Setting up the properties Grid
+        m_properties_Grid.set_column_spacing(5);
+
         //    - World Name
         m_world_name_Entry.set_text(find_val_in_file_by_prop(serv_props_path, WORLD_NAME_PROPERTY));
 
-        m_world_name_HBox.append(m_world_name_Label);
-        m_world_name_HBox.append(m_world_name_Entry);
-
-        m_server_properties_VBox.append(m_world_name_HBox);
+        m_properties_Grid.attach(m_world_name_Label, 0, 0);
+        m_properties_Grid.attach(m_world_name_Entry, 1, 0);
 
         //    - Description
         m_description_Entry.set_text(find_val_in_file_by_prop(serv_props_path, DESCRIPTION_PROPERTY));
 
-        m_description_HBox.append(m_description_Label);
-        m_description_HBox.append(m_description_Entry);
-
-        m_server_properties_VBox.append(m_description_HBox);
+        m_properties_Grid.attach(m_description_Label, 0, 1);
+        m_properties_Grid.attach(m_description_Entry, 1, 1);
 
         //    - Port
         m_editable_port_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
 
-        m_editable_port_HBox.append(m_editable_port_Label);
-        m_editable_port_HBox.append(m_editable_port_Entry);
-
-        m_server_properties_VBox.append(m_editable_port_HBox);
+        m_properties_Grid.attach(m_editable_port_Label, 0, 2);
+        m_properties_Grid.attach(m_editable_port_Entry, 1, 2);
 
         //    - Max Players
         m_max_players_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(atoi(find_val_in_file_by_prop(serv_props_path, MAX_PLAYERS_PROPERTY).data()), 1, 20));
 
-        m_max_players_HBox.append(m_max_players_Label);
-        m_max_players_HBox.append(m_max_players_SpinButton);
-
-        m_server_properties_VBox.append(m_max_players_HBox);
+        m_properties_Grid.attach(m_max_players_Label, 0, 3);
+        m_properties_Grid.attach(m_max_players_SpinButton, 1, 3);
 
         //    - View Distance
 
@@ -132,9 +120,9 @@ namespace MCSM
 
         //    - Whitelist
 
+        m_server_properties_VBox.append(m_properties_Grid);
 
         m_Grid.attach(m_server_properties_VBox, 0, 1, 1, 1);
-
         m_Grid.attach(m_run_VBox, 1, 1, 1, 1);
     }
 
