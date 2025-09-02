@@ -55,7 +55,7 @@ namespace MCSM
         bool found = false;
         while (getline(infile, line))
         {
-            if (line.find(property) != std::string::npos)
+            if (line.find('=') == property.length() && line.substr(0, property.length()) == property)
             {
                 line = property + "=" + new_value;
                 found = true;
