@@ -109,16 +109,19 @@ namespace MCSM
         m_properties_Grid.attach(m_view_distance_SpinButton, 1, 4);
 
         //    - Gamemode
+        m_gamemode_StringList = Gtk::StringList::create({"survival", "creative", "spectator", "adventure"});
+        
         m_game_mode_Label.set_halign(Gtk::Align::START);
-        m_game_mode_DropDown.set_model(Gtk::StringList::create({"survival", "creative", "spectator", "adventure"}));
-        m_game_mode_DropDown.set_selected(0);
+        m_game_mode_DropDown.set_model(m_gamemode_StringList);
 
         m_properties_Grid.attach(m_game_mode_Label, 0, 5);
         m_properties_Grid.attach(m_game_mode_DropDown, 1, 5);
 
         //    - Difficulty
+        m_difficulty_StringList = Gtk::StringList::create({"peaceful", "easy", "normal", "hard"});
+
         m_difficulty_Label.set_halign(Gtk::Align::START);
-        m_difficulty_DropDown.set_model(Gtk::StringList::create({"peaceful", "easy", "normal", "hard"}));
+        m_difficulty_DropDown.set_model(m_difficulty_StringList);
 
         m_properties_Grid.attach(m_difficulty_Label, 0, 6);
         m_properties_Grid.attach(m_difficulty_DropDown, 1, 6);
@@ -195,10 +198,10 @@ namespace MCSM
         dialog->set_initial_folder(Gio::File::create_for_path(SERVER_FOLDER + "/" + current_server));
 
         // Show the dialog and wait for a user response:
-        dialog->open(sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_file_dialog_finish), dialog));
+        dialog->open(sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_start_script_file_dialog_finish), dialog));
     }
 
-    void MCServerManagerWindow::on_file_dialog_finish(const Glib::RefPtr<Gio::AsyncResult> &result, const Glib::RefPtr<Gtk::FileDialog> &dialog)
+    void MCServerManagerWindow::on_start_script_file_dialog_finish(const Glib::RefPtr<Gio::AsyncResult> &result, const Glib::RefPtr<Gtk::FileDialog> &dialog)
     {
         // Handle the response:
         try

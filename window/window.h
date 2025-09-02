@@ -59,7 +59,7 @@ namespace MCSM
 
         void on_entry_confirmed(const Gtk::Entry *m_Entry, const std::string &property);
 
-        void on_dropdown_value_changed(const Gtk::DropDown *m_DropDown, const std::string &property);
+        void on_dropdown_value_changed(const Gtk::DropDown *m_DropDown, const Glib::RefPtr<Gtk::StringList> &m_StringList, const std::string &property);
 
         void on_spinbutton_value_changed(const Gtk::SpinButton *m_SpinButton, const std::string &property);
 
