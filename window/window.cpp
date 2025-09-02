@@ -77,6 +77,9 @@ namespace MCSM
         m_world_name_Label.set_halign(Gtk::Align::START);
         m_world_name_Entry.set_text(find_val_in_file_by_prop(serv_props_path, WORLD_NAME_PROPERTY));
 
+        m_world_name_Entry.signal_activate().connect(
+            sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_entry_confirmed), &m_world_name_Entry, WORLD_NAME_PROPERTY));
+
         m_properties_Grid.attach(m_world_name_Label, 0, 0);
         m_properties_Grid.attach(m_world_name_Entry, 1, 0);
 
@@ -84,12 +87,18 @@ namespace MCSM
         m_description_Label.set_halign(Gtk::Align::START);
         m_description_Entry.set_text(find_val_in_file_by_prop(serv_props_path, DESCRIPTION_PROPERTY));
 
+        m_description_Entry.signal_activate().connect(
+            sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_entry_confirmed), &m_description_Entry, DESCRIPTION_PROPERTY));
+
         m_properties_Grid.attach(m_description_Label, 0, 1);
         m_properties_Grid.attach(m_description_Entry, 1, 1);
 
         //    - Port
         m_editable_port_Label.set_halign(Gtk::Align::START);
         m_editable_port_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
+
+        m_editable_port_Entry.signal_activate().connect(
+            sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_entry_confirmed), &m_editable_port_Entry, PORT_PROPERTY));
 
         m_properties_Grid.attach(m_editable_port_Label, 0, 2);
         m_properties_Grid.attach(m_editable_port_Entry, 1, 2);
@@ -224,4 +233,18 @@ namespace MCSM
             std::cout << "Unexpected exception. " << err.what() << std::endl;
         }
     }
+
+    void MCServerManagerWindow::on_entry_confirmed(const Gtk::Entry *m_Entry, const std::string &property)
+    {
+        if (m_Entry == &m_editable_port_Entry)
+        {
+            for (char c : m_Entry->get_text())
+            {
+                if (!isdigit(c))
+                {
+                    return;
+                }
+            }
+
+        }
 }
