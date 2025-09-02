@@ -107,12 +107,18 @@ namespace MCSM
         m_max_players_Label.set_halign(Gtk::Align::START);
         m_max_players_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(atoi(find_val_in_file_by_prop(serv_props_path, MAX_PLAYERS_PROPERTY).data()), 1, 20));
 
+        m_max_players_SpinButton.signal_value_changed().connect(sigc::bind(
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_spinbutton_value_changed), &m_max_players_SpinButton, MAX_PLAYERS_PROPERTY));
+
         m_properties_Grid.attach(m_max_players_Label, 0, 3);
         m_properties_Grid.attach(m_max_players_SpinButton, 1, 3);
 
         //    - View Distance
         m_view_distance_Label.set_halign(Gtk::Align::START);
         m_view_distance_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(atoi(find_val_in_file_by_prop(serv_props_path, VIEW_DISTANCE_PROPERTY).data()), 1, 64));
+
+        m_view_distance_SpinButton.signal_value_changed().connect(sigc::bind(
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_spinbutton_value_changed), &m_view_distance_SpinButton, VIEW_DISTANCE_PROPERTY));
 
         m_properties_Grid.attach(m_view_distance_Label, 0, 4);
         m_properties_Grid.attach(m_view_distance_SpinButton, 1, 4);
@@ -245,6 +251,27 @@ namespace MCSM
                     return;
                 }
             }
+
+        }
+
+        std::string new_value = m_Entry->get_text();
+
+        rewrite_property(serv_props_path, property, new_value);
+    }
+
+    void MCServerManagerWindow::on_dropdown_value_changed(const Gtk::DropDown *m_DropDown, const Glib::RefPtr<Gtk::StringList> &m_StringList, const std::string &property)
+    {
+        guint selected_item = m_DropDown->get_selected();
+
+        if (selected_item == GTK_INVALID_LIST_POSITION)
+        {
+            return;
+        }
+
+        std::string new_value = m_StringList.get()->get_string(selected_item);
+
+        rewrite_property(serv_props_path, property, new_value);
+    }
 
         }
 }
