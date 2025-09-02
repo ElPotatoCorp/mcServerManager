@@ -129,6 +129,9 @@ namespace MCSM
         m_game_mode_Label.set_halign(Gtk::Align::START);
         m_game_mode_DropDown.set_model(m_gamemode_StringList);
 
+        m_game_mode_DropDown.property_selected().signal_changed().connect(
+            sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_dropdown_value_changed), &m_game_mode_DropDown, m_gamemode_StringList, GAMEMODE_PROPERTY));
+
         m_properties_Grid.attach(m_game_mode_Label, 0, 5);
         m_properties_Grid.attach(m_game_mode_DropDown, 1, 5);
 
@@ -137,6 +140,9 @@ namespace MCSM
 
         m_difficulty_Label.set_halign(Gtk::Align::START);
         m_difficulty_DropDown.set_model(m_difficulty_StringList);
+
+        m_difficulty_DropDown.property_selected().signal_changed().connect(
+            sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_dropdown_value_changed), &m_difficulty_DropDown, m_difficulty_StringList, DIFFICULTY_PROPERTY));
 
         m_properties_Grid.attach(m_difficulty_Label, 0, 6);
         m_properties_Grid.attach(m_difficulty_DropDown, 1, 6);
@@ -273,5 +279,11 @@ namespace MCSM
         rewrite_property(serv_props_path, property, new_value);
     }
 
+    void MCServerManagerWindow::on_spinbutton_value_changed(const Gtk::SpinButton *m_SpinButton, const std::string &property)
+    {
+        std::string new_value = std::to_string(m_SpinButton->get_value_as_int());
+
+        rewrite_property(serv_props_path, property, new_value);
+    }
         }
 }
