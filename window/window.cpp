@@ -151,11 +151,17 @@ namespace MCSM
         m_hardcore_CheckButton.set_direction(Gtk::TextDirection::RTL);
         m_hardcore_CheckButton.set_margin(-4);
 
+        m_hardcore_CheckButton.signal_toggled().connect(sigc::bind(
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_button_toggled), &m_hardcore_CheckButton, HARDCORE_PROPERTY));
+
         m_properties_Grid.attach(m_hardcore_CheckButton, 0, 7, 2, 1);
 
         //    - PVP
         m_pvp_CheckButton.set_direction(Gtk::TextDirection::RTL);
         m_pvp_CheckButton.set_margin(-4);
+
+        m_pvp_CheckButton.signal_toggled().connect(sigc::bind(
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_button_toggled), &m_pvp_CheckButton, PVP_PROPERTY));
 
         m_properties_Grid.attach(m_pvp_CheckButton, 0, 8, 2, 1);
 
@@ -163,17 +169,26 @@ namespace MCSM
         m_fly_CheckButton.set_direction(Gtk::TextDirection::RTL);
         m_fly_CheckButton.set_margin(-4);
 
+        m_fly_CheckButton.signal_toggled().connect(sigc::bind(
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_button_toggled), &m_fly_CheckButton, FLY_PROPERTY));
+
         m_properties_Grid.attach(m_fly_CheckButton, 0, 9, 2, 1);
 
         //    - Nether
         m_nether_CheckButton.set_direction(Gtk::TextDirection::RTL);
         m_nether_CheckButton.set_margin(-4);
 
+        m_nether_CheckButton.signal_toggled().connect(sigc::bind(
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_button_toggled), &m_nether_CheckButton, NETHER_PROPERTY));
+
         m_properties_Grid.attach(m_nether_CheckButton, 0, 10, 2, 1);
 
         //    - Whitelist
         m_whitelist_CheckButton.set_direction(Gtk::TextDirection::RTL);
         m_whitelist_CheckButton.set_margin(-4);
+
+        m_whitelist_CheckButton.signal_toggled().connect(sigc::bind(
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_button_toggled), &m_whitelist_CheckButton, WHITELIST_PROPERTY));
 
         m_properties_Grid.attach(m_whitelist_CheckButton, 0, 11, 2, 1);
 
@@ -285,5 +300,11 @@ namespace MCSM
 
         rewrite_property(serv_props_path, property, new_value);
     }
-        }
+
+    void MCServerManagerWindow::on_button_toggled(const Gtk::CheckButton *m_CheckButton, const std::string &property)
+    {
+        std::string new_value = (m_CheckButton->get_active() ? "true" : "false");
+
+        rewrite_property(serv_props_path, property, new_value);
+    }
 }
