@@ -26,7 +26,7 @@ namespace MCSM
 
         Gtk::Entry m_IP_address_Entry, m_PORT_Entry;
 
-        Glib::RefPtr<Gtk::StringList> m_StringList;
+        Glib::RefPtr<Gtk::StringList> m_server_StringList, m_gamemode_StringList, m_difficulty_StringList;
 
         Gtk::DropDown m_server_name_DropDown;
 
@@ -55,7 +55,16 @@ namespace MCSM
 
         void on_open_start_script_button_clicked();
 
-        void on_file_dialog_finish(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gtk::FileDialog>& dialog);
+        void on_start_script_file_dialog_finish(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gtk::FileDialog>& dialog);
+
+        void on_entry_confirmed(const Gtk::Entry *m_Entry, const std::string &property);
+
+        void on_dropdown_value_changed(const Gtk::DropDown *m_DropDown, const std::string &property);
+
+        void on_spinbutton_value_changed(const Gtk::SpinButton *m_SpinButton, const std::string &property);
+
+        void on_button_toggled(const Gtk::CheckButton *m_CheckButton, const std::string &property);
+        
     };
 }
 
