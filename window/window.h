@@ -3,11 +3,11 @@
 
 #include <gtkmm.h>
 #include <iostream>
+#include <fstream>
+#include <cpr/cpr.h>
 #include "../Utils/Utils.h"
 #include "../Utils/Constants.h"
 
-// TODO: Rename all parameters by 'properties'
-// TODO: Remove the parameters' box to replace it with a grid for better layout.
 namespace MCSM
 {
     class MCServerManagerWindow : public Gtk::Window
@@ -17,14 +17,14 @@ namespace MCSM
         ~MCServerManagerWindow() override;
 
     protected:
-        std::string current_server;
+        std::string current_server, start_script_path, serv_props_path;
 
         // Member widgets:
-        Gtk::Grid m_Grid;
+        Gtk::Grid m_Grid, m_properties_Grid;
 
-        Gtk::Box m_ip_port_HBox, m_server_parameters_VBox, m_run_VBox;
+        Gtk::Box m_ip_port_HBox, m_server_properties_VBox, m_run_VBox;
 
-        Gtk::Entry m_IP_address_Entry, m_Port_Entry;
+        Gtk::Entry m_IP_address_Entry, m_PORT_Entry;
 
         Glib::RefPtr<Gtk::StringList> m_StringList;
 
@@ -48,13 +48,14 @@ namespace MCSM
         Gtk::CheckButton m_hardcore_CheckButton, m_pvp_CheckButton,
             m_fly_CheckButton, m_nether_CheckButton, m_whitelist_CheckButton;
 
-        Gtk::Box m_start_script_HBox, m_world_name_HBox, m_description_HBox, m_editable_port_HBox,
-            m_max_players_HBox, m_view_distance_HBox, m_game_mode_HBox, m_difficulty_HBox;
+        Gtk::Box m_start_script_HBox;
 
         // Signal handlers:
         void on_copy_button_clicked();
 
         void on_open_start_script_button_clicked();
+
+        void on_file_dialog_finish(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gtk::FileDialog>& dialog);
     };
 }
 
