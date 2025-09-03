@@ -4,19 +4,19 @@ namespace MCSM
 {
     const std::vector<Glib::ustring> *list_directories(const std::string &path_to_directory)
     {
-        if (std::filesystem::exists(path_to_directory) || !std::filesystem::is_directory(path_to_directory))
+        if (!std::filesystem::exists(path_to_directory) || !std::filesystem::is_directory(path_to_directory))
         {
             return nullptr;
         }
 
-        std::vector<Glib::ustring> files = {};
+        std::vector<Glib::ustring> files;
 
         for (const std::filesystem::__cxx11::directory_entry &entry : std::filesystem::directory_iterator(path_to_directory))
         {
             if (entry.is_directory())
             {
                 std::string file_name = entry.path().filename();
-                files.push_back(Glib::ustring(file_name));
+                files.emplace_back(Glib::ustring(file_name));
             }
         }
 
