@@ -11,6 +11,8 @@ namespace MCSM
         m_IP_address_Entry.set_text(cpr::Get(cpr::Url{"https://ipinfo.io/ip"}).text);
         m_PORT_Entry.set_can_focus(false);
         m_PORT_Entry.set_editable(false);
+        m_copy_address_Button.set_label("cp");
+
         m_copy_address_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_copy_button_clicked));
 
         m_ip_port_HBox.append(m_IP_address_Entry);
@@ -34,6 +36,7 @@ namespace MCSM
         // Start Script
         m_start_script_Entry.set_editable(false);
         m_start_script_Entry.set_can_focus(false);
+        m_open_start_script_Button.set_label("📂");
 
         m_open_start_script_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_open_start_script_button_clicked));
 
@@ -46,6 +49,7 @@ namespace MCSM
     void MCServerManagerWindow::init_world_name_section()
     {
         // World Name
+        m_world_name_Label.set_label("World Name");
         m_world_name_Label.set_halign(Gtk::Align::START);
 
         m_world_name_Entry.signal_activate().connect(
@@ -58,6 +62,7 @@ namespace MCSM
     void MCServerManagerWindow::init_description_section()
     {
         // Description
+        m_description_Label.set_label("Description");
         m_description_Label.set_halign(Gtk::Align::START);
 
         m_description_Entry.signal_activate().connect(
@@ -70,6 +75,7 @@ namespace MCSM
     void MCServerManagerWindow::init_editable_port_section()
     {
         // Port
+        m_editable_port_Label.set_label("Port");
         m_editable_port_Label.set_halign(Gtk::Align::START);
 
         m_editable_port_Entry.signal_activate().connect(
@@ -82,6 +88,7 @@ namespace MCSM
     void MCServerManagerWindow::init_max_players_section()
     {
         // Max Players
+        m_max_players_Label.set_label("Max Players");
         m_max_players_Label.set_halign(Gtk::Align::START);
         m_max_players_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(1, 1, 20));
 
@@ -95,6 +102,7 @@ namespace MCSM
     void MCServerManagerWindow::init_view_distance_section()
     {
         // View Distance
+        m_view_distance_Label.set_label("View Distance");
         m_view_distance_Label.set_halign(Gtk::Align::START);
         m_view_distance_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(1, 1, 64));
 
@@ -110,6 +118,7 @@ namespace MCSM
         // Gamemode
         m_gamemode_StringList = Gtk::StringList::create({"survival", "creative", "spectator", "adventure"});
         
+        m_gamemode_Label.set_label("Game Mode");
         m_gamemode_Label.set_halign(Gtk::Align::START);
         m_gamemode_DropDown.set_model(m_gamemode_StringList);
 
@@ -125,6 +134,7 @@ namespace MCSM
         // Difficulty
         m_difficulty_StringList = Gtk::StringList::create({"peaceful", "easy", "normal", "hard"});
 
+        m_difficulty_Label.set_label("Difficulty");
         m_difficulty_Label.set_halign(Gtk::Align::START);
         m_difficulty_DropDown.set_model(m_difficulty_StringList);
 
@@ -138,6 +148,7 @@ namespace MCSM
     void MCServerManagerWindow::init_hardcore_section()
     {
         // Hardcore
+        m_hardcore_CheckButton.set_label("Hardcore");
         m_hardcore_CheckButton.set_direction(Gtk::TextDirection::RTL);
         m_hardcore_CheckButton.set_margin(-4);
 
@@ -150,6 +161,7 @@ namespace MCSM
     void MCServerManagerWindow::init_pvp_section()
     {
         // PVP
+        m_pvp_CheckButton.set_label("PVP");
         m_pvp_CheckButton.set_direction(Gtk::TextDirection::RTL);
         m_pvp_CheckButton.set_margin(-4);
 
@@ -162,6 +174,7 @@ namespace MCSM
     void MCServerManagerWindow::init_fly_section()
     {
         // Fly
+        m_fly_CheckButton.set_label("Allow Flight");
         m_fly_CheckButton.set_direction(Gtk::TextDirection::RTL);
         m_fly_CheckButton.set_margin(-4);
 
@@ -174,6 +187,7 @@ namespace MCSM
     void MCServerManagerWindow::init_nether_section()
     {
         // Nether
+        m_nether_CheckButton.set_label("Allow Nether");
         m_nether_CheckButton.set_direction(Gtk::TextDirection::RTL);
         m_nether_CheckButton.set_margin(-4);
 
@@ -186,6 +200,7 @@ namespace MCSM
     void MCServerManagerWindow::init_whitelist_section()
     {
         // Whitelist
+        m_whitelist_CheckButton.set_label("Enable Whitelist");
         m_whitelist_CheckButton.set_direction(Gtk::TextDirection::RTL);
         m_whitelist_CheckButton.set_margin(-4);
 
@@ -221,26 +236,10 @@ namespace MCSM
     }
 #pragma endregion
 
-    MCServerManagerWindow::MCServerManagerWindow()
-        : m_ip_port_HBox(Gtk::Orientation::HORIZONTAL),
+    MCServerManagerWindow::MCServerManagerWindow() :
+        m_ip_port_HBox(Gtk::Orientation::HORIZONTAL),
           m_server_properties_VBox(Gtk::Orientation::VERTICAL),
           m_run_VBox(Gtk::Orientation::VERTICAL),
-          m_run_from_backup_CheckButton("Run from Backup"),
-          m_run_Button("Launch"),
-          m_copy_address_Button("cp"),
-          m_open_start_script_Button("📂"),
-          m_world_name_Label("World Name"),
-          m_description_Label("Description"),
-          m_editable_port_Label("Editable Port"),
-          m_max_players_Label("Max Players"),
-          m_view_distance_Label("View Distance"),
-          m_gamemode_Label("Game Mode"),
-          m_difficulty_Label("Difficulty"),
-          m_hardcore_CheckButton("Hardcore"),
-          m_pvp_CheckButton("PVP"),
-          m_fly_CheckButton("Allow Flight"),
-          m_nether_CheckButton("Allow Nether"),
-          m_whitelist_CheckButton("Enable Whitelist"),
           m_start_script_HBox(Gtk::Orientation::HORIZONTAL)
     {
         set_title("MC Server Manager++");
