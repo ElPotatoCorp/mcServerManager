@@ -2,11 +2,16 @@
 
 namespace MCSM
 {
-    const std::vector<Glib::ustring> list_directories(const std::string &path_to_folder)
+    const std::vector<Glib::ustring> *list_directories(const std::string &path_to_directory)
     {
+        if (std::filesystem::exists(path_to_directory) || !std::filesystem::is_directory(path_to_directory))
+        {
+            return nullptr;
+        }
+
         std::vector<Glib::ustring> files = {};
 
-        for (const std::filesystem::__cxx11::directory_entry &entry : std::filesystem::directory_iterator(path_to_folder))
+        for (const std::filesystem::__cxx11::directory_entry &entry : std::filesystem::directory_iterator(path_to_directory))
         {
             if (entry.is_directory())
             {
@@ -15,12 +20,12 @@ namespace MCSM
             }
         }
 
-        return files;
+        return &files;
     }
 
-    const std::string find_val_in_file_by_prop(const std::string &file_path, const std::string &property)
+    const std::string find_val_in_file_by_prop(const std::string &path_to_file, const std::string &property)
     {
-        std::ifstream file(file_path);
+        std::ifstream file(path_to_file);
         std::string line;
 
         while (std::getline(file, line))
@@ -39,14 +44,20 @@ namespace MCSM
         file.close();
 
         // Not found
-        std::cout << property << " has not been found in the properties file (" << file_path << ")" << "\n";
+        std::cout << property << " has not been found in the properties file (" << path_to_file << ")" << "\n";
 
-        return "NOTHING FOUND";
+        return "";
     }
 
-    void rewrite_property(const std::string &file_path, const std::string &property, const std::string &new_value)
+    void rewrite_property(const std::string &path_to_file, const std::string &property, const std::string &new_value)
     {
-        std::ifstream infile(file_path);
+        if (std::filesystem::exists(path_to_file) || !std::filesystem::is_regular_file(path_to_file))
+        {
+            std::cout << "Oupsie, there is a problem with the path (" << path_to_file << ")" << "\n";
+            return;
+        }
+
+        std::ifstream infile(path_to_file);
         if (!infile.is_open())
             throw std::runtime_error("File is not open");
 
@@ -70,7 +81,7 @@ namespace MCSM
             return;
         }
 
-        std::ofstream outfile(file_path);
+        std::ofstream outfile(path_to_file);
         if (!outfile.is_open())
             throw std::runtime_error("File is not open");
 
