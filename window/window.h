@@ -13,6 +13,7 @@ namespace MCSM
     class MCServerManagerWindow : public Gtk::Window
     {
     private:
+    #pragma region INIT_METHODS
         void init_IP_address_PORT_section();
         void init_server_list_section();
 
@@ -30,9 +31,12 @@ namespace MCSM
         void init_fly_section();
         void init_nether_section();
         void init_whitelist_section();
-        
+
         void init_server_properties_secions();
         /* --- END: SERVER PROPERTIES --- */
+
+        /* --- LAUNCHER --- */
+    #pragma endregion
 
     public:
         MCServerManagerWindow();

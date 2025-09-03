@@ -2,6 +2,7 @@
 
 namespace MCSM
 {
+#pragma region INIT_METHODS
     void MCServerManagerWindow::init_IP_address_PORT_section()
     {
         // IP-PORT
@@ -218,6 +219,7 @@ namespace MCSM
         m_server_properties_VBox.append(m_properties_Grid);
         m_Grid.attach(m_server_properties_VBox, 0, 1, 1, 1);
     }
+#pragma endregion
 
     MCServerManagerWindow::MCServerManagerWindow()
         : m_ip_port_HBox(Gtk::Orientation::HORIZONTAL),
@@ -256,7 +258,7 @@ namespace MCSM
         // Add widgets to the grid
         init_IP_address_PORT_section();
         init_server_list_section();
-        
+
         init_server_properties_secions();
 
         // - Right Part
