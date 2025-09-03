@@ -248,9 +248,9 @@ namespace MCSM
 
     MCServerManagerWindow::MCServerManagerWindow() :
         m_ip_port_HBox(Gtk::Orientation::HORIZONTAL),
-          m_server_properties_VBox(Gtk::Orientation::VERTICAL),
-          m_run_VBox(Gtk::Orientation::VERTICAL),
-          m_start_script_HBox(Gtk::Orientation::HORIZONTAL)
+        m_server_properties_VBox(Gtk::Orientation::VERTICAL),
+        m_run_VBox(Gtk::Orientation::VERTICAL),
+        m_start_script_HBox(Gtk::Orientation::HORIZONTAL)
     {
         set_title("MC Server Manager++");
 
