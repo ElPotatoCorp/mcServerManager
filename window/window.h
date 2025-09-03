@@ -59,10 +59,6 @@ namespace MCSM
 
         Gtk::DropDown m_server_name_DropDown;
 
-        Gtk::ListBox m_backup_ListBox;
-
-        Gtk::CheckButton m_run_from_backup_CheckButton;
-
         Gtk::Button m_run_Button, m_copy_address_Button, m_open_start_script_Button;
 
         Gtk::Label m_world_name_Label, m_description_Label, m_editable_port_Label, m_max_players_Label,
@@ -80,6 +76,10 @@ namespace MCSM
         Gtk::Box m_start_script_HBox;
 
         // - Launcher Settings Widgets
+        Gtk::ListBox m_backups_ListBox;
+
+        Gtk::CheckButton m_run_from_backup_CheckButton;
+
         Glib::RefPtr<Gtk::StringList> m_backups_StringList;
 
         Gtk::ListBox m_backups_ListBox;
