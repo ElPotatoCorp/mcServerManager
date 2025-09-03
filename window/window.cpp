@@ -234,6 +234,16 @@ namespace MCSM
         m_server_properties_VBox.append(m_properties_Grid);
         m_Grid.attach(m_server_properties_VBox, 0, 1, 1, 1);
     }
+
+    void MCServerManagerWindow::init_launcher_sections()
+    {
+        // Backups
+        m_backups_StringList = Gtk::StringList::create(list_directories(SERVER_FOLDER + "/" + "backups"));
+        
+        m_run_VBox.append(m_backups_ListBox);
+
+        m_Grid.attach(m_run_VBox, 1, 1, 1, 1);
+    }
 #pragma endregion
 
     MCServerManagerWindow::MCServerManagerWindow() :
@@ -259,12 +269,7 @@ namespace MCSM
         init_server_list_section();
 
         init_server_properties_secions();
-
-        // - Right Part
-        //    - Backups
-        // m_backups_StringList = Gtk::StringList::create(*list_directories(SERVER_FOLDER + "/" + "backups"));
-
-        m_Grid.attach(m_run_VBox, 1, 1, 1, 1);
+        init_launcher_sections();
 
         refresh_serv_infos();
     }

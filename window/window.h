@@ -36,6 +36,7 @@ namespace MCSM
         /* --- END: SERVER PROPERTIES --- */
 
         /* --- LAUNCHER --- */
+        void init_launcher_sections();
     #pragma endregion
 
     public:
@@ -76,8 +77,6 @@ namespace MCSM
         Gtk::Box m_start_script_HBox;
 
         // - Launcher Settings Widgets
-        Gtk::ListBox m_backups_ListBox;
-
         Gtk::CheckButton m_run_from_backup_CheckButton;
 
         Glib::RefPtr<Gtk::StringList> m_backups_StringList;
