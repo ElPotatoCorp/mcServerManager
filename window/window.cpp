@@ -31,7 +31,7 @@ namespace MCSM
         set_child(m_Grid);
 
         // Init important values
-        m_server_StringList = Gtk::StringList::create(list_directories(SERVER_FOLDER));
+        m_server_StringList = Gtk::StringList::create(*list_directories(SERVER_FOLDER));
 
         current_server = m_server_StringList.get()->get_string(0);
         serv_props_path = SERVER_FOLDER + "/" + current_server + "/" + "server.properties";
@@ -187,10 +187,15 @@ namespace MCSM
             sigc::mem_fun(*this, &MCServerManagerWindow::on_button_toggled), &m_whitelist_CheckButton, WHITELIST_PROPERTY));
 
         m_properties_Grid.attach(m_whitelist_CheckButton, 0, 11, 2, 1);
-
+        
+        //    - Attach elements to the main container
         m_server_properties_VBox.append(m_properties_Grid);
-
         m_Grid.attach(m_server_properties_VBox, 0, 1, 1, 1);
+
+        // - Right Part
+        //    - Backups
+        // m_backups_StringList = Gtk::StringList::create(*list_directories(SERVER_FOLDER + "/" + "backups"));
+
         m_Grid.attach(m_run_VBox, 1, 1, 1, 1);
 
         refresh_serv_infos();

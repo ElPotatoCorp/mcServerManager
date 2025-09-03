@@ -26,7 +26,10 @@ namespace MCSM
 
         Gtk::Entry m_IP_address_Entry, m_PORT_Entry;
 
-        Glib::RefPtr<Gtk::StringList> m_server_StringList, m_gamemode_StringList, m_difficulty_StringList;
+        Glib::RefPtr<Gtk::StringList> m_server_StringList;
+
+        // - Server Settings Widgets
+        Glib::RefPtr<Gtk::StringList> m_gamemode_StringList, m_difficulty_StringList;
 
         Gtk::DropDown m_server_name_DropDown;
 
@@ -49,6 +52,11 @@ namespace MCSM
             m_fly_CheckButton, m_nether_CheckButton, m_whitelist_CheckButton;
 
         Gtk::Box m_start_script_HBox;
+
+        // - Launcher Settings Widgets
+        Glib::RefPtr<Gtk::StringList> m_backups_StringList;
+
+        Gtk::ListBox m_backups_ListBox;
 
         // General functions:
         void refresh_serv_infos();
