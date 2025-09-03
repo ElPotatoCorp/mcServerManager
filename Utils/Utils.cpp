@@ -2,11 +2,11 @@
 
 namespace MCSM
 {
-    const std::vector<Glib::ustring> *list_directories(const std::string &path_to_directory)
+    const std::vector<Glib::ustring> list_directories(const std::string &path_to_directory)
     {
         if (!std::filesystem::exists(path_to_directory) || !std::filesystem::is_directory(path_to_directory))
         {
-            return nullptr;
+            return {};
         }
 
         std::vector<Glib::ustring> files;
@@ -20,7 +20,7 @@ namespace MCSM
             }
         }
 
-        return &files;
+        return files;
     }
 
     const std::string find_val_in_file_by_prop(const std::string &path_to_file, const std::string &property)

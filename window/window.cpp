@@ -31,7 +31,7 @@ namespace MCSM
         set_child(m_Grid);
 
         // Init important values
-        m_server_StringList = Gtk::StringList::create(*list_directories(SERVER_FOLDER));
+        m_server_StringList = Gtk::StringList::create(list_directories(SERVER_FOLDER));
 
         current_server = m_server_StringList.get()->get_string(0);
         serv_props_path = SERVER_FOLDER + "/" + current_server + "/" + "server.properties";
