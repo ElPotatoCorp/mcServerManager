@@ -2,20 +2,20 @@
 
 namespace MCSM
 {
-    const std::vector<Glib::ustring> list_servers(const std::string &path_to_folder)
+    const std::vector<Glib::ustring> list_directories(const std::string &path_to_folder)
     {
-        std::vector<Glib::ustring> servers = {};
+        std::vector<Glib::ustring> files = {};
 
-        for (const auto &entry : std::filesystem::directory_iterator(path_to_folder))
+        for (const std::filesystem::__cxx11::directory_entry &entry : std::filesystem::directory_iterator(path_to_folder))
         {
             if (entry.is_directory())
             {
                 std::string file_name = entry.path().filename();
-                servers.push_back(Glib::ustring(file_name));
+                files.push_back(Glib::ustring(file_name));
             }
         }
 
-        return servers;
+        return files;
     }
 
     const std::string find_val_in_file_by_prop(const std::string &file_path, const std::string &property)
