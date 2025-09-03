@@ -15,7 +15,7 @@ namespace MCSM
           m_editable_port_Label("Editable Port"),
           m_max_players_Label("Max Players"),
           m_view_distance_Label("View Distance"),
-          m_game_mode_Label("Game Mode"),
+          m_gamemode_Label("Game Mode"),
           m_difficulty_Label("Difficulty"),
           m_hardcore_CheckButton("Hardcore"),
           m_pvp_CheckButton("PVP"),
@@ -126,14 +126,14 @@ namespace MCSM
         //    - Gamemode
         m_gamemode_StringList = Gtk::StringList::create({"survival", "creative", "spectator", "adventure"});
         
-        m_game_mode_Label.set_halign(Gtk::Align::START);
-        m_game_mode_DropDown.set_model(m_gamemode_StringList);
+        m_gamemode_Label.set_halign(Gtk::Align::START);
+        m_gamemode_DropDown.set_model(m_gamemode_StringList);
 
-        m_game_mode_DropDown.property_selected().signal_changed().connect(
-            sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_dropdown_value_changed), &m_game_mode_DropDown, m_gamemode_StringList, GAMEMODE_PROPERTY));
+        m_gamemode_DropDown.property_selected().signal_changed().connect(
+            sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_dropdown_value_changed), &m_gamemode_DropDown, m_gamemode_StringList, GAMEMODE_PROPERTY));
 
-        m_properties_Grid.attach(m_game_mode_Label, 0, 5);
-        m_properties_Grid.attach(m_game_mode_DropDown, 1, 5);
+        m_properties_Grid.attach(m_gamemode_Label, 0, 5);
+        m_properties_Grid.attach(m_gamemode_DropDown, 1, 5);
 
         //    - Difficulty
         m_difficulty_StringList = Gtk::StringList::create({"peaceful", "easy", "normal", "hard"});
