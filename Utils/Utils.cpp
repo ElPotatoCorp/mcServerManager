@@ -51,7 +51,7 @@ namespace MCSM
 
     void rewrite_property(const std::string &path_to_file, const std::string &property, const std::string &new_value)
     {
-        if (std::filesystem::exists(path_to_file) || !std::filesystem::is_regular_file(path_to_file))
+        if (!std::filesystem::exists(path_to_file) || !std::filesystem::is_regular_file(path_to_file))
         {
             std::cout << "Oupsie, there is a problem with the path (" << path_to_file << ")" << "\n";
             return;
