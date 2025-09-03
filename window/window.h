@@ -50,6 +50,9 @@ namespace MCSM
 
         Gtk::Box m_start_script_HBox;
 
+        // General functions:
+        void refresh_serv_infos();
+
         // Signal handlers:
         void on_copy_button_clicked();
 

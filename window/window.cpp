@@ -43,7 +43,6 @@ namespace MCSM
         m_IP_address_Entry.set_text(cpr::Get(cpr::Url{"https://ipinfo.io/ip"}).text);
         m_PORT_Entry.set_can_focus(false);
         m_PORT_Entry.set_editable(false);
-        m_PORT_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
         m_copy_address_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_copy_button_clicked));
 
         m_ip_port_HBox.append(m_IP_address_Entry);
@@ -75,7 +74,6 @@ namespace MCSM
 
         //    - World Name
         m_world_name_Label.set_halign(Gtk::Align::START);
-        m_world_name_Entry.set_text(find_val_in_file_by_prop(serv_props_path, WORLD_NAME_PROPERTY));
 
         m_world_name_Entry.signal_activate().connect(
             sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_entry_confirmed), &m_world_name_Entry, WORLD_NAME_PROPERTY));
@@ -85,7 +83,6 @@ namespace MCSM
 
         //    - Description
         m_description_Label.set_halign(Gtk::Align::START);
-        m_description_Entry.set_text(find_val_in_file_by_prop(serv_props_path, DESCRIPTION_PROPERTY));
 
         m_description_Entry.signal_activate().connect(
             sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_entry_confirmed), &m_description_Entry, DESCRIPTION_PROPERTY));
@@ -95,7 +92,6 @@ namespace MCSM
 
         //    - Port
         m_editable_port_Label.set_halign(Gtk::Align::START);
-        m_editable_port_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
 
         m_editable_port_Entry.signal_activate().connect(
             sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_entry_confirmed), &m_editable_port_Entry, PORT_PROPERTY));
@@ -105,7 +101,7 @@ namespace MCSM
 
         //    - Max Players
         m_max_players_Label.set_halign(Gtk::Align::START);
-        m_max_players_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(atoi(find_val_in_file_by_prop(serv_props_path, MAX_PLAYERS_PROPERTY).data()), 1, 20));
+        m_max_players_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(1, 1, 20));
 
         m_max_players_SpinButton.signal_value_changed().connect(sigc::bind(
             sigc::mem_fun(*this, &MCServerManagerWindow::on_spinbutton_value_changed), &m_max_players_SpinButton, MAX_PLAYERS_PROPERTY));
@@ -115,7 +111,7 @@ namespace MCSM
 
         //    - View Distance
         m_view_distance_Label.set_halign(Gtk::Align::START);
-        m_view_distance_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(atoi(find_val_in_file_by_prop(serv_props_path, VIEW_DISTANCE_PROPERTY).data()), 1, 64));
+        m_view_distance_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(1, 1, 64));
 
         m_view_distance_SpinButton.signal_value_changed().connect(sigc::bind(
             sigc::mem_fun(*this, &MCServerManagerWindow::on_spinbutton_value_changed), &m_view_distance_SpinButton, VIEW_DISTANCE_PROPERTY));
@@ -196,6 +192,8 @@ namespace MCSM
 
         m_Grid.attach(m_server_properties_VBox, 0, 1, 1, 1);
         m_Grid.attach(m_run_VBox, 1, 1, 1, 1);
+
+        refresh_serv_infos();
     }
 
     MCServerManagerWindow::~MCServerManagerWindow()
@@ -203,6 +201,26 @@ namespace MCSM
         // Cleanup code here
     }
 
+    void MCServerManagerWindow::refresh_serv_infos()
+    {
+        m_PORT_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
+        m_world_name_Entry.set_text(find_val_in_file_by_prop(serv_props_path, WORLD_NAME_PROPERTY));
+        m_description_Entry.set_text(find_val_in_file_by_prop(serv_props_path, DESCRIPTION_PROPERTY));
+        m_editable_port_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
+
+        m_max_players_SpinButton.set_text(find_val_in_file_by_prop(serv_props_path, MAX_PLAYERS_PROPERTY));
+        m_view_distance_SpinButton.set_text(find_val_in_file_by_prop(serv_props_path, VIEW_DISTANCE_PROPERTY));
+
+        m_gamemode_DropDown.set_selected(m_gamemode_StringList.get()->find(find_val_in_file_by_prop(serv_props_path, GAMEMODE_PROPERTY)));
+        m_difficulty_DropDown.set_selected(m_difficulty_StringList.get()->find(find_val_in_file_by_prop(serv_props_path, DIFFICULTY_PROPERTY)));
+
+        m_hardcore_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, HARDCORE_PROPERTY) == "true" ? true : false);
+        m_pvp_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, PVP_PROPERTY) == "true" ? true : false);
+        m_fly_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, FLY_PROPERTY) == "true" ? true : false);
+        m_nether_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, NETHER_PROPERTY) == "true" ? true : false);
+        m_whitelist_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, WHITELIST_PROPERTY) == "true" ? true : false);
+    }
+  
     void MCServerManagerWindow::on_copy_button_clicked()
     {
         get_clipboard()->set_text(m_IP_address_Entry.get_text() + ":" + m_PORT_Entry.get_text());
