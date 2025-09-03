@@ -12,6 +12,28 @@ namespace MCSM
 {
     class MCServerManagerWindow : public Gtk::Window
     {
+    private:
+        void init_IP_address_PORT_section();
+        void init_server_list_section();
+
+        /* --- SERVER PROPERTIES --- */
+        void init_start_script_section();
+        void init_world_name_section();
+        void init_description_section();
+        void init_editable_port_section();
+        void init_max_players_section();
+        void init_view_distance_section();
+        void init_gamemode_section();
+        void init_difficulty_section();
+        void init_hardcore_section();
+        void init_pvp_section();
+        void init_fly_section();
+        void init_nether_section();
+        void init_whitelist_section();
+        
+        void init_server_properties_secions();
+        /* --- END: SERVER PROPERTIES --- */
+
     public:
         MCServerManagerWindow();
         ~MCServerManagerWindow() override;
