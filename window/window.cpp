@@ -83,6 +83,16 @@ namespace MCSM
         }
     }
 
+    void MCServerManagerWindow::make_backup()
+    {
+        std::string world_path = current_server_directory + "/" + m_world_name_Entry.get_text();
+
+        if (world_path != current_server_directory + "/")
+        {
+            easy_zip(world_path, current_server_directory + "/" + "backups");
+        }
+    }
+
     void MCServerManagerWindow::load_backup()
     {
         guint m_pos = m_backups_SingleSelection.get()->get_selected();

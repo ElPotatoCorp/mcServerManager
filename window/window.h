@@ -36,6 +36,7 @@ namespace MCSM
         /* --- END: SERVER PROPERTIES --- */
 
         /* --- LAUNCHER --- */
+        void init_make_backup_button_section();
         void init_backups_list_section();
         void init_run_backup_section();
         void init_run_button_section();
@@ -84,6 +85,8 @@ namespace MCSM
 
         // - Launcher Settings Widgets
         Gtk::Frame m_backups_Frame;
+
+        Gtk::Button m_make_backup_button;
         
         Gtk::ScrolledWindow m_backups_ScrolledWindow;
         
@@ -101,6 +104,8 @@ namespace MCSM
         void refresh_serv_infos();
 
         void delete_current_world();
+
+        void make_backup();
 
         void load_backup();
 

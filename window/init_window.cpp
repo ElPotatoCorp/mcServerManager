@@ -274,9 +274,10 @@ namespace MCSM
     void MCServerManagerWindow::init_make_backup_button_section()
     {
         m_make_backup_button.set_label("Make Backup");
-        m_make_backup_button.signal_clicked().connect(sigc::mem_fun(*this, &make_backup))
+        m_make_backup_button.set_margin_bottom(5);
+        m_make_backup_button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::make_backup));
 
-        
+        m_run_VBox.append(m_make_backup_button);
     }
 
     void MCServerManagerWindow::init_run_backup_section()
@@ -302,6 +303,7 @@ namespace MCSM
         m_run_VBox.set_size_request(250, -1);
         m_run_VBox.set_hexpand(false);
 
+        init_make_backup_button_section();
         init_backups_list_section();
         init_run_backup_section();
         init_run_button_section();
