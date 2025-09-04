@@ -36,6 +36,7 @@ namespace MCSM
         /* --- END: SERVER PROPERTIES --- */
 
         /* --- LAUNCHER --- */
+        void init_backups_list_section();
         void init_launcher_sections();
     #pragma endregion
 
@@ -106,7 +107,10 @@ namespace MCSM
         void on_spinbutton_value_changed(const Gtk::SpinButton *m_SpinButton, const std::string &property);
 
         void on_button_toggled(const Gtk::CheckButton *m_CheckButton, const std::string &property);
-        
+
+        void on_setup_label(const Glib::RefPtr<Gtk::ListItem>& list_item);
+
+        void on_bind_name(const Glib::RefPtr<Gtk::ListItem>& list_item);
     };
 }
 

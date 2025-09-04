@@ -239,12 +239,42 @@ namespace MCSM
         m_Grid.attach(m_server_properties_VBox, 0, 2, 1, 1);
     }
 
+    void MCServerManagerWindow::init_backups_list_section()
+    {
+        // Backups
+        m_backups_StringList = Gtk::StringList::create(list_files(SERVER_FOLDER + "/" + current_server + "/" + "backups"));
+
+        Glib::RefPtr<Gtk::SingleSelection> selection_model = Gtk::SingleSelection::create(m_backups_StringList);
+        selection_model->set_autoselect(false);
+        selection_model->set_can_unselect(true);
+
+        m_backups_ListView.set_model(selection_model);
+        m_backups_ListView.add_css_class("data-table");
+
+        Glib::RefPtr<Gtk::SignalListItemFactory> factory = Gtk::SignalListItemFactory::create();
+        factory = Gtk::SignalListItemFactory::create();
+        factory->signal_setup().connect(
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_setup_label));
+        factory->signal_bind().connect(
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_bind_name));
+        m_backups_ListView.set_factory(factory);
+
+        m_backups_ScrolledWindow.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC);
+        m_backups_ScrolledWindow.set_expand(true);
+
+        m_backups_ScrolledWindow.set_child(m_backups_ListView);
+
+        m_backups_Frame.set_child(m_backups_ScrolledWindow);
+
+        m_run_VBox.append(m_backups_Frame);
+    }
+
     void MCServerManagerWindow::init_launcher_sections()
     {
         m_run_VBox.set_size_request(250, -1);
         m_run_VBox.set_hexpand(false);
-        
-        m_run_VBox.append(m_backups_ListBox);
+
+        init_backups_list_section();
 
         m_Grid.attach(m_run_VBox, 2, 2, 1, 1);
     }
@@ -420,4 +450,20 @@ namespace MCSM
 
         rewrite_property(serv_props_path, property, new_value);
     }
+
+    void MCServerManagerWindow::on_setup_label(const Glib::RefPtr<Gtk::ListItem>& list_item)
+    {
+        list_item->set_child(*Gtk::make_managed<Gtk::Label>("", Gtk::Align::START));
+    }
+
+    void MCServerManagerWindow::on_bind_name(const Glib::RefPtr<Gtk::ListItem>& list_item) 
+    {
+        guint pos = list_item->get_position();
+        if (pos == GTK_INVALID_LIST_POSITION)
+            return;
+        Gtk::Label *label = dynamic_cast<Gtk::Label*>(list_item->get_child());
+        if (!label)
+            return;
+        label->set_text(m_backups_StringList->get_string(pos));
+    };
 }
