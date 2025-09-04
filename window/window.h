@@ -66,7 +66,7 @@ namespace MCSM
 
         Gtk::DropDown m_server_name_DropDown;
 
-        Gtk::Button m_run_Button, m_copy_address_Button, m_open_start_script_Button;
+        Gtk::Button m_copy_address_Button, m_open_start_script_Button;
 
         Gtk::Label m_world_name_Label, m_description_Label, m_editable_port_Label, m_max_players_Label,
             m_view_distance_Label, m_gamemode_Label, m_difficulty_Label;
@@ -94,6 +94,8 @@ namespace MCSM
         Glib::RefPtr<Gtk::SingleSelection> m_backups_SingleSelection;
         
         Gtk::CheckButton m_run_from_backup_CheckButton;
+
+        Gtk::Button m_run_Button;
 
         // General functions:
         void refresh_serv_infos();
