@@ -114,9 +114,9 @@ namespace MCSM
         {
             Glib::RefPtr<Gio::File> file = dialog->open_finish(result);
 
-            std::string file_name = start_script_name.substr(start_script_name.find_last_of('/') + 1);
-            
-            start_script_name = file_name;
+            start_script_path = file->get_path();
+
+            std::string file_name = start_script_path.substr(start_script_path.find_last_of('/') + 1);
 
             m_start_script_Entry.set_text(file_name);
         }
