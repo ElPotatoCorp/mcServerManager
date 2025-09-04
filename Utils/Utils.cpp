@@ -4,7 +4,7 @@ namespace MCSM
 {
     const std::vector<Glib::ustring> list_directories(const std::string &path_to_directory)
     {
-        if (!std::filesystem::exists(path_to_directory) || !std::filesystem::is_directory(path_to_directory))
+        if (!(std::filesystem::exists(path_to_directory) && std::filesystem::is_directory(path_to_directory)))
         {
             return {};
         }
@@ -14,6 +14,27 @@ namespace MCSM
         for (const std::filesystem::__cxx11::directory_entry &entry : std::filesystem::directory_iterator(path_to_directory))
         {
             if (entry.is_directory())
+            {
+                std::string file_name = entry.path().filename();
+                files.emplace_back(Glib::ustring(file_name));
+            }
+        }
+
+        return files;
+    }
+
+    const std::vector<Glib::ustring> list_files(const std::string &path_to_directory)
+    {
+        if (!(std::filesystem::exists(path_to_directory) && std::filesystem::is_directory(path_to_directory)))
+        {
+            return {};
+        }
+
+        std::vector<Glib::ustring> files;
+
+        for (const std::filesystem::__cxx11::directory_entry &entry : std::filesystem::directory_iterator(path_to_directory))
+        {
+            if (entry.is_regular_file())
             {
                 std::string file_name = entry.path().filename();
                 files.emplace_back(Glib::ustring(file_name));
