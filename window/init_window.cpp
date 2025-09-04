@@ -13,7 +13,7 @@ namespace MCSM
         m_PORT_Entry.set_editable(false);
         m_copy_address_Button.set_label("cp");
 
-        m_copy_address_Button.signal_clicked().connect(sigc::mem_fun(*this, &on_copy_button_clicked));
+        m_copy_address_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_copy_button_clicked));
 
         m_ip_port_HBox.append(m_IP_address_Entry);
         m_ip_port_HBox.append(m_PORT_Entry);
@@ -39,7 +39,7 @@ namespace MCSM
         m_start_script_Entry.set_hexpand(true);
         m_open_start_script_Button.set_label("📂");
 
-        m_open_start_script_Button.signal_clicked().connect(sigc::mem_fun(*this, &on_open_start_script_button_clicked));
+        m_open_start_script_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_open_start_script_button_clicked));
 
         m_start_script_HBox.set_hexpand(false);
 
@@ -56,7 +56,7 @@ namespace MCSM
         m_world_name_Label.set_halign(Gtk::Align::START);
 
         m_world_name_Entry.signal_activate().connect(
-            sigc::bind(sigc::mem_fun(*this, &on_entry_confirmed), &m_world_name_Entry, WORLD_NAME_PROPERTY));
+            sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_entry_confirmed), &m_world_name_Entry, WORLD_NAME_PROPERTY));
 
         m_properties_Grid.attach(m_world_name_Label, 0, 0);
         m_properties_Grid.attach(m_world_name_Entry, 1, 0);
@@ -69,7 +69,7 @@ namespace MCSM
         m_description_Label.set_halign(Gtk::Align::START);
 
         m_description_Entry.signal_activate().connect(
-            sigc::bind(sigc::mem_fun(*this, &on_entry_confirmed), &m_description_Entry, DESCRIPTION_PROPERTY));
+            sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_entry_confirmed), &m_description_Entry, DESCRIPTION_PROPERTY));
 
         m_properties_Grid.attach(m_description_Label, 0, 1);
         m_properties_Grid.attach(m_description_Entry, 1, 1);
@@ -82,7 +82,7 @@ namespace MCSM
         m_editable_port_Label.set_halign(Gtk::Align::START);
 
         m_editable_port_Entry.signal_activate().connect(
-            sigc::bind(sigc::mem_fun(*this, &on_entry_confirmed), &m_editable_port_Entry, PORT_PROPERTY));
+            sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_entry_confirmed), &m_editable_port_Entry, PORT_PROPERTY));
 
         m_properties_Grid.attach(m_editable_port_Label, 0, 2);
         m_properties_Grid.attach(m_editable_port_Entry, 1, 2);
@@ -96,7 +96,7 @@ namespace MCSM
         m_max_players_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(1, 1, 20));
 
         m_max_players_SpinButton.signal_value_changed().connect(sigc::bind(
-            sigc::mem_fun(*this, &on_spinbutton_value_changed), &m_max_players_SpinButton, MAX_PLAYERS_PROPERTY));
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_spinbutton_value_changed), &m_max_players_SpinButton, MAX_PLAYERS_PROPERTY));
 
         m_properties_Grid.attach(m_max_players_Label, 0, 3);
         m_properties_Grid.attach(m_max_players_SpinButton, 1, 3);
@@ -110,7 +110,7 @@ namespace MCSM
         m_view_distance_SpinButton = Gtk::SpinButton(Gtk::Adjustment::create(1, 1, 64));
 
         m_view_distance_SpinButton.signal_value_changed().connect(sigc::bind(
-            sigc::mem_fun(*this, &on_spinbutton_value_changed), &m_view_distance_SpinButton, VIEW_DISTANCE_PROPERTY));
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_spinbutton_value_changed), &m_view_distance_SpinButton, VIEW_DISTANCE_PROPERTY));
 
         m_properties_Grid.attach(m_view_distance_Label, 0, 4);
         m_properties_Grid.attach(m_view_distance_SpinButton, 1, 4);
@@ -126,7 +126,7 @@ namespace MCSM
         m_gamemode_DropDown.set_model(m_gamemode_StringList);
 
         m_gamemode_DropDown.property_selected().signal_changed().connect(
-            sigc::bind(sigc::mem_fun(*this, &on_dropdown_value_changed), &m_gamemode_DropDown, m_gamemode_StringList, GAMEMODE_PROPERTY));
+            sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_dropdown_value_changed), &m_gamemode_DropDown, m_gamemode_StringList, GAMEMODE_PROPERTY));
 
         m_properties_Grid.attach(m_gamemode_Label, 0, 5);
         m_properties_Grid.attach(m_gamemode_DropDown, 1, 5);
@@ -142,7 +142,7 @@ namespace MCSM
         m_difficulty_DropDown.set_model(m_difficulty_StringList);
 
         m_difficulty_DropDown.property_selected().signal_changed().connect(
-            sigc::bind(sigc::mem_fun(*this, &on_dropdown_value_changed), &m_difficulty_DropDown, m_difficulty_StringList, DIFFICULTY_PROPERTY));
+            sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_dropdown_value_changed), &m_difficulty_DropDown, m_difficulty_StringList, DIFFICULTY_PROPERTY));
 
         m_properties_Grid.attach(m_difficulty_Label, 0, 6);
         m_properties_Grid.attach(m_difficulty_DropDown, 1, 6);
@@ -156,7 +156,7 @@ namespace MCSM
         m_hardcore_CheckButton.set_margin(-4);
 
         m_hardcore_CheckButton.signal_toggled().connect(sigc::bind(
-            sigc::mem_fun(*this, &on_button_toggled), &m_hardcore_CheckButton, HARDCORE_PROPERTY));
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_button_toggled), &m_hardcore_CheckButton, HARDCORE_PROPERTY));
 
         m_properties_Grid.attach(m_hardcore_CheckButton, 0, 7, 2, 1);
     }
@@ -169,7 +169,7 @@ namespace MCSM
         m_pvp_CheckButton.set_margin(-4);
 
         m_pvp_CheckButton.signal_toggled().connect(sigc::bind(
-            sigc::mem_fun(*this, &on_button_toggled), &m_pvp_CheckButton, PVP_PROPERTY));
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_button_toggled), &m_pvp_CheckButton, PVP_PROPERTY));
 
         m_properties_Grid.attach(m_pvp_CheckButton, 0, 8, 2, 1);
     }
@@ -182,7 +182,7 @@ namespace MCSM
         m_fly_CheckButton.set_margin(-4);
 
         m_fly_CheckButton.signal_toggled().connect(sigc::bind(
-            sigc::mem_fun(*this, &on_button_toggled), &m_fly_CheckButton, FLY_PROPERTY));
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_button_toggled), &m_fly_CheckButton, FLY_PROPERTY));
 
         m_properties_Grid.attach(m_fly_CheckButton, 0, 9, 2, 1);
     }
@@ -195,7 +195,7 @@ namespace MCSM
         m_nether_CheckButton.set_margin(-4);
 
         m_nether_CheckButton.signal_toggled().connect(sigc::bind(
-            sigc::mem_fun(*this, &on_button_toggled), &m_nether_CheckButton, NETHER_PROPERTY));
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_button_toggled), &m_nether_CheckButton, NETHER_PROPERTY));
 
         m_properties_Grid.attach(m_nether_CheckButton, 0, 10, 2, 1);
     }
@@ -208,7 +208,7 @@ namespace MCSM
         m_whitelist_CheckButton.set_margin(-4);
 
         m_whitelist_CheckButton.signal_toggled().connect(sigc::bind(
-            sigc::mem_fun(*this, &on_button_toggled), &m_whitelist_CheckButton, WHITELIST_PROPERTY));
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_button_toggled), &m_whitelist_CheckButton, WHITELIST_PROPERTY));
 
         m_properties_Grid.attach(m_whitelist_CheckButton, 0, 11, 2, 1);
     }
@@ -256,9 +256,9 @@ namespace MCSM
         Glib::RefPtr<Gtk::SignalListItemFactory> factory = Gtk::SignalListItemFactory::create();
         factory = Gtk::SignalListItemFactory::create();
         factory->signal_setup().connect(
-            sigc::mem_fun(*this, &on_setup_label));
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_setup_label));
         factory->signal_bind().connect(
-            sigc::mem_fun(*this, &on_bind_name));
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_bind_name));
         m_backups_ListView.set_factory(factory);
 
         m_backups_ScrolledWindow.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC);
@@ -292,7 +292,7 @@ namespace MCSM
     void MCServerManagerWindow::init_run_button_section()
     {
         m_run_Button.set_label("RUN");
-        m_run_Button.signal_clicked().connect(sigc::mem_fun(*this, &on_run_button_clicked));
+        m_run_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_run_button_clicked));
 
         m_run_VBox.append(m_run_Button);
     }
