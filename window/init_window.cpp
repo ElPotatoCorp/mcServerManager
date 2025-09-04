@@ -28,6 +28,9 @@ namespace MCSM
         m_server_name_DropDown.set_model(m_server_StringList);
         m_server_name_DropDown.set_selected(0);
 
+        m_server_name_DropDown.property_selected().signal_changed().connect(
+            sigc::mem_fun(*this, &MCServerManagerWindow::on_server_dropdown_value_changed));
+
         m_server_properties_VBox.append(m_server_name_DropDown);
     }
 

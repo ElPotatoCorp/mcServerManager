@@ -116,6 +116,22 @@ namespace MCSM
         get_clipboard()->set_text(m_IP_address_Entry.get_text() + ":" + m_PORT_Entry.get_text());
     }
 
+    void MCServerManagerWindow::on_server_dropdown_value_changed()
+    {
+        guint m_pos = m_server_name_DropDown.get_selected();
+
+        if (m_pos == GTK_INVALID_LIST_POSITION)
+        {
+            return;
+        }
+
+        current_server = m_server_StringList.get()->get_string(m_pos);
+        current_server_directory = SERVER_FOLDER + "/" + current_server;
+        serv_props_path = current_server_directory + "/" + "server.properties";
+
+        refresh_serv_infos();
+    }
+
     void MCServerManagerWindow::on_open_start_script_button_clicked()
     {
         auto dialog = Gtk::FileDialog::create();

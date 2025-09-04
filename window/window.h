@@ -112,6 +112,8 @@ namespace MCSM
         // Signal handlers:
         void on_copy_button_clicked();
 
+        void on_server_dropdown_value_changed();
+
         void on_open_start_script_button_clicked();
         
         void on_run_button_clicked();
