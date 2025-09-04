@@ -104,6 +104,13 @@ namespace MCSM
 
     void MCServerManagerWindow::on_run_button_clicked()
     {
+        if (start_script_path.empty())
+        {
+            std::cout << "You did not set any path for the starting script yet." << "\n";
+            on_open_start_script_button_clicked();
+            return;
+        }
+
         std::string command = "ptyxis -- bash -c \"bash __start_server__ \"" + start_script_path + "\"; exec bash\" &";
         std::system(command.c_str());
 
