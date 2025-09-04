@@ -123,7 +123,19 @@ namespace MCSM
 
         outfile.close();
     }
+    
+    void easy_zip(const std::string &from, const std::string &to)
+    {
+        if (!std::filesystem::exists(from))
+        {
+            std::cout << "There is an error with the path." << "\n";
+            return;
+        }
 
+        std::string command = "zip -r \"" + to + "/$(date +%Y-%m-%d-%H-%M-%S)\" " + from;
+        std::system(command.c_str());
+    }
+    
     void easy_unzip(const std::string &path_to_file)
     {
         if (!is_file(path_to_file))
