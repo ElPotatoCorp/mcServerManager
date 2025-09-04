@@ -20,6 +20,8 @@ namespace MCSM
     const std::string find_val_in_file_by_prop(const std::string &path_to_file, const std::string &property);
 
     void rewrite_property(const std::string &path_to_file, const std::string &property, const std::string &new_value);
+
+    void easy_unzip(const std::string &path_to_file);
 }
 
 #endif // UTILS_H

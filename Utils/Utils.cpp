@@ -123,4 +123,16 @@ namespace MCSM
 
         outfile.close();
     }
+
+    void easy_unzip(const std::string &path_to_file)
+    {
+        if (!is_file(path_to_file))
+        {
+            std::cout << "Oupsie, there is a problem with the path (" << path_to_file << ")" << "\n";
+            return;
+        }
+
+        std::string command = "unzip \"" + path_to_file + "\"";
+        std::system(command.c_str());
+    }
 }
