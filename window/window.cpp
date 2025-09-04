@@ -69,6 +69,21 @@ namespace MCSM
         m_whitelist_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, WHITELIST_PROPERTY) == "true" ? true : false);
     }
   
+    void MCServerManagerWindow::delete_current_world()
+    {
+        std::string world_name = m_world_name_Entry.get_text();
+
+        std::string world_parent_path = current_server_directory + "/";
+
+        std::string world_path = world_name + world_parent_path;
+
+        if (!world_name.empty() && world_path != world_parent_path && std::filesystem::exists(world_path))
+        {
+            std::filesystem::remove(world_path);
+        }
+    }
+
+
     void MCServerManagerWindow::on_copy_button_clicked()
     {
         get_clipboard()->set_text(m_IP_address_Entry.get_text() + ":" + m_PORT_Entry.get_text());

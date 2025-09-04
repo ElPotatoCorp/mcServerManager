@@ -96,6 +96,8 @@ namespace MCSM
         // General functions:
         void refresh_serv_infos();
 
+        void delete_current_world();
+
         // Signal handlers:
         void on_copy_button_clicked();
 
