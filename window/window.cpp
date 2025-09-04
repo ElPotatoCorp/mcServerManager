@@ -104,7 +104,7 @@ namespace MCSM
 
     void MCServerManagerWindow::on_run_button_clicked()
     {
-        std::string command = "ptyxis -- bash -c \"" + start_script_path + "; exec bash\"";
+        std::string command = "ptyxis -- bash -c \"bash __start_server__ \"" + start_script_path + "\"; exec bash\" &";
         std::system(command.c_str());
 
         close();
