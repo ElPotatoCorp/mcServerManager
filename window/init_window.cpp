@@ -241,7 +241,7 @@ namespace MCSM
     void MCServerManagerWindow::init_backups_list_section()
     {
         // Backups
-        m_backups_StringList = Gtk::StringList::create(list_files(SERVER_FOLDER + "/" + current_server + "/" + "backups"));
+        m_backups_StringList = Gtk::StringList::create(list_files(current_server_directory + "/" + "backups"));
 
         Glib::RefPtr<Gtk::SingleSelection> selection_model = Gtk::SingleSelection::create(m_backups_StringList);
         selection_model->set_autoselect(false);

@@ -20,7 +20,8 @@ namespace MCSM
         m_server_StringList = Gtk::StringList::create(list_directories(SERVER_FOLDER));
 
         current_server = m_server_StringList.get()->get_string(0);
-        serv_props_path = SERVER_FOLDER + "/" + current_server + "/" + "server.properties";
+        current_server_directory = SERVER_FOLDER + "/" + current_server;
+        serv_props_path = current_server_directory + "/" + "server.properties";
 
         // Add widgets to the grid
         init_IP_address_PORT_section();
@@ -96,7 +97,7 @@ namespace MCSM
         filters->append(filter_any);
 
         dialog->set_filters(filters);
-        dialog->set_initial_folder(Gio::File::create_for_path(SERVER_FOLDER + "/" + current_server));
+        dialog->set_initial_folder(Gio::File::create_for_path(current_server_directory));
 
         // Show the dialog and wait for a user response:
         dialog->open(sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_start_script_file_dialog_finish), dialog));
