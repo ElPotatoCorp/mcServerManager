@@ -136,15 +136,15 @@ namespace MCSM
         std::system(command.c_str());
     }
     
-    void easy_unzip(const std::string &path_to_file)
+    void easy_unzip(const std::string &from, const std::string &to)
     {
-        if (!is_file(path_to_file))
+        if (!is_file(from))
         {
-            std::cout << "Oupsie, there is a problem with the path (" << path_to_file << ")" << "\n";
+            std::cout << "Oupsie, there is a problem with the path (" << from << ")" << "\n";
             return;
         }
 
-        std::string command = "unzip \"" + path_to_file + "\"";
+        std::string command = "unzip \"" + from + "\" -d \"" + to + "\"";
         std::system(command.c_str());
     }
 

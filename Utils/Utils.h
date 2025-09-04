@@ -23,7 +23,7 @@ namespace MCSM
 
     void easy_zip(const std::string &from, const std::string &to);
     
-    void easy_unzip(const std::string &path_to_file);
+    void easy_unzip(const std::string &from, const std::string &to);
 
     void move_data(const std::string &from, const std::string &to);
 }
