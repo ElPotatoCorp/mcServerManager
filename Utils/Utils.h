@@ -22,6 +22,8 @@ namespace MCSM
     void rewrite_property(const std::string &path_to_file, const std::string &property, const std::string &new_value);
 
     void easy_unzip(const std::string &path_to_file);
+
+    void move_data(const std::string &from, const std::string &to);
 }
 
 #endif // UTILS_H

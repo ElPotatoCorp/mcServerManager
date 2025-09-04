@@ -135,4 +135,16 @@ namespace MCSM
         std::string command = "unzip \"" + path_to_file + "\"";
         std::system(command.c_str());
     }
+
+    void move_data(const std::string &from, const std::string &to)
+    {
+        if (!(std::filesystem::exists(from) && std::filesystem::exists(std::filesystem::path(to).parent_path())))
+        {
+            std::cout << std::filesystem::exists(from) << " | " << std::filesystem::exists(to) << "\n";
+            std::cout << "There is an error with a path." << "\n";
+            return;
+        }
+        std::filesystem::copy(from, to);
+        std::filesystem::remove(from);
+    }
 }
