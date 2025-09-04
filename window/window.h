@@ -100,6 +100,8 @@ namespace MCSM
 
         void delete_current_world();
 
+        void load_backup();
+
         // Signal handlers:
         void on_copy_button_clicked();
 

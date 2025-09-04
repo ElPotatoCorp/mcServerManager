@@ -83,6 +83,23 @@ namespace MCSM
         }
     }
 
+    void MCServerManagerWindow::load_backup()
+    {
+        guint m_pos = m_backups_SingleSelection.get()->get_selected();
+
+        if (m_pos == GTK_INVALID_LIST_POSITION)
+        {
+            return;
+        }
+
+        std::string backup_name = m_backups_StringList.get()->get_string(m_pos);
+
+        std::string backup_path = current_server_directory + "/" + "backups" + "/" + backup_name;
+
+        delete_current_world();
+
+        easy_unzip(backup_path, current_server_directory + "/");
+    }
 
     void MCServerManagerWindow::on_copy_button_clicked()
     {
@@ -123,8 +140,12 @@ namespace MCSM
         if (start_script_path.empty())
         {
             std::cout << "You did not set any path for the starting script yet." << "\n";
-            on_open_start_script_button_clicked();
-            return;
+            return on_open_start_script_button_clicked();
+        }
+
+        if (m_run_from_backup_CheckButton.get_active())
+        {
+            load_backup();
         }
 
         std::string command = "ptyxis -- bash -c \"bash __start_server__ \"" + start_script_path + "\"; exec bash\" &";
