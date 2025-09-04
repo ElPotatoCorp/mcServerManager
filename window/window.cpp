@@ -19,7 +19,7 @@ namespace MCSM
         m_ip_port_HBox.append(m_PORT_Entry);
         m_ip_port_HBox.append(m_copy_address_Button);
 
-        m_Grid.attach(m_ip_port_HBox, 0, 0, 2, 1);
+        m_Grid.attach(m_ip_port_HBox, 0, 0, 3, 1);
     }
 
     void MCServerManagerWindow::init_server_list_section()
@@ -236,7 +236,7 @@ namespace MCSM
         
         // Attach elements to the main container
         m_server_properties_VBox.append(m_properties_Grid);
-        m_Grid.attach(m_server_properties_VBox, 0, 1, 1, 1);
+        m_Grid.attach(m_server_properties_VBox, 0, 2, 1, 1);
     }
 
     void MCServerManagerWindow::init_launcher_sections()

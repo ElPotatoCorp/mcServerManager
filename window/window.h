@@ -49,6 +49,8 @@ namespace MCSM
         // Member widgets:
         Gtk::Grid m_Grid, m_properties_Grid;
 
+        std::vector<Gtk::Separator> separators;
+
         Gtk::Box m_ip_port_HBox, m_server_properties_VBox, m_run_VBox;
 
         Gtk::Entry m_IP_address_Entry, m_PORT_Entry;
@@ -77,11 +79,15 @@ namespace MCSM
         Gtk::Box m_start_script_HBox;
 
         // - Launcher Settings Widgets
-        Gtk::CheckButton m_run_from_backup_CheckButton;
-
         Glib::RefPtr<Gtk::StringList> m_backups_StringList;
+        
+        Gtk::Frame m_backups_Frame;
+        
+        Gtk::ScrolledWindow m_backups_ScrolledWindow;
+        
+        Gtk::ListView m_backups_ListView;
 
-        Gtk::ListBox m_backups_ListBox;
+        Gtk::CheckButton m_run_from_backup_CheckButton;
 
         // General functions:
         void refresh_serv_infos();
