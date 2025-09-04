@@ -132,7 +132,7 @@ namespace MCSM
             return;
         }
 
-        std::string command = "zip -r \"" + to + "/$(date +%Y-%m-%d-%H-%M-%S)\" " + from;
+        std::string command = "zip -r \"" + to + "/$(date +%Y-%m-%d-%H-%M-%S)\" \"" + from + "\"";
         std::system(command.c_str());
     }
     
