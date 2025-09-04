@@ -9,6 +9,10 @@
 
 namespace MCSM
 {
+    const bool is_directory(const std::string &path_to_directory);
+
+    const bool is_file(const std::string &path_to_file);
+
     const std::vector<Glib::ustring> list_directories(const std::string &path_to_directory);
 
     const std::vector<Glib::ustring> list_files(const std::string &path_to_directory);

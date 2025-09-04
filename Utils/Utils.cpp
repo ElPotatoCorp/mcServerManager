@@ -2,9 +2,19 @@
 
 namespace MCSM
 {
+    const bool is_directory(const std::string &path_to_directory)
+    {
+        return std::filesystem::exists(path_to_directory) && std::filesystem::is_directory(path_to_directory);
+    }
+
+    const bool is_file(const std::string &path_to_file)
+    {
+        return std::filesystem::exists(path_to_file) && std::filesystem::is_regular_file(path_to_file);
+    }
+
     const std::vector<Glib::ustring> list_directories(const std::string &path_to_directory)
     {
-        if (!(std::filesystem::exists(path_to_directory) && std::filesystem::is_directory(path_to_directory)))
+        if (!is_directory(path_to_directory))
         {
             return {};
         }
@@ -25,7 +35,7 @@ namespace MCSM
 
     const std::vector<Glib::ustring> list_files(const std::string &path_to_directory)
     {
-        if (!(std::filesystem::exists(path_to_directory) && std::filesystem::is_directory(path_to_directory)))
+        if (!is_directory(path_to_directory))
         {
             return {};
         }
@@ -72,7 +82,7 @@ namespace MCSM
 
     void rewrite_property(const std::string &path_to_file, const std::string &property, const std::string &new_value)
     {
-        if (!std::filesystem::exists(path_to_file) || !std::filesystem::is_regular_file(path_to_file))
+        if (!is_file(path_to_file))
         {
             std::cout << "Oupsie, there is a problem with the path (" << path_to_file << ")" << "\n";
             return;
