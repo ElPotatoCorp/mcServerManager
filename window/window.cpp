@@ -55,8 +55,8 @@ namespace MCSM
         m_description_Entry.set_text(find_val_in_file_by_prop(serv_props_path, DESCRIPTION_PROPERTY));
         m_editable_port_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
 
-        m_max_players_SpinButton.set_value(atoi(find_val_in_file_by_prop(serv_props_path, MAX_PLAYERS_PROPERTY).data()));
-        m_view_distance_SpinButton.set_value(atoi(find_val_in_file_by_prop(serv_props_path, VIEW_DISTANCE_PROPERTY).data()));
+        m_max_players_SpinButton.set_value(atoi(find_val_in_file_by_prop(serv_props_path, MAX_PLAYERS_PROPERTY).c_str()));
+        m_view_distance_SpinButton.set_value(atoi(find_val_in_file_by_prop(serv_props_path, VIEW_DISTANCE_PROPERTY).c_str()));
 
         m_gamemode_DropDown.set_selected(m_gamemode_StringList.get()->find(find_val_in_file_by_prop(serv_props_path, GAMEMODE_PROPERTY)));
         m_difficulty_DropDown.set_selected(m_difficulty_StringList.get()->find(find_val_in_file_by_prop(serv_props_path, DIFFICULTY_PROPERTY)));
