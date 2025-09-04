@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <cpr/cpr.h>
+#include <cstdlib>
 #include "../Utils/Utils.h"
 #include "../Utils/Constants.h"
 

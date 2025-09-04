@@ -104,7 +104,8 @@ namespace MCSM
 
     void MCServerManagerWindow::on_run_button_clicked()
     {
-        /* TODO */
+        std::string command = "ptyxis --new-window --title=\"MCServerConsole\" -- " + start_script_path + " &";
+        std::system(command.data());
     }
 
     void MCServerManagerWindow::on_start_script_file_dialog_finish(const Glib::RefPtr<Gio::AsyncResult> &result, const Glib::RefPtr<Gtk::FileDialog> &dialog)
