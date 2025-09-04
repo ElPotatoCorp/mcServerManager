@@ -36,9 +36,12 @@ namespace MCSM
         // Start Script
         m_start_script_Entry.set_editable(false);
         m_start_script_Entry.set_can_focus(false);
+        m_start_script_Entry.set_hexpand(true);
         m_open_start_script_Button.set_label("📂");
 
         m_open_start_script_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_open_start_script_button_clicked));
+
+        m_start_script_HBox.set_hexpand(false);
 
         m_start_script_HBox.append(m_start_script_Entry);
         m_start_script_HBox.append(m_open_start_script_Button);
@@ -215,6 +218,7 @@ namespace MCSM
         init_start_script_section();
 
         // Setting up the properties Grid
+        m_properties_Grid.set_margin_top(10);
         m_properties_Grid.set_column_spacing(5);
 
         init_world_name_section();
@@ -237,12 +241,12 @@ namespace MCSM
 
     void MCServerManagerWindow::init_launcher_sections()
     {
-        // Backups
-        m_backups_StringList = Gtk::StringList::create(list_directories(SERVER_FOLDER + "/" + "backups"));
+        m_run_VBox.set_size_request(250, -1);
+        m_run_VBox.set_hexpand(false);
         
         m_run_VBox.append(m_backups_ListBox);
 
-        m_Grid.attach(m_run_VBox, 1, 1, 1, 1);
+        m_Grid.attach(m_run_VBox, 2, 2, 1, 1);
     }
 #pragma endregion
 
@@ -255,6 +259,8 @@ namespace MCSM
         set_title("MC Server Manager++");
 
         m_Grid.set_margin(10);
+        m_Grid.set_row_spacing(10);
+        m_Grid.set_column_spacing(10);
 
         set_child(m_Grid);
 
@@ -266,9 +272,20 @@ namespace MCSM
 
         // Add widgets to the grid
         init_IP_address_PORT_section();
-        init_server_list_section();
 
+        separators.push_back(Gtk::Separator(Gtk::Orientation::HORIZONTAL));
+        separators.push_back(Gtk::Separator(Gtk::Orientation::VERTICAL));
+
+        separators[0].set_vexpand(false);
+        m_Grid.attach(separators[0], 0, 1, 3, 1);
+
+        init_server_list_section();
         init_server_properties_secions();
+
+        separators[1].set_hexpand(false);
+        separators[1].set_margin_top(-10);
+        m_Grid.attach(separators[1], 1, 2, 1, 1);
+        
         init_launcher_sections();
 
         refresh_serv_infos();
