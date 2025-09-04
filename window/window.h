@@ -37,6 +37,9 @@ namespace MCSM
 
         /* --- LAUNCHER --- */
         void init_backups_list_section();
+        void init_run_backup_section();
+        void init_run_button_section();
+
         void init_launcher_sections();
     #pragma endregion
 
@@ -97,6 +100,8 @@ namespace MCSM
         void on_copy_button_clicked();
 
         void on_open_start_script_button_clicked();
+        
+        void on_run_button_clicked();
 
         void on_start_script_file_dialog_finish(const Glib::RefPtr<Gio::AsyncResult>& result, const Glib::RefPtr<Gtk::FileDialog>& dialog);
 

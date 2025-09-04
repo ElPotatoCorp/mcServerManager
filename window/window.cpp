@@ -269,12 +269,32 @@ namespace MCSM
         m_run_VBox.append(m_backups_Frame);
     }
 
+    void MCServerManagerWindow::init_run_backup_section()
+    {
+        m_run_from_backup_CheckButton.set_label("Run From Backup");
+        //m_run_from_backup_CheckButton.set_halign(Gtk::Align::END);
+        m_run_from_backup_CheckButton.set_direction(Gtk::TextDirection::RTL);
+        m_run_from_backup_CheckButton.set_margin(-4);
+
+        m_run_VBox.append(m_run_from_backup_CheckButton);
+    }
+
+    void MCServerManagerWindow::init_run_button_section()
+    {
+        m_run_Button.set_label("RUN");
+        m_run_Button.signal_clicked().connect(sigc::mem_fun(*this, &MCServerManagerWindow::on_run_button_clicked));
+
+        m_run_VBox.append(m_run_Button);
+    }
+
     void MCServerManagerWindow::init_launcher_sections()
     {
         m_run_VBox.set_size_request(250, -1);
         m_run_VBox.set_hexpand(false);
 
         init_backups_list_section();
+        init_run_backup_section();
+        init_run_button_section();
 
         m_Grid.attach(m_run_VBox, 2, 2, 1, 1);
     }
@@ -378,6 +398,11 @@ namespace MCSM
 
         // Show the dialog and wait for a user response:
         dialog->open(sigc::bind(sigc::mem_fun(*this, &MCServerManagerWindow::on_start_script_file_dialog_finish), dialog));
+    }
+
+    void MCServerManagerWindow::on_run_button_clicked()
+    {
+        /* TODO */
     }
 
     void MCServerManagerWindow::on_start_script_file_dialog_finish(const Glib::RefPtr<Gio::AsyncResult> &result, const Glib::RefPtr<Gtk::FileDialog> &dialog)
