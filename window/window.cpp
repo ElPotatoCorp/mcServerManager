@@ -67,6 +67,11 @@ namespace MCSM
         m_fly_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, FLY_PROPERTY) == "true" ? true : false);
         m_nether_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, NETHER_PROPERTY) == "true" ? true : false);
         m_whitelist_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, WHITELIST_PROPERTY) == "true" ? true : false);
+
+        m_backups_StringList = Gtk::StringList::create(list_files(current_server_directory + "/" + "backups"));
+        m_backups_SingleSelection = Gtk::SingleSelection::create(m_backups_StringList);
+
+        m_backups_ListView.set_model(m_backups_SingleSelection);
     }
   
     void MCServerManagerWindow::delete_current_world()
