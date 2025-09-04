@@ -91,6 +91,8 @@ namespace MCSM
         
         Glib::RefPtr<Gtk::StringList> m_backups_StringList;
 
+        Glib::RefPtr<Gtk::SingleSelection> m_backups_SingleSelection;
+        
         Gtk::CheckButton m_run_from_backup_CheckButton;
 
         // General functions:

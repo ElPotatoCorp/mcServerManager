@@ -243,11 +243,11 @@ namespace MCSM
         // Backups
         m_backups_StringList = Gtk::StringList::create(list_files(current_server_directory + "/" + "backups"));
 
-        Glib::RefPtr<Gtk::SingleSelection> selection_model = Gtk::SingleSelection::create(m_backups_StringList);
-        selection_model->set_autoselect(false);
-        selection_model->set_can_unselect(true);
+        m_backups_SingleSelection = Gtk::SingleSelection::create(m_backups_StringList);
+        m_backups_SingleSelection->set_autoselect(false);
+        m_backups_SingleSelection->set_can_unselect(true);
 
-        m_backups_ListView.set_model(selection_model);
+        m_backups_ListView.set_model(m_backups_SingleSelection);
         m_backups_ListView.add_css_class("data-table");
 
         Glib::RefPtr<Gtk::SignalListItemFactory> factory = Gtk::SignalListItemFactory::create();
