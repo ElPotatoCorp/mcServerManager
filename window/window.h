@@ -83,13 +83,13 @@ namespace MCSM
         Gtk::Box m_start_script_HBox;
 
         // - Launcher Settings Widgets
-        Glib::RefPtr<Gtk::StringList> m_backups_StringList;
-        
         Gtk::Frame m_backups_Frame;
         
         Gtk::ScrolledWindow m_backups_ScrolledWindow;
         
         Gtk::ListView m_backups_ListView;
+        
+        Glib::RefPtr<Gtk::StringList> m_backups_StringList;
 
         Gtk::CheckButton m_run_from_backup_CheckButton;
 
