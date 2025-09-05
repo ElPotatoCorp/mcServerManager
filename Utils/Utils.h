@@ -26,6 +26,8 @@ namespace MCSM
     void easy_unzip(const std::string &from, const std::string &to);
 
     void move_data(const std::string &from, const std::string &to);
+
+    void create_config_directory();
 }
 
 #endif // UTILS_H
