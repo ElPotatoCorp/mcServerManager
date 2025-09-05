@@ -159,4 +159,18 @@ namespace MCSM
         std::filesystem::copy(from, to);
         std::filesystem::remove(from);
     }
+
+    void create_config_directory()
+    {
+        if (!std::filesystem::exists("./config/"))
+        {
+            std::filesystem::create_directory("./config/");
+
+            if (std::filesystem::exists("./config/"))
+            {
+                std::ofstream file("./config/.config");
+                file.close();
+            }
+        }
+    }
 }
