@@ -169,6 +169,9 @@ namespace MCSM
             if (std::filesystem::exists("./config/"))
             {
                 std::ofstream file("./config/.config");
+
+                file << "server-directory=\n";
+
                 file.close();
             }
         }
