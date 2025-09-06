@@ -37,6 +37,10 @@ namespace MCSM
     void MCServerManagerWindow::init_start_script_section()
     {
         // Start Script
+        if (!start_script_name.empty())
+        {
+            m_start_script_Entry.set_text(start_script_name);
+        }
         m_start_script_Entry.set_editable(false);
         m_start_script_Entry.set_can_focus(false);
         m_start_script_Entry.set_hexpand(true);

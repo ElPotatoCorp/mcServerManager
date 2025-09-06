@@ -25,8 +25,7 @@ namespace MCSM
 
         if (!create_server_config_file(current_server))
         {
-            std::string start_script_path = find_val_in_file_by_prop("./config/" + current_server + ".properties", START_SCRIPT_NAME_PROPERTY);
-            m_start_script_Entry.set_text(start_script_path);
+            start_script_name = find_val_in_file_by_prop("./config/" + current_server + ".properties", START_SCRIPT_NAME_PROPERTY);
         }
 
         // Add widgets to the grid
