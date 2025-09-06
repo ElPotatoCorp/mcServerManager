@@ -101,6 +101,8 @@ namespace MCSM
         Gtk::Button m_run_Button;
 
         // General functions:
+        void refresh_list_view(Glib::RefPtr<Gtk::StringList> &m_StringList, Glib::RefPtr<Gtk::SingleSelection> &m_SingleSelection, Gtk::ListView &m_ListView);
+
         void refresh_serv_infos();
 
         void delete_current_world();
