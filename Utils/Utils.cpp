@@ -176,7 +176,7 @@ namespace MCSM
 
     const bool create_server_config_file(const std::string &server_name)
     {
-        if (std::filesystem::exists("./config/" + server_name))
+        if (std::filesystem::exists("./config/" + server_name + ".properties"))
         {
             return false;
         }
