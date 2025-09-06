@@ -19,7 +19,7 @@ namespace MCSM
         // Init important values
         m_server_StringList = Gtk::StringList::create(list_directories(SERVER_FOLDER));
 
-        current_server = m_server_StringList.get()->get_string(0);
+        current_server = m_server_StringList->get_string(0);
         current_server_directory = SERVER_FOLDER + "/" + current_server;
         serv_props_path = current_server_directory + "/" + "server.properties";
 
@@ -80,8 +80,8 @@ namespace MCSM
         m_max_players_SpinButton.set_value(atoi(find_val_in_file_by_prop(serv_props_path, MAX_PLAYERS_PROPERTY).c_str()));
         m_view_distance_SpinButton.set_value(atoi(find_val_in_file_by_prop(serv_props_path, VIEW_DISTANCE_PROPERTY).c_str()));
 
-        m_gamemode_DropDown.set_selected(m_gamemode_StringList.get()->find(find_val_in_file_by_prop(serv_props_path, GAMEMODE_PROPERTY)));
-        m_difficulty_DropDown.set_selected(m_difficulty_StringList.get()->find(find_val_in_file_by_prop(serv_props_path, DIFFICULTY_PROPERTY)));
+        m_gamemode_DropDown.set_selected(m_gamemode_StringList->find(find_val_in_file_by_prop(serv_props_path, GAMEMODE_PROPERTY)));
+        m_difficulty_DropDown.set_selected(m_difficulty_StringList->find(find_val_in_file_by_prop(serv_props_path, DIFFICULTY_PROPERTY)));
 
         m_hardcore_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, HARDCORE_PROPERTY) == "true" ? true : false);
         m_pvp_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, PVP_PROPERTY) == "true" ? true : false);
@@ -122,14 +122,14 @@ namespace MCSM
 
     void MCServerManagerWindow::load_backup()
     {
-        guint m_pos = m_backups_SingleSelection.get()->get_selected();
+        guint m_pos = m_backups_SingleSelection->get_selected();
 
         if (m_pos == GTK_INVALID_LIST_POSITION)
         {
             return;
         }
 
-        std::string backup_name = m_backups_StringList.get()->get_string(m_pos);
+        std::string backup_name = m_backups_StringList->get_string(m_pos);
 
         std::string backup_path = current_server_directory + "/" + "backups" + "/" + backup_name;
 
@@ -152,7 +152,7 @@ namespace MCSM
             return;
         }
 
-        current_server = m_server_StringList.get()->get_string(m_pos);
+        current_server = m_server_StringList->get_string(m_pos);
         current_server_directory = SERVER_FOLDER + "/" + current_server;
         serv_props_path = current_server_directory + "/" + "server.properties";
 
@@ -273,7 +273,7 @@ namespace MCSM
             return;
         }
 
-        std::string new_value = m_StringList.get()->get_string(selected_item);
+        std::string new_value = m_StringList->get_string(selected_item);
 
         rewrite_property(serv_props_path, property, new_value);
     }
