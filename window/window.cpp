@@ -78,6 +78,8 @@ namespace MCSM
         m_nether_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, NETHER_PROPERTY) == "true" ? true : false);
         m_whitelist_CheckButton.set_active(find_val_in_file_by_prop(serv_props_path, WHITELIST_PROPERTY) == "true" ? true : false);
 
+        world_name = m_world_name_Entry.get_text();
+
         refresh_list_view(m_backups_StringList, m_backups_SingleSelection, m_backups_ListView);
     }
   
@@ -229,7 +231,11 @@ namespace MCSM
                     return;
                 }
             }
-
+        } 
+        else if (m_Entry == &m_world_name_Entry && std::filesystem::exists(current_server_directory + "/" + world_name))
+        {
+            std::filesystem::rename((current_server_directory + "/" + world_name).c_str(), (current_server_directory + "/" + m_Entry->get_text()).c_str());
+            world_name = m_Entry->get_text();
         }
 
         std::string new_value = m_Entry->get_text();

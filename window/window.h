@@ -49,7 +49,7 @@ namespace MCSM
         ~MCServerManagerWindow() override;
 
     protected:
-        std::string current_server, current_server_directory, start_script_path, serv_props_path;
+        std::string current_server, current_server_directory, start_script_path, serv_props_path, world_name;
 
         // Member widgets:
         Gtk::Grid m_Grid, m_properties_Grid;
