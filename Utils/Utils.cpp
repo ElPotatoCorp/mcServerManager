@@ -160,7 +160,7 @@ namespace MCSM
         std::filesystem::remove(from);
     }
 
-    void create_config_directory()
+    const bool create_config_directory()
     {
         if (!std::filesystem::exists("./config/"))
         {
@@ -174,7 +174,10 @@ namespace MCSM
 
                 file.close();
             }
+            
+            return true;
         }
+        return false;
     }
 
     const bool create_server_config_file(const std::string &server_name)

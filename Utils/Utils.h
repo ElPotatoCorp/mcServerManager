@@ -27,7 +27,7 @@ namespace MCSM
 
     void move_data(const std::string &from, const std::string &to);
 
-    void create_config_directory();
+    const bool create_config_directory();
 
     const bool create_server_config_file(const std::string &server_name);
 }
