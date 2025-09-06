@@ -23,6 +23,8 @@ namespace MCSM
         current_server_directory = SERVER_FOLDER + "/" + current_server;
         serv_props_path = current_server_directory + "/" + "server.properties";
 
+        const bool has_config_dir_been_created = create_config_directory();
+
         if (!create_server_config_file(current_server))
         {
             start_script_name = find_val_in_file_by_prop("./config/" + current_server + ".properties", START_SCRIPT_NAME_PROPERTY);
@@ -46,7 +48,10 @@ namespace MCSM
         
         init_launcher_sections();
 
-        refresh_serv_infos();
+        if (!has_config_dir_been_created)
+        {
+            refresh_serv_infos();
+        }
 
         m_run_Button.grab_focus();
     }
