@@ -23,6 +23,12 @@ namespace MCSM
         current_server_directory = SERVER_FOLDER + "/" + current_server;
         serv_props_path = current_server_directory + "/" + "server.properties";
 
+        if (!create_server_config_file(current_server))
+        {
+            std::string start_script_path = find_val_in_file_by_prop("./config/" + current_server + ".properties", START_SCRIPT_NAME_PROPERTY);
+            m_start_script_Entry.set_text(start_script_path);
+        }
+
         // Add widgets to the grid
         init_IP_address_PORT_section();
 
@@ -144,6 +150,12 @@ namespace MCSM
         current_server = m_server_StringList.get()->get_string(m_pos);
         current_server_directory = SERVER_FOLDER + "/" + current_server;
         serv_props_path = current_server_directory + "/" + "server.properties";
+
+        if (!create_server_config_file(current_server))
+        {
+            std::string start_script_path = find_val_in_file_by_prop("./config/" + current_server + ".properties", START_SCRIPT_NAME_PROPERTY);
+            m_start_script_Entry.set_text(start_script_path);
+        }
 
         refresh_serv_infos();
     }
