@@ -191,9 +191,9 @@ namespace MCSM
 
     void MCServerManagerWindow::on_run_button_clicked()
     {
-        if (start_script_path.empty())
+        if (start_script_name.empty())
         {
-            std::cout << "You did not set any path for the starting script yet." << "\n";
+            std::cout << "You did not set any starting script yet." << "\n";
             return on_open_start_script_button_clicked();
         }
 
@@ -202,7 +202,7 @@ namespace MCSM
             load_backup();
         }
 
-        std::string command = "ptyxis -- bash -c \"bash __start_server__ \"" + start_script_path + "\"; exec bash\" &";
+        std::string command = "ptyxis -- bash -c \"bash __start_server__ \"" + current_server_directory + "/" + start_script_name + "\"; exec bash\" &";
         std::system(command.c_str());
 
         close();
@@ -215,9 +215,9 @@ namespace MCSM
         {
             Glib::RefPtr<Gio::File> file = dialog->open_finish(result);
 
-            start_script_path = file->get_path();
-
-            std::string file_name = start_script_path.substr(start_script_path.find_last_of('/') + 1);
+            std::string file_name = start_script_name.substr(start_script_name.find_last_of('/') + 1);
+            
+            start_script_name = file_name;
 
             m_start_script_Entry.set_text(file_name);
         }
