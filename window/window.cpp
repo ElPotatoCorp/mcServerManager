@@ -219,16 +219,14 @@ namespace MCSM
         try
         {
             Glib::RefPtr<Gio::File> file = dialog->open_finish(result);
-
-            std::string file_name = start_script_name.substr(start_script_name.find_last_of('/') + 1);
             
-            start_script_name = file_name;
+            start_script_name = file->get_basename();
 
-            m_start_script_Entry.set_text(file_name);
+            m_start_script_Entry.set_text(start_script_name);
 
-            create_server_config_file(current_server);
+            // std::cout << create_server_config_file(current_server);
 
-            rewrite_property("./config/" + current_server, START_SCRIPT_NAME_PROPERTY, file_name);
+            // rewrite_property("./config/" + current_server + ".properties", START_SCRIPT_NAME_PROPERTY, file_name);
         }
         catch (const Gtk::DialogError &err)
         {
