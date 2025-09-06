@@ -67,6 +67,12 @@ namespace MCSM
 
     void MCServerManagerWindow::refresh_serv_infos()
     {
+        if (!create_server_config_file(current_server))
+        {
+            start_script_name = find_val_in_file_by_prop("./config/" + current_server + ".properties", START_SCRIPT_NAME_PROPERTY);
+            m_start_script_Entry.set_text(start_script_name);
+        }
+
         m_PORT_Entry.set_text(find_val_in_file_by_prop(serv_props_path, PORT_PROPERTY));
         m_world_name_Entry.set_text(find_val_in_file_by_prop(serv_props_path, WORLD_NAME_PROPERTY));
         m_description_Entry.set_text(find_val_in_file_by_prop(serv_props_path, DESCRIPTION_PROPERTY));
@@ -153,8 +159,8 @@ namespace MCSM
 
         if (!create_server_config_file(current_server))
         {
-            std::string start_script_path = find_val_in_file_by_prop("./config/" + current_server + ".properties", START_SCRIPT_NAME_PROPERTY);
-            m_start_script_Entry.set_text(start_script_path);
+            start_script_name = find_val_in_file_by_prop("./config/" + current_server + ".properties", START_SCRIPT_NAME_PROPERTY);
+            m_start_script_Entry.set_text(start_script_name);
         }
 
         refresh_serv_infos();
@@ -220,6 +226,10 @@ namespace MCSM
             start_script_name = file_name;
 
             m_start_script_Entry.set_text(file_name);
+
+            create_server_config_file(current_server);
+
+            rewrite_property("./config/" + current_server, START_SCRIPT_NAME_PROPERTY, file_name);
         }
         catch (const Gtk::DialogError &err)
         {
