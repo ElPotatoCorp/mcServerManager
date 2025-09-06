@@ -60,6 +60,8 @@ namespace MCSM
 
         Gtk::Entry m_IP_address_Entry, m_PORT_Entry;
 
+        Gtk::Label m_server_directory_loaded_Label;
+
         Glib::RefPtr<Gtk::StringList> m_server_StringList;
 
         // - Server Settings Widgets

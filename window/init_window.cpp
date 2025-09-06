@@ -5,6 +5,12 @@ namespace MCSM
 #pragma region Server info
     void MCServerManagerWindow::init_IP_address_PORT_section()
     {
+        // Server Directory Warning
+        m_server_directory_loaded_Label.set_use_markup(true);
+        m_server_directory_loaded_Label.set_label("<span foreground='red'>No server directory set...</span>");
+        m_server_directory_loaded_Label.set_margin_start(5);
+        m_server_directory_loaded_Label.set_visible(false);
+
         // IP-PORT
         m_IP_address_Entry.set_can_focus(false);
         m_IP_address_Entry.set_editable(false);
@@ -18,6 +24,7 @@ namespace MCSM
         m_ip_port_HBox.append(m_IP_address_Entry);
         m_ip_port_HBox.append(m_PORT_Entry);
         m_ip_port_HBox.append(m_copy_address_Button);
+        m_ip_port_HBox.append(m_server_directory_loaded_Label);
 
         m_Grid.attach(m_ip_port_HBox, 0, 0, 3, 1);
     }
