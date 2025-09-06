@@ -42,6 +42,8 @@ namespace MCSM
         init_launcher_sections();
 
         refresh_serv_infos();
+
+        m_run_Button.grab_focus();
     }
 
     MCServerManagerWindow::~MCServerManagerWindow()
