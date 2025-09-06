@@ -224,9 +224,7 @@ namespace MCSM
 
             m_start_script_Entry.set_text(start_script_name);
 
-            // std::cout << create_server_config_file(current_server);
-
-            // rewrite_property("./config/" + current_server + ".properties", START_SCRIPT_NAME_PROPERTY, file_name);
+            rewrite_property("./config/" + current_server + ".properties", START_SCRIPT_NAME_PROPERTY, start_script_name);
         }
         catch (const Gtk::DialogError &err)
         {
