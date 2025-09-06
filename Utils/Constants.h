@@ -8,7 +8,7 @@ namespace MCSM
     const std::string SERVER_FOLDER        = "/home/potatocorp/Documents/Perso/Useful/mcServManager++/Java";
     const std::string PROPERTIES_FILE_NAME = "server.properties";
     
-    const std::string START_SCRIPT_NAME_PROPERTY = "start-script-path";
+    const std::string START_SCRIPT_NAME_PROPERTY = "start-script-name";
     const std::string WORLD_NAME_PROPERTY        = "level-name";
     const std::string DESCRIPTION_PROPERTY       = "motd";
     const std::string PORT_PROPERTY              = "server-port";
