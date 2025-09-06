@@ -173,4 +173,23 @@ namespace MCSM
             }
         }
     }
+
+    const bool create_server_config_file(const std::string &server_name)
+    {
+        if (std::filesystem::exists("./config/" + server_name))
+        {
+            return false;
+        }
+        else if (!std::filesystem::exists("./config/"))
+        {
+            create_config_directory();
+        }
+        std::ofstream file("./config/" + server_name + ".properties");
+
+        file << "start-script-name=\n";
+
+        file.close();
+
+        return true;
+    }
 }
