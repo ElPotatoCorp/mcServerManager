@@ -172,10 +172,10 @@ namespace MCSM
 
     void MCServerManagerWindow::on_open_start_script_button_clicked()
     {
-        auto dialog = Gtk::FileDialog::create();
+        Glib::RefPtr<Gtk::FileDialog> dialog = Gtk::FileDialog::create();
 
         // Add filters, so that only certain file types can be selected:
-        auto filters = Gio::ListStore<Gtk::FileFilter>::create();
+        Glib::RefPtr<Gio::ListStore<Gtk::FileFilter>> filters = Gio::ListStore<Gtk::FileFilter>::create();
 
         Glib::RefPtr<Gtk::FileFilter> filter_sh = Gtk::FileFilter::create();
         filter_sh->set_name("Bash scripts");
