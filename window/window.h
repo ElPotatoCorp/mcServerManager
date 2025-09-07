@@ -48,6 +48,8 @@ namespace MCSM
         MCServerManagerWindow();
         ~MCServerManagerWindow() override;
 
+        static MCServerManagerWindow *create();
+
     protected:
         std::string current_server, current_server_directory, start_script_name, serv_props_path, world_name;
 

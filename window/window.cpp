@@ -61,6 +61,11 @@ namespace MCSM
         // Cleanup code here
     }
 
+    MCServerManagerWindow *MCServerManagerWindow::create()
+    {
+        return new MCServerManagerWindow();
+    }
+
     void MCServerManagerWindow::refresh_list_view(Glib::RefPtr<Gtk::StringList> &m_StringList, Glib::RefPtr<Gtk::SingleSelection> &m_SingleSelection, Gtk::ListView &m_ListView)
     {
         m_StringList = Gtk::StringList::create(list_files(current_server_directory + "/" + "backups"));

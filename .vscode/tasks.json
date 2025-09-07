@@ -7,7 +7,7 @@
             "command": "/bin/bash",
             "args": [
                 "-c",
-                "g++ -o main main.cpp window/window.cpp window/init_window.cpp Utils/Utils.cpp -std=c++17 -lcpr -lcurl $(pkg-config --cflags --libs gtkmm-4.0)"
+                "g++ -o main main.cpp app/app.cpp window/window.cpp window/init_window.cpp Utils/Utils.cpp -std=c++17 -lcpr -lcurl $(pkg-config --cflags --libs gtkmm-4.0)"
             ],
             "problemMatcher": [],
             "group": {
