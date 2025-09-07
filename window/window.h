@@ -1,5 +1,5 @@
-#ifndef MCSM_H
-#define MCSM_H
+#ifndef MCSM_WINDOW_H
+#define MCSM_WINDOW_H
 
 #include <gtkmm.h>
 #include <iostream>
@@ -138,4 +138,4 @@ namespace MCSM
     };
 }
 
-#endif // MCSM_H
+#endif // MCSM_WINDOW_H
