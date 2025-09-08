@@ -37,9 +37,9 @@ namespace MCSM
         Gtk::Application::on_startup();
 
         // Add actions and keyboard accelerators for the menu.
-        // add_action("preferences", sigc::mem_fun(*this, &MCServerManagerApp::on_action_preferences));
-        // add_action("quit", sigc::mem_fun(*this, &MCServerManagerApp::on_action_quit));
-        // set_accel_for_action("app.quit", "<Ctrl>Q");
+        add_action("preferences", sigc::mem_fun(*this, &MCServerManagerApp::on_action_preferences));
+        add_action("quit", sigc::mem_fun(*this, &MCServerManagerApp::on_action_quit));
+        set_accel_for_action("app.quit", "<Ctrl>Q");
     }
 
     void MCServerManagerApp::on_activate()
@@ -73,8 +73,8 @@ namespace MCSM
         // counts in both of them. If we want the destructors to be called, we
         // must remove the window from the application. One way of doing this
         // is to hide the window. See comment in create_appwindow().
-        auto windows = get_windows();
-        for (auto window : windows)
+        std::vector<Gtk::Window *> windows = get_windows();
+        for (Gtk::Window *window : windows)
             window->set_visible(false);
 
         // Not really necessary, when Gtk::Widget::set_visible(false) is called,
