@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="MCSMAppWindow" parent="GtkApplicationWindow">
+    <property name="title">MC Server Manager</property>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="header">
+        <child type="end">
+          <object class="GtkMenuButton" id="gears">
+            <property name="direction">none</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkGrid">
+        <property name="margin-start">10</property>
+        <property name="margin-end">10</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
+        <property name="column-spacing">10</property>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="row">0</property>
+              <property name="column-span">3</property>
+            </layout>
+            <child>
+              <object class="GtkEntry" id="ip_Entry">
+                <property name="can-focus">false</property>
+                <property name="editable">false</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEntry" id="port_Entry">
+                <property name="can-focus">false</property>
+                <property name="editable">false</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="copy_Button">
+                <property name="label">cp</property>
+                <signal name="clicked" handler="on_copy_button_clicked"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="serv_dir_loaded_Label">
+                <property name="margin-start">5</property>
+                <property name="use-markup">true</property>
+                <property name="label">No server directory set...</property>
+                <attributes>
+                  <attribute name="foreground" value="#ff0000"/>
+                </attributes>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <layout>
+              <property name="column">0</property>
+              <property name="row">1</property>
+              <property name="column-span">3</property>
+            </layout>
+            <property name="margin-top">10</property>
+            <property name="orientation">horizontal</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <layout>
+              <property name="column">0</property>
+              <property name="row">2</property>
+            </layout>
+            <property name="margin-top">10</property>
+            <property name="hexpand">false</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkDropDown" id="server_name_DropDown"/>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <child>
+                  <object class="GtkEntry" id="start_script_Entry">
+                    <property name="hexpand">true</property>
+                    <property name="editable">false</property>
+                    <property name="can-focus">false</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="start_script_Button">
+                    <property name="label">📂</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkGrid">
+                <property name="margin-top">10</property>
+                <property name="column-spacing">5</property>
+                <child>
+                  <object class="GtkLabel">
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">0</property>
+                    </layout>
+                    <property name="halign">start</property>
+                    <property name="label">World Name</property>  
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="world_name_Entry">
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">1</property>
+                    </layout>
+                    <property name="halign">start</property>
+                    <property name="label">Description</property>  
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="description_Entry">
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">1</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">2</property>
+                    </layout>
+                    <property name="halign">start</property>
+                    <property name="label">Port</property>  
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="editable_port_Entry">
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">2</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">3</property>
+                    </layout>
+                    <property name="halign">start</property>
+                    <property name="label">Max Players</property>  
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="max_players_SpinButton">
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">3</property>
+                    </layout>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment">
+                        <property name="lower">1</property>
+                        <property name="upper">20</property>
+                        <property name="step-increment">1</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="halign">start</property>
+                    <property name="label">View Distance</property>  
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">4</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="view_distance_SpinButton">
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">4</property>
+                    </layout>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment">
+                        <property name="lower">1</property>
+                        <property name="upper">64</property>
+                        <property name="step-increment">1</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">5</property>
+                    </layout>
+                    <property name="halign">start</property>
+                    <property name="label">Gamemode</property>  
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkDropDown" id="gamemode_DropDown">
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">5</property>
+                    </layout>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                          <item>Survival</item>
+                          <item>Creative</item>
+                          <item>Spectator</item>
+                          <item>Adventure</item>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">6</property>
+                    </layout>
+                    <property name="halign">start</property>
+                    <property name="label">Difficulty</property>  
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkDropDown" id="difficulty_DropDown">
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">6</property>
+                    </layout>
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                          <item>Peaceful</item>
+                          <item>Easy</item>
+                          <item>Normal</item>
+                          <item>Hard</item>
+                        </items>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="hardcore_CheckButton">
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">7</property>
+                      <property name="column-span">2</property>
+                    </layout>
+                    <property name="label">Hardcore</property>
+                  </object>                  
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="pvp_CheckButton">
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">8</property>
+                      <property name="column-span">2</property>
+                    </layout>
+                    <property name="label">PVP</property>
+                  </object>                  
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="fly_CheckButton">
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">9</property>
+                      <property name="column-span">2</property>
+                    </layout>
+                    <property name="label">Allow Flight</property>
+                  </object>                  
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="nether_CheckButton">
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">10</property>
+                      <property name="column-span">2</property>
+                    </layout>
+                    <property name="label">Allow Nether</property>
+                  </object>                  
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="whitelist_CheckButton">
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">11</property>
+                      <property name="column-span">2</property>
+                    </layout>
+                    <property name="label">Enable Whitelist</property>
+                  </object>                  
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <layout>
+              <property name="column">1</property>
+              <property name="row">2</property>
+              <property name="row-span">2</property>
+            </layout>
+            <property name="orientation">vertical</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <layout>
+              <property name="column">2</property>
+              <property name="row">2</property>
+            </layout>
+            <property name="margin-top">10</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkButton" id="make_backup_Button">
+                <property name="margin-bottom">5</property>
+                <property name="label">Make Backup</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <property name="hscrollbar-policy">automatic</property>
+                <property name="vscrollbar-policy">automatic</property>
+                <child>
+                  <object class="GtkFrame">
+                    <child>
+                      <object class="GtkListView" id="backups_ListView"/>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="run_backup_CheckButton">
+                <property name="label">Run From Backup</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="run_Button">
+                <property name="label">RUN</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

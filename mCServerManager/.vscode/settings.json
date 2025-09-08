@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        "gtk.h": "c",
+        "mcsmapp.h": "c",
+        "gtkwindowgroup.h": "c",
+        "gtkwindowhandle.h": "c"
+    }
+}
