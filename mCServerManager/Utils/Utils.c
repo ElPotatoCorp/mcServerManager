@@ -68,45 +68,30 @@ void print_string_list(const struct StringList *string_list)
     }
 }
 
-const char *string_list_concat_all_strings(const struct StringList *string_list)
-{
-    if (!string_list)
-    {
-        return "";
-    }
-
-    size_t size_of_final_str = 0;
-    for (int i = 0; i < string_list->size; i++)
-    {
-        size_of_final_str += strlen(string_list->strings[i]);
-    }
-    char *str = malloc((size_of_final_str + 1) * sizeof(char));
-    for (int i = 0; i < string_list->size; i++)
-    {
-        strcat(str, string_list->strings[i]);
-    }
-    str[size_of_final_str] = '\0';
-
-    return str;
-}
-
 const char *concat_all_strings(const int n, ...)
 {
-    struct StringList *string_list = new_string_list();
-
     va_list args;
+
+    size_t size_of_final_str = 0;
     va_start(args, n);
     for (int i = 0; i < n; i++)
     {
-        append_string_list(string_list, va_arg(args, const char *));
+        size_of_final_str += strlen(va_arg(args, const char *));
     }
     va_end(args);
 
-    const char *text = string_list_concat_all_strings(string_list);
+    char *str = malloc((size_of_final_str + 1) * sizeof(char));
 
-    free_string_list(string_list);
+    va_start(args, n);
+    for (int i = 0; i < n; i++)
+    {
+        strcat(str, va_arg(args, const char *));
+    }
+    va_end(args);
 
-    return text;
+    str[size_of_final_str] = '\0';
+
+    return str;
 }
 
 const int exists(const char *path)

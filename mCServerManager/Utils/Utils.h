@@ -19,7 +19,6 @@ struct StringList *new_string_list_from_strings(const int n, ...);
 void free_string_list(struct StringList *string_list);
 void append_string_list(struct StringList *string_list, const char *string);
 void print_string_list(const struct StringList *string_list);
-const char *string_list_concat_all_strings(const struct StringList *string_list);
 const char *concat_all_strings(const int n, ...);
 
 /* --- Check the path --- */
