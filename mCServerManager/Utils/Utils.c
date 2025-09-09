@@ -190,12 +190,12 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
     return "";
 }
 
-void write_property_from_properties_file_path(const char *path, const char *property, const char *new_value)
+const int write_property_from_properties_file_path(const char *path, const char *property, const char *new_value)
 {
     if (!is_regular_file(path))
     {
         printf("Error with the path or the file");
-        return;
+        return 0;
     }
 
     FILE *file = fopen(path, "r");
@@ -205,6 +205,7 @@ void write_property_from_properties_file_path(const char *path, const char *prop
     char prop[MAX_STR_LEN];
     char val[MAX_STR_LEN];
 
+    int found = 0;
     while (fgets(line, MAX_STR_LEN, file))
     {
         if (!sscanf(line, "%[^=]=%[^\n]", prop, val))
@@ -214,6 +215,7 @@ void write_property_from_properties_file_path(const char *path, const char *prop
         }
         else if (strcmp(property, prop) == 0)
         {
+            found = 1;
             sprintf(line, "%s=%s\n", prop, new_value);
         }
         append_string_list(lines, line);
@@ -229,4 +231,6 @@ void write_property_from_properties_file_path(const char *path, const char *prop
     }
 
     fclose(file);
+
+    return found;
 }
