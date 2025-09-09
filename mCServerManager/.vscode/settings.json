@@ -4,6 +4,13 @@
         "gtk.h": "c",
         "mcsmapp.h": "c",
         "gtkwindowgroup.h": "c",
-        "gtkwindowhandle.h": "c"
+        "gtkwindowhandle.h": "c",
+        "utils.h": "c",
+        "unistd.h": "c",
+        "stat.h": "c",
+        "stdio.h": "c",
+        "dirent.h": "c",
+        "string": "c",
+        "format": "c"
     }
 }
