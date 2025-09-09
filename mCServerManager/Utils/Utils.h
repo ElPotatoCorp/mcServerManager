@@ -2,9 +2,10 @@
 #define UTILS_H
 
 #include <stdio.h>
+#include <stdlib.h>
 
-#define MAX_STR_LEN 64
-#define MAX_LIST_LEN 32
+#define MAX_STR_LEN 128
+#define MAX_LIST_LEN 64
 
 /* --- A good ol' struct for a basic list of string --- */
 struct StringList 

@@ -3,7 +3,6 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <string.h>
-#include <stdlib.h>
 
 struct dirent *dir;
 struct stat st = {0};
