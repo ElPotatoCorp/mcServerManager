@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define MAX_STR_LEN 128
 #define MAX_LIST_LEN 64
@@ -14,9 +15,12 @@ struct StringList
     int size;
 };
 struct StringList *new_string_list(void);
+struct StringList *new_string_list_from_strings(const int n, ...);
 void free_string_list(struct StringList *string_list);
 void append_string_list(struct StringList *string_list, const char *string);
 void print_string_list(const struct StringList *string_list);
+const char *string_list_concat_all_strings(const struct StringList *string_list);
+const char *concat_all_strings(const int n, ...);
 
 /* --- Check the path --- */
 const int exists(const char *path);

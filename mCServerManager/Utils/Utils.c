@@ -1,6 +1,7 @@
 #include "Utils.h"
 
 #include <sys/stat.h>
+#include <stdarg.h>
 #include <dirent.h>
 #include <string.h>
 
@@ -19,6 +20,24 @@ struct StringList *new_string_list(void)
         list->size = 0;
     }
     return list;
+}
+
+struct StringList *new_string_list_from_strings(const int n, ...)
+{
+    struct StringList *string_list = new_string_list();
+
+    char *text;
+
+    va_list args;
+
+    va_start(args, n);
+    for (int i = 0; i < n + 1; i++)
+    {
+        append_string_list(string_list, va_arg(args, const char *));
+    }
+    va_end(args);
+
+    return string_list;
 }
 
 void free_string_list(struct StringList *string_list)
@@ -47,6 +66,47 @@ void print_string_list(const struct StringList *string_list)
     {
         printf("%s\n", string_list->strings[i]);
     }
+}
+
+const char *string_list_concat_all_strings(const struct StringList *string_list)
+{
+    if (!string_list)
+    {
+        return "";
+    }
+
+    size_t size_of_final_str = 0;
+    for (int i = 0; i < string_list->size; i++)
+    {
+        size_of_final_str += strlen(string_list->strings[i]);
+    }
+    char *str = malloc((size_of_final_str + 1) * sizeof(char));
+    for (int i = 0; i < string_list->size; i++)
+    {
+        strcat(str, string_list->strings[i]);
+    }
+    str[size_of_final_str] = '\0';
+
+    return str;
+}
+
+const char *concat_all_strings(const int n, ...)
+{
+    struct StringList *string_list = new_string_list();
+
+    va_list args;
+    va_start(args, n);
+    for (int i = 0; i < n; i++)
+    {
+        append_string_list(string_list, va_arg(args, const char *));
+    }
+    va_end(args);
+
+    const char *text = string_list_concat_all_strings(string_list);
+
+    free_string_list(string_list);
+
+    return text;
 }
 
 const int exists(const char *path)
@@ -233,4 +293,18 @@ const int write_property_from_properties_file_path(const char *path, const char 
     fclose(file);
 
     return found;
+}
+
+void easy_zip_from_path(const char *from, const char *to)
+{
+    if (!exists(from) || !exists(to))
+    {
+        printf("There is a problem with at least one path...");
+        return;
+    }
+
+    char *command = malloc(MAX_STR_LEN * sizeof(char));
+
+
+    execl("/usr/bin/sh", "sh", "-c", command, 0);
 }
