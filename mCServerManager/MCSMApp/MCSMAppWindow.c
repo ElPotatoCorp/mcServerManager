@@ -90,9 +90,7 @@ MCSMAppWindow *mcsm_app_window_new(MCSMApp *app)
     return g_object_new(MCSM_APP_WINDOW_TYPE, "application", app, NULL);
 }
 
-void mcsm_app_window_activate(MCSMAppWindow *win)
-{
-}
+void mcsm_app_window_activate(MCSMAppWindow *win) { }
 
 static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
 {
