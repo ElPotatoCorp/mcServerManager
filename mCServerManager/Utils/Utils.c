@@ -148,3 +148,85 @@ struct StringList *list_regular_files_from_path(const char *path)
 
     return files;
 }
+
+const char *get_value_from_properties_file_path(const char *path, const char *property)
+{
+    if (!is_regular_file(path))
+    {
+        return NULL;
+    }
+
+    FILE *file = fopen(path, "r");
+
+    if (file == NULL)
+    {
+        printf("The file is not opened.\n");
+        return "";
+    }
+
+    char line[MAX_STR_LEN];
+    char prop[MAX_STR_LEN];
+    char val[MAX_STR_LEN];
+
+    while (fgets(line, MAX_STR_LEN, file))
+    {
+        if (!sscanf(line, "%[^=]=%[^\n]", prop, val))
+        {
+            continue;
+        }
+        else if (strcmp(property, prop) == 0)
+        {
+            fclose(file);
+
+            char *c_val = malloc(MAX_STR_LEN * sizeof(char));
+            strncpy(c_val, val, MAX_STR_LEN - 1);
+            c_val[MAX_STR_LEN - 1] = '\0';
+            return c_val;
+        }
+    }
+    
+    fclose(file);
+
+    return "";
+}
+
+void write_property_from_properties_file_path(const char *path, const char *property, const char *new_value)
+{
+    if (!is_regular_file(path))
+    {
+        printf("Error with the path or the file");
+        return;
+    }
+
+    FILE *file = fopen(path, "r");
+
+    struct StringList *lines = new_string_list();
+    char line[MAX_STR_LEN];
+    char prop[MAX_STR_LEN];
+    char val[MAX_STR_LEN];
+
+    while (fgets(line, MAX_STR_LEN, file))
+    {
+        if (!sscanf(line, "%[^=]=%[^\n]", prop, val))
+        {
+            append_string_list(lines, line);
+            continue;
+        }
+        else if (strcmp(property, prop) == 0)
+        {
+            sprintf(line, "%s=%s\n", prop, new_value);
+        }
+        append_string_list(lines, line);
+    }
+    
+    fclose(file);
+
+    file = fopen(path, "w");
+
+    for (int i = 0; i < lines->size; i++)
+    {
+        fprintf(file, "%s", lines->strings[i]);
+    }
+
+    fclose(file);
+}

@@ -28,4 +28,8 @@ struct StringList *list_entries(const char *path);
 struct StringList *list_directories_from_path(const char *path);
 struct StringList *list_regular_files_from_path(const char *path);
 
+/* --- File handling --- */
+const char *get_value_from_properties_file_path(const char *path, const char *property);
+void write_property_from_properties_file_path(const char *path, const char *property, const char *new_value);
+
 #endif // UTILS_H
