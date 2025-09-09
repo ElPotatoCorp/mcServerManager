@@ -295,7 +295,7 @@ const int write_property_from_properties_file_path(const char *path, const char 
     return found;
 }
 
-void easy_zip_from_path(const char *from, const char *to)
+void easy_zip_from_path(const char *from, const char *entry_name, const char *to)
 {
     if (!exists(from) || !exists(to))
     {
@@ -303,8 +303,26 @@ void easy_zip_from_path(const char *from, const char *to)
         return;
     }
 
-    char *command = malloc(MAX_STR_LEN * sizeof(char));
+    chdir(from);
 
+    const char *command = concat_all_strings(5, "zip -r \"", to, "$(date +%Y-%m-%d-%H-%M-%S)\" \"", entry_name, "\"");
 
     execl("/usr/bin/sh", "sh", "-c", command, 0);
+
+    free((char *)command);
+}
+
+void easy_unzip_from_path(const char *from, const char *to)
+{
+    if (!exists(from) || !exists(to))
+    {
+        printf("There is a problem with at least one path...");
+        return;
+    }
+
+    const char *command = concat_all_strings(5, "unzip \"", from, "\" -d \"", to, "\"");
+
+    execl("/usr/bin/sh", "sh", "-c", command, 0);
+
+    free((char *)command);
 }

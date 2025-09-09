@@ -35,5 +35,7 @@ struct StringList *list_regular_files_from_path(const char *path);
 /* --- File handling --- */
 const char *get_value_from_properties_file_path(const char *path, const char *property);
 const int write_property_from_properties_file_path(const char *path, const char *property, const char *new_value);
+void easy_zip_from_path(const char *from, const char *entry_name, const char *to);
+void easy_unzip_from_path(const char *from, const char *to);
 
 #endif // UTILS_H
