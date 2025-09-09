@@ -67,6 +67,12 @@ const int is_directory(const char *path)
 
 struct StringList *list_entries(const char *path)
 {
+    if (!is_directory(path))
+    {
+        printf("Error with the path or the directory");
+        return;
+    }
+
     struct StringList *entries = new_string_list();
 
     int skip_relatives = 0; // Skip '.' and '..'
@@ -114,6 +120,12 @@ struct StringList *list_directories_from_path(const char *path)
 
 struct StringList *list_regular_files_from_path(const char *path)
 {
+    if (!is_regular_file(path))
+    {
+        printf("Error with the path or the file");
+        return;
+    }
+
     struct StringList *entries = list_entries(path);
     struct StringList *files = new_string_list();
 
