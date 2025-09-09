@@ -69,7 +69,7 @@ struct StringList *list_entries(const char *path)
     if (!is_directory(path))
     {
         printf("Error with the path or the directory");
-        return;
+        return NULL;
     }
 
     struct StringList *entries = new_string_list();
@@ -98,6 +98,12 @@ struct StringList *list_entries(const char *path)
 
 struct StringList *list_directories_from_path(const char *path)
 {
+    if (!is_directory(path))
+    {
+        return NULL;
+    }
+
+
     struct StringList *entries = list_entries(path);
     struct StringList *directories = new_string_list();
 
@@ -119,10 +125,9 @@ struct StringList *list_directories_from_path(const char *path)
 
 struct StringList *list_regular_files_from_path(const char *path)
 {
-    if (!is_regular_file(path))
+    if (!is_directory(path))
     {
-        printf("Error with the path or the file");
-        return;
+        return NULL;
     }
 
     struct StringList *entries = list_entries(path);
