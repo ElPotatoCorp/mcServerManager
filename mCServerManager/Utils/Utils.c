@@ -378,5 +378,42 @@ const int create_config_directory(void)
         return 2;
     }
 }
+
+const int create_server_config_file(const char *server_name)
+{
+    if (cwd == NULL && set_default_prog_path())
+    {
+        perror("There was an error setting up the default program path");
+        return 2;
+    }
+    
+    chdir(cwd);
+
+    const char *server_config_path = concat_all_strings(3, "./config/", server_name, ".properties");
+    if (exists(server_config_path))
+    {
+        free((char *)server_config_path);
+        return 1;
+    }
+    else if (!is_directory("./config/") && create_config_directory() > 0)
+    {
+        perror("There was an error creating the config directory");
+        free((char *)server_config_path);
+        return 2;
+    }
+
+    FILE *file = fopen(server_config_path, "w");
+
+    if (file == NULL)
+    {
+        perror("There was an error opening the properties file");
+        free((char *)server_config_path);
+        return 2;
+    }
+
+    fputs("start-script-name=\n", file);
+
+    fclose(file);
+    free((char *)server_config_path);
     return 0;
 }
