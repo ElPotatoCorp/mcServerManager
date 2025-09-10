@@ -97,6 +97,7 @@ static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
     gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, backups_ListView        );
 
     gtk_widget_class_bind_template_callback(widget_class, on_copy_button_clicked);
+    gtk_widget_class_bind_template_callback(widget_class, on_entry_activated);
 }
 
 MCSMAppWindow *mcsm_app_window_new(MCSMApp *app)
@@ -110,4 +111,11 @@ static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
 {
     GdkClipboard *clipboard = gtk_widget_get_clipboard(GTK_WIDGET(win));
     gdk_clipboard_set_text(clipboard, "test"); 
+}
+
+static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
+{
+    const char *data = g_object_get_data(G_OBJECT(entry), "prop");
+
+    printf("%s\n",data);
 }
