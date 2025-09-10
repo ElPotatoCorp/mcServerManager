@@ -156,7 +156,7 @@ struct StringList *list_directories_from_path(const char *path)
 {
     if (!is_directory(path))
     {
-        perror("There is a problem with the path...\n");
+        perror("There is a problem with the path");
         return NULL;
     }
 
@@ -184,7 +184,7 @@ struct StringList *list_regular_files_from_path(const char *path)
 {
     if (!is_directory(path))
     {
-        perror("There is a problem with the path...\n");
+        perror("There is a problem with the path");
         return NULL;
     }
 
@@ -218,7 +218,7 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
 
     if (file == NULL)
     {
-        perror("The file is not opened...\n");
+        perror("The file is not opened");
         return "";
     }
 
@@ -252,7 +252,7 @@ const int write_property_from_properties_file_path(const char *path, const char 
 {
     if (!is_regular_file(path))
     {
-        perror("Error with the path or the file...\n");
+        perror("Error with the path or the file");
         return 2;
     }
 
@@ -260,7 +260,7 @@ const int write_property_from_properties_file_path(const char *path, const char 
 
     if (file == NULL)
     {
-        perror("There was an error loading the file...\n");
+        perror("There was an error loading the file");
         return 2;
     }
 
@@ -303,7 +303,7 @@ void easy_zip_from_path(const char *from, const char *entry_name, const char *to
 {
     if (!exists(from) || !exists(to))
     {
-        perror("There is a problem with at least one path...\n");
+        perror("There is a problem with at least one path");
         return;
     }
 
@@ -320,7 +320,7 @@ void easy_unzip_from_path(const char *from, const char *to)
 {
     if (!exists(from) || !exists(to))
     {
-        perror("There is a problem with at least one path...\n");
+        perror("There is a problem with at least one path");
         return;
     }
 
@@ -335,13 +335,11 @@ const int create_config_directory(void)
 {
     if (cwd == NULL && set_default_prog_path())
     {
-        perror("There was an error setting up the default program path...\n");
+        perror("There was an error setting up the default program path");
         return 2;
     }
-    else
-    {
-        chdir(cwd);
-    }
+
+    chdir(cwd);
 
     if (is_directory("./config/"))
     {
@@ -350,7 +348,7 @@ const int create_config_directory(void)
     
     if (mkdir("./config/", 0700) != 0)
     {
-        perror("There was an error creating the config directory...\n");
+        perror("There was an error creating the config directory");
         return 2;
     }
 
@@ -363,7 +361,7 @@ const int create_config_directory(void)
 
     if (file == NULL)
     {
-        perror("There was an error creating the .config file...\n");
+        perror("There was an error creating the .config file");
         return 2;
     }
 
