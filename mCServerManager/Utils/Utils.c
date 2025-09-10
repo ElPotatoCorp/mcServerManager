@@ -307,6 +307,12 @@ void easy_zip_from_path(const char *from, const char *entry_name, const char *to
         return;
     }
 
+    if (cwd == NULL && set_default_prog_path())
+    {
+        perror("There was an error setting up the default program path");
+        return ERROR;
+    }
+
     chdir(from);
 
     const char *command = concat_all_strings(5, "zip -r \"", to, "$(date +%Y-%m-%d-%H-%M-%S)\" \"", entry_name, "\"");
@@ -314,6 +320,8 @@ void easy_zip_from_path(const char *from, const char *entry_name, const char *to
     execl("/usr/bin/sh", "sh", "-c", command, 0);
 
     free((char *)command);
+
+    chdir(cwd);
 }
 
 void easy_unzip_from_path(const char *from, const char *to)
@@ -333,14 +341,6 @@ void easy_unzip_from_path(const char *from, const char *to)
 
 const RETURN_STATE create_config_directory(void)
 {
-    if (cwd == NULL && set_default_prog_path())
-    {
-        perror("There was an error setting up the default program path");
-        return ERROR;
-    }
-
-    chdir(cwd);
-
     if (is_directory("./config/"))
     {
         return FALSE;
@@ -381,14 +381,6 @@ const RETURN_STATE create_config_directory(void)
 
 const RETURN_STATE create_server_config_file(const char *server_name)
 {
-    if (cwd == NULL && set_default_prog_path())
-    {
-        perror("There was an error setting up the default program path");
-        return ERROR;
-    }
-    
-    chdir(cwd);
-
     const char *server_config_path = concat_all_strings(3, "./config/", server_name, ".properties");
     if (exists(server_config_path))
     {
