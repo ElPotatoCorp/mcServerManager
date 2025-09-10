@@ -11,9 +11,9 @@ static const int set_default_prog_path(void)
     if (getcwd(cwd, sizeof(cwd)) == NULL)
     {
         perror("getcwd() error");
-        return 0;
+        return ERROR;
     }
-    return 1;
+    return TRUE;
 }
 
 struct dirent *dir;
@@ -248,12 +248,12 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
     return "";
 }
 
-const int write_property_from_properties_file_path(const char *path, const char *property, const char *new_value)
+const RETURN_STATE write_property_from_properties_file_path(const char *path, const char *property, const char *new_value)
 {
     if (!is_regular_file(path))
     {
         perror("Error with the path or the file");
-        return 2;
+        return ERROR;
     }
 
     FILE *file = fopen(path, "r");
@@ -261,7 +261,7 @@ const int write_property_from_properties_file_path(const char *path, const char 
     if (file == NULL)
     {
         perror("There was an error loading the file");
-        return 2;
+        return ERROR;
     }
 
     struct StringList *lines = new_string_list();
@@ -269,7 +269,7 @@ const int write_property_from_properties_file_path(const char *path, const char 
     char prop[MAX_STR_LEN];
     char val[MAX_STR_LEN];
 
-    int found = 1;
+    int found = FALSE;
     while (fgets(line, MAX_STR_LEN, file))
     {
         if (!sscanf(line, "%[^=]=%[^\n]", prop, val))
@@ -279,7 +279,7 @@ const int write_property_from_properties_file_path(const char *path, const char 
         }
         else if (strcmp(property, prop) == 1)
         {
-            found = 0;
+            found = TRUE;
             sprintf(line, "%s=%s\n", prop, new_value);
         }
         append_string_list(lines, line);
@@ -331,30 +331,30 @@ void easy_unzip_from_path(const char *from, const char *to)
     free((char *)command);
 }
 
-const int create_config_directory(void)
+const RETURN_STATE create_config_directory(void)
 {
     if (cwd == NULL && set_default_prog_path())
     {
         perror("There was an error setting up the default program path");
-        return 2;
+        return ERROR;
     }
 
     chdir(cwd);
 
     if (is_directory("./config/"))
     {
-        return 1;
+        return FALSE;
     }
     
     if (mkdir("./config/", 0700) != 0)
     {
         perror("There was an error creating the config directory");
-        return 2;
+        return ERROR;
     }
 
     if (is_regular_file("./config/.config"))
     {
-        return 1;
+        return FALSE;
     }
 
     FILE *file = fopen("./config/.config", "w");
@@ -362,7 +362,7 @@ const int create_config_directory(void)
     if (file == NULL)
     {
         perror("There was an error creating the .config file");
-        return 2;
+        return ERROR;
     }
 
     fputs("server-directory=\n", file);
@@ -371,20 +371,20 @@ const int create_config_directory(void)
 
     if (is_directory("./config/") && is_regular_file("./config/.config"))
     {
-        return 0;
+        return TRUE;
     }
     else
     {
-        return 2;
+        return ERROR;
     }
 }
 
-const int create_server_config_file(const char *server_name)
+const RETURN_STATE create_server_config_file(const char *server_name)
 {
     if (cwd == NULL && set_default_prog_path())
     {
         perror("There was an error setting up the default program path");
-        return 2;
+        return ERROR;
     }
     
     chdir(cwd);
@@ -393,13 +393,13 @@ const int create_server_config_file(const char *server_name)
     if (exists(server_config_path))
     {
         free((char *)server_config_path);
-        return 1;
+        return FALSE;
     }
     else if (!is_directory("./config/") && create_config_directory() > 0)
     {
         perror("There was an error creating the config directory");
         free((char *)server_config_path);
-        return 2;
+        return ERROR;
     }
 
     FILE *file = fopen(server_config_path, "w");
@@ -408,12 +408,12 @@ const int create_server_config_file(const char *server_name)
     {
         perror("There was an error opening the properties file");
         free((char *)server_config_path);
-        return 2;
+        return ERROR;
     }
 
     fputs("start-script-name=\n", file);
 
     fclose(file);
     free((char *)server_config_path);
-    return 0;
+    return TRUE;
 }

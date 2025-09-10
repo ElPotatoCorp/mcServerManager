@@ -9,6 +9,8 @@
 #define MAX_STR_LEN 128
 #define MAX_LIST_LEN 64
 
+typedef enum {TRUE, FALSE, ERROR} RETURN_STATE;
+
 /* --- A good ol' struct for a basic list of string --- */
 struct StringList 
 {
