@@ -369,5 +369,14 @@ const int create_config_directory(void)
 
     fclose(file);
 
+    if (is_directory("./config/") && is_regular_file("./config/.config"))
+    {
+        return 0;
+    }
+    else
+    {
+        return 2;
+    }
+}
     return 0;
 }
