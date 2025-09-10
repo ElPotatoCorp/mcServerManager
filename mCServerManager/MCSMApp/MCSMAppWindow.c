@@ -57,30 +57,30 @@ static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
 
     gtk_widget_class_set_template_from_resource(widget_class, "/mcsm/window.xml");
 
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, gears);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, serv_dir_loaded_Label);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, ip_Entry);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, port_Entry);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, start_script_Entry);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, world_name_Entry);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, description_Entry);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, editable_port_Entry);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, copy_Button);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, start_script_Button);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, make_backup_Button);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, run_Button);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, server_name_DropDown);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, gamemode_DropDown);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, difficulty_DropDown);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, max_players_SpinButton);
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, gears                   );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, serv_dir_loaded_Label   );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, ip_Entry                );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, port_Entry              );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, start_script_Entry      );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, world_name_Entry        );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, description_Entry       );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, editable_port_Entry     );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, copy_Button             );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, start_script_Button     );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, make_backup_Button      );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, run_Button              );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, server_name_DropDown    );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, gamemode_DropDown       );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, difficulty_DropDown     );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, max_players_SpinButton  );
     gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, view_distance_SpinButton);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, hardcore_CheckButton);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, pvp_CheckButton);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, fly_CheckButton);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, nether_CheckButton);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, whitelist_CheckButton);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, run_backup_CheckButton);
-    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, backups_ListView);
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, hardcore_CheckButton    );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, pvp_CheckButton         );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, fly_CheckButton         );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, nether_CheckButton      );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, whitelist_CheckButton   );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, run_backup_CheckButton  );
+    gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, backups_ListView        );
 
     gtk_widget_class_bind_template_callback(widget_class, on_copy_button_clicked);
 }
