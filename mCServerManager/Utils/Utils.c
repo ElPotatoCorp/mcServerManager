@@ -5,6 +5,17 @@
 #include <dirent.h>
 #include <string.h>
 
+char cwd[MAX_PATH_LEN];
+static const int set_default_prog_path(void)
+{
+    if (getcwd(cwd, sizeof(cwd)) == NULL)
+    {
+        perror("getcwd() error");
+        return 0;
+    }
+    return 1;
+}
+
 struct dirent *dir;
 struct stat st = {0};
 
@@ -318,4 +329,47 @@ void easy_unzip_from_path(const char *from, const char *to)
     execl("/usr/bin/sh", "sh", "-c", command, 0);
 
     free((char *)command);
+}
+
+const int create_config_directory(void)
+{
+    if (cwd == NULL && set_default_prog_path())
+    {
+        perror("There was an error setting up the default program path...\n");
+        return 2;
+    }
+    else
+    {
+        chdir(cwd);
+    }
+
+    if (is_directory("./config/"))
+    {
+        return 1;
+    }
+    
+    if (mkdir("./config/", 0700) != 0)
+    {
+        perror("There was an error creating the config directory...\n");
+        return 2;
+    }
+
+    if (is_regular_file("./config/.config"))
+    {
+        return 1;
+    }
+
+    FILE *file = fopen("./config/.config", "w");
+
+    if (file == NULL)
+    {
+        perror("There was an error creating the .config file...\n");
+        return 2;
+    }
+
+    fputs("server-directory=\n", file);
+
+    fclose(file);
+
+    return 0;
 }

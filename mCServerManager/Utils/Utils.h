@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#define MAX_PATH_LEN 1024
 #define MAX_STR_LEN 128
 #define MAX_LIST_LEN 64
 
@@ -36,5 +37,6 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
 const int write_property_from_properties_file_path(const char *path, const char *property, const char *new_value);
 void easy_zip_from_path(const char *from, const char *entry_name, const char *to);
 void easy_unzip_from_path(const char *from, const char *to);
+const int create_config_directory(void);
 
 #endif // UTILS_H
