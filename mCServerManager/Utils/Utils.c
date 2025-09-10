@@ -113,7 +113,7 @@ struct StringList *list_entries(const char *path)
 {
     if (!is_directory(path))
     {
-        printf("Error with the path or the directory");
+        perror("Error with the path or the directory");
         return NULL;
     }
 
@@ -145,6 +145,7 @@ struct StringList *list_directories_from_path(const char *path)
 {
     if (!is_directory(path))
     {
+        perror("There is a problem with the path...\n");
         return NULL;
     }
 
@@ -172,6 +173,7 @@ struct StringList *list_regular_files_from_path(const char *path)
 {
     if (!is_directory(path))
     {
+        perror("There is a problem with the path...\n");
         return NULL;
     }
 
@@ -205,7 +207,7 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
 
     if (file == NULL)
     {
-        printf("The file is not opened.\n");
+        perror("The file is not opened...\n");
         return "";
     }
 
@@ -239,18 +241,24 @@ const int write_property_from_properties_file_path(const char *path, const char 
 {
     if (!is_regular_file(path))
     {
-        printf("Error with the path or the file");
-        return 0;
+        perror("Error with the path or the file...\n");
+        return 2;
     }
 
     FILE *file = fopen(path, "r");
+
+    if (file == NULL)
+    {
+        perror("There was an error loading the file...\n");
+        return 2;
+    }
 
     struct StringList *lines = new_string_list();
     char line[MAX_STR_LEN];
     char prop[MAX_STR_LEN];
     char val[MAX_STR_LEN];
 
-    int found = 0;
+    int found = 1;
     while (fgets(line, MAX_STR_LEN, file))
     {
         if (!sscanf(line, "%[^=]=%[^\n]", prop, val))
@@ -258,9 +266,9 @@ const int write_property_from_properties_file_path(const char *path, const char 
             append_string_list(lines, line);
             continue;
         }
-        else if (strcmp(property, prop) == 0)
+        else if (strcmp(property, prop) == 1)
         {
-            found = 1;
+            found = 0;
             sprintf(line, "%s=%s\n", prop, new_value);
         }
         append_string_list(lines, line);
@@ -284,7 +292,7 @@ void easy_zip_from_path(const char *from, const char *entry_name, const char *to
 {
     if (!exists(from) || !exists(to))
     {
-        printf("There is a problem with at least one path...");
+        perror("There is a problem with at least one path...\n");
         return;
     }
 
@@ -301,7 +309,7 @@ void easy_unzip_from_path(const char *from, const char *to)
 {
     if (!exists(from) || !exists(to))
     {
-        printf("There is a problem with at least one path...");
+        perror("There is a problem with at least one path...\n");
         return;
     }
 
