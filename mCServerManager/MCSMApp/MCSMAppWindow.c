@@ -4,10 +4,10 @@
 
 static void reverse_check_button(GtkWidget *widget)
 {
-    gtk_widget_set_direction(widget, GTK_TEXT_DIR_RTL);
-    gtk_widget_set_margin_start(widget, -4);
-    gtk_widget_set_margin_top(widget, -4);
-    gtk_widget_set_margin_end(widget, -4);
+    gtk_widget_set_direction    (widget, GTK_TEXT_DIR_RTL);
+    gtk_widget_set_margin_start (widget, -4);
+    gtk_widget_set_margin_top   (widget, -4);
+    gtk_widget_set_margin_end   (widget, -4);
     gtk_widget_set_margin_bottom(widget, -4);
 }
 
