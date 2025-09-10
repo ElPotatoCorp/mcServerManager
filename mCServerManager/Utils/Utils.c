@@ -248,7 +248,7 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
     return "";
 }
 
-const RETURN_STATE write_property_from_properties_file_path(const char *path, const char *property, const char *new_value)
+const RETURN_STATE overwrite_property_from_properties_file_path(const char *path, const char *property, const char *new_value)
 {
     if (!is_regular_file(path))
     {
