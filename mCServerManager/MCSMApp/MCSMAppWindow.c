@@ -1,5 +1,6 @@
 #include "MCSMApp.h"
 #include "MCSMAppWindow.h"
+#include "../Utils/Constants.h"
 
 static void reverse_check_button(GtkWidget *widget)
 {
@@ -40,11 +41,24 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
     gtk_menu_button_set_menu_model(GTK_MENU_BUTTON(win->gears), menu);
     g_object_unref(builder);
 
-    reverse_check_button(win->hardcore_CheckButton);
-    reverse_check_button(win->pvp_CheckButton);
-    reverse_check_button(win->fly_CheckButton);
-    reverse_check_button(win->nether_CheckButton);
-    reverse_check_button(win->whitelist_CheckButton);
+    g_object_set_data(G_OBJECT(win->world_name_Entry        ), "prop", (char *)WORLD_NAME_PROPERTY   );
+    g_object_set_data(G_OBJECT(win->description_Entry       ), "prop", (char *)DESCRIPTION_PROPERTY  );
+    g_object_set_data(G_OBJECT(win->editable_port_Entry     ), "prop", (char *)PORT_PROPERTY         );
+    g_object_set_data(G_OBJECT(win->max_players_SpinButton  ), "prop", (char *)MAX_PLAYERS_PROPERTY  );
+    g_object_set_data(G_OBJECT(win->view_distance_SpinButton), "prop", (char *)VIEW_DISTANCE_PROPERTY);
+    g_object_set_data(G_OBJECT(win->gamemode_DropDown       ), "prop", (char *)GAMEMODE_PROPERTY     );
+    g_object_set_data(G_OBJECT(win->difficulty_DropDown     ), "prop", (char *)DIFFICULTY_PROPERTY   );
+    g_object_set_data(G_OBJECT(win->hardcore_CheckButton    ), "prop", (char *)HARDCORE_PROPERTY     );
+    g_object_set_data(G_OBJECT(win->pvp_CheckButton         ), "prop", (char *)PVP_PROPERTY          );
+    g_object_set_data(G_OBJECT(win->fly_CheckButton         ), "prop", (char *)FLY_PROPERTY          );
+    g_object_set_data(G_OBJECT(win->nether_CheckButton      ), "prop", (char *)NETHER_PROPERTY       );
+    g_object_set_data(G_OBJECT(win->whitelist_CheckButton   ), "prop", (char *)WHITELIST_PROPERTY    );
+
+    reverse_check_button(win->hardcore_CheckButton  );
+    reverse_check_button(win->pvp_CheckButton       );
+    reverse_check_button(win->fly_CheckButton       );
+    reverse_check_button(win->nether_CheckButton    );
+    reverse_check_button(win->whitelist_CheckButton );
     reverse_check_button(win->run_backup_CheckButton);
 
     /* --- Signals Handler --- */
