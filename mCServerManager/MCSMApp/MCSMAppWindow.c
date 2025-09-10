@@ -60,9 +60,6 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
     reverse_check_button(win->nether_CheckButton    );
     reverse_check_button(win->whitelist_CheckButton );
     reverse_check_button(win->run_backup_CheckButton);
-
-    /* --- Signals Handler --- */
-    
 }
 
 static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
@@ -96,6 +93,7 @@ static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
     gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, run_backup_CheckButton  );
     gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, backups_ListView        );
 
+    /* --- Signals Handler --- */
     gtk_widget_class_bind_template_callback(widget_class, on_copy_button_clicked);
     gtk_widget_class_bind_template_callback(widget_class, on_entry_activated);
 }
