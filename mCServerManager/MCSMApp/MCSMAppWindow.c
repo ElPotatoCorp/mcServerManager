@@ -230,6 +230,14 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
     {
         g_object_unref(win->server_name_StringList);
     }
+    if (win->gamemode_StringList != NULL)
+    {
+        g_object_unref(win->gamemode_StringList);
+    }
+    if (win->difficulty_StringList != NULL)
+    {
+        g_object_unref(win->difficulty_StringList);
+    }
     if (win->server_directory != NULL)
     {
         free(win->server_directory);
@@ -242,13 +250,13 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
     {
         free(win->current_server_directory);
     }
-    if (win->start_script_name != NULL)
-    {
-        free(win->start_script_name);
-    }
     if (win->serv_props_path != NULL)
     {
         free(win->serv_props_path);
+    }
+    if (win->start_script_name != NULL)
+    {
+        free(win->start_script_name);
     }
     if (win->world_name != NULL)
     {
