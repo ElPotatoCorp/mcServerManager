@@ -64,7 +64,8 @@ void free_string_list(struct StringList *string_list)
 
 void append_string_list(struct StringList *string_list, const char *string)
 {
-    strset(string_list->strings[string_list->size], string);
+    string_list->strings[string_list->size] = strset(string_list->strings[string_list->size], string);
+
     string_list->size++;
 }
 
