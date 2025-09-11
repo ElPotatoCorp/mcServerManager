@@ -111,6 +111,8 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
         return;
     }
 
+    gtk_widget_set_visible(win->serv_dir_loaded_Label, FALSE);
+
     init_server_name_drop_down(win);
     init_ip_port_section(win);
 }
