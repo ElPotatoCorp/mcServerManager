@@ -297,7 +297,7 @@ static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
 
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
 {
-    if (win->current_server_directory == NULL || strcmp(win->current_server_directory,"") == 0)
+    if (win->serv_props_path == NULL || strcmp(win->serv_props_path,"") == 0)
     {
         perror("The server_directory is not set");
         return;
