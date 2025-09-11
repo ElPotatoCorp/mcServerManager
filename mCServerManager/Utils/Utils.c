@@ -147,6 +147,28 @@ const char *curl_from_url(const char *url)
 }
 #pragma endregion // CURL
 
+char *strset(char *__restrict__ __dest, const char *__restrict__ __src)
+{
+    if (__dest == NULL)
+    {
+        __dest = malloc((strlen(__src) + 1) * sizeof(char));
+        strcpy(__dest, __src);
+        return __dest;
+    }
+
+    char *__ptr = realloc(__dest, (strlen(__src) + 1) * sizeof(char));
+    if (__ptr == NULL)
+    {
+        printf("error: not enough memory\n");
+        return __dest;
+    }
+
+    __dest = __ptr;
+    strcpy(__dest, __src);
+
+    return __dest;
+}
+
 const char *concat_all_strings(const int n, ...)
 {
     va_list args;

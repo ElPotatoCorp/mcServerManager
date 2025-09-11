@@ -21,6 +21,7 @@ struct StringList *new_string_list_from_strings(const int n, ...);
 void free_string_list(struct StringList *string_list);
 void append_string_list(struct StringList *string_list, const char *string);
 void print_string_list(const struct StringList *string_list);
+char *strset(char *__restrict__ __dest, const char *__restrict__ __src);
 const char *concat_all_strings(const int n, ...);
 
 /* --- CURL --- */
