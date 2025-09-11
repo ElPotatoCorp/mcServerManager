@@ -11,6 +11,12 @@
         "stdio.h": "c",
         "dirent.h": "c",
         "string": "c",
-        "format": "c"
+        "format": "c",
+        "array": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "ranges": "c",
+        "span": "c",
+        "charconv": "c"
     }
 }

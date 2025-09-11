@@ -21,7 +21,7 @@
             "command": "/bin/bash",
             "args": [
                 "-c",
-                "gcc $( pkg-config --cflags gtk4 ) -o main main.c MCSMApp/MCSMApp.c MCSMApp/MCSMAppWindow.c Utils/Utils.c resources.c $( pkg-config --libs gtk4 )"
+                "gcc $( pkg-config --cflags gtk4 ) -o main main.c MCSMApp/MCSMApp.c MCSMApp/MCSMAppWindow.c Utils/Utils.c resources.c -lcurl $( pkg-config --libs gtk4 )"
             ],
             "problemMatcher": [],
             "group": {
