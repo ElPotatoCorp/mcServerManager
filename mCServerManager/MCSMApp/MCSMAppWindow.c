@@ -1,6 +1,7 @@
 #include "MCSMApp.h"
 #include "MCSMAppWindow.h"
 #include "../Utils/Constants.h"
+#include "../Utils/Utils.h"
 
 static void reverse_check_button(GtkWidget *widget)
 {
@@ -14,6 +15,8 @@ static void reverse_check_button(GtkWidget *widget)
 struct _MCSMAppWindow
 {
     GtkApplicationWindow parent;
+
+    char *current_server, *current_server_directory, *start_script_name, *serv_props_path, *world_name;
 
     GtkStringList *server_name_StringList;
 
@@ -60,6 +63,15 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
     reverse_check_button(win->nether_CheckButton    );
     reverse_check_button(win->whitelist_CheckButton );
     reverse_check_button(win->run_backup_CheckButton);
+
+    if (create_config_directory() == 1)
+    {
+        const char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, ".config");
+
+        win->current_server_directory = (char *)get_value_from_properties_file_path(config_file_path, SERVER_DIR_PROPERTY);
+
+        free((char *)config_file_path);
+    }
 }
 
 static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
@@ -96,6 +108,7 @@ static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
     /* --- Signals Handler --- */
     gtk_widget_class_bind_template_callback(widget_class, on_copy_button_clicked);
     gtk_widget_class_bind_template_callback(widget_class, on_entry_activated);
+    gtk_widget_class_bind_template_callback(widget_class, on_window_destroyed);
 }
 
 MCSMAppWindow *mcsm_app_window_new(MCSMApp *app)
@@ -113,7 +126,40 @@ static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
 
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
 {
-    const char *data = g_object_get_data(G_OBJECT(entry), "prop");
+    if (win->current_server_directory == NULL || strcmp(win->current_server_directory,"") != 0)
+    {
+        perror("The server_directory is not set");
+        return;
+    }
 
-    printf("%s\n",data);
+    const char *property = g_object_get_data(G_OBJECT(entry), "prop");
+
+    GtkEntryBuffer *entry_buffer = gtk_entry_get_buffer(entry);
+
+    const char *new_value = gtk_entry_buffer_get_text(entry_buffer);
+}
+
+void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
+{
+    if (win->current_server != NULL)
+    {
+        free(win->current_server);
+    }
+    if (win->current_server_directory != NULL)
+    {
+        printf("I had to free it.");
+        free(win->current_server_directory);
+    }
+    if (win->start_script_name != NULL)
+    {
+        free(win->start_script_name);
+    }
+    if (win->serv_props_path != NULL)
+    {
+        free(win->serv_props_path);
+    }
+    if (win->world_name != NULL)
+    {
+        free(win->world_name);
+    }
 }
