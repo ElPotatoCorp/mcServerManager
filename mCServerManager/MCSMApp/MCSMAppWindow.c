@@ -309,6 +309,27 @@ static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
 
     const char *new_value = gtk_entry_buffer_get_text(entry_buffer);
 
+    if (entry == GTK_ENTRY(win->editable_port_Entry))
+    {
+        size_t n = strlen(new_value);
+        int i = 0;
+        int is_a_number = 1;
+        while (is_a_number && i < n)
+        {
+            if (new_value[i] < '0' || new_value[i] > '9')
+            {
+                is_a_number = 0;
+            }
+            i++;
+        }
+
+        if (!is_a_number)
+        {
+            perror("Le port n'est pas valide");
+            return;
+        }
+    }
+
     overwrite_property_from_properties_file(win->serv_props_path, property, new_value);
 }
 
