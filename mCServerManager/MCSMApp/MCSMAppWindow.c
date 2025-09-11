@@ -32,6 +32,17 @@ struct _MCSMAppWindow
 
 G_DEFINE_TYPE(MCSMAppWindow, mcsm_app_window, GTK_TYPE_APPLICATION_WINDOW)
 
+static void init_ip_port_section(MCSMAppWindow *win)
+{
+    GtkEntryBuffer *entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->ip_Entry));
+
+    const char *ip = curl_from_url("https://ipinfo.io/ip");
+
+    gtk_entry_buffer_set_text(entry_buffer, ip, strlen(ip));
+
+    free((char *)ip);
+}
+
 static void init_server_name_drop_down(MCSMAppWindow *win)
 {
     const char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, ".config");
@@ -101,6 +112,7 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
     }
 
     init_server_name_drop_down(win);
+    init_ip_port_section(win);
 }
 
 static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
