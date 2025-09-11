@@ -63,6 +63,8 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
         return;
     }
 
+    gtk_widget_set_visible(win->serv_dir_loaded_Label, FALSE);
+
     struct StringList *servers = list_directories_from_path(win->server_directory);
 
     char **str_servers = malloc(servers->size * sizeof(char *));
@@ -150,8 +152,6 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
     {
         return;
     }
-
-    gtk_widget_set_visible(win->serv_dir_loaded_Label, FALSE);
 
     init_key_values(win);
     init_ip_entry(win);
