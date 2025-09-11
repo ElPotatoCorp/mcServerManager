@@ -95,12 +95,19 @@ static void init_key_values(MCSMAppWindow *win)
 {
     init_server_name_drop_down(win);
 
+    char *gamemodes[4] = { "survival", "creative", "spectator", "adventure" };
+    win->gamemode_StringList = gtk_string_list_new((const char * const *)gamemodes);
+
+    char *difficulties[4] = { "peaceful", "easy", "normal", "hard" };
+    win->difficulty_StringList = gtk_string_list_new((const char * const *)difficulties);
+
     const char *current_server = gtk_string_list_get_string(win->server_name_StringList, 0);
 
-    win->current_server = malloc((strlen(current_server) + 1) * sizeof(char));
-    strcpy(win->current_server, current_server);
+    win->current_server = strset(current_server);
 
     win->current_server_directory = (char *)concat_all_strings(3, win->server_directory, win->current_server, "/");
+
+    win->serv_props_path = (char *)concat_all_strings(2, win->current_server_directory, "server.properties");
 }
 
 static void mcsm_app_window_init(MCSMAppWindow *win)
