@@ -11,10 +11,10 @@ MCSMAppWindow *mcsm_app_window_new(MCSMApp *app);
 
 void mcsm_app_window_activate(MCSMAppWindow *win);
 
+static void refresh_serv_infos(MCSMAppWindow *win);
+
 static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win);
-
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win);
-
 void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win);
 
 #endif // MCSM_APP_WINDOW_H
