@@ -309,7 +309,7 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
 {
     if (!is_regular_file(path))
     {
-        return NULL;
+        return strset("");
     }
 
     FILE *file = fopen(path, "r");
@@ -317,7 +317,7 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
     if (file == NULL)
     {
         perror("The file is not opened");
-        return "";
+        return strset("");
     }
 
     char line[MAX_STR_LEN];
@@ -333,14 +333,16 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
         else if (strcmp(property, prop) == 0)
         {
             fclose(file);
-
+            if (strlen(line) == strlen(prop) + 2 || val[0] == '\0') {
+                return strset("");
+            }
             return strset(val);
         }
     }
 
     fclose(file);
 
-    return "";
+    return strset("");
 }
 
 const int overwrite_property_from_properties_file_path(const char *path, const char *property, const char *new_value)
