@@ -64,8 +64,7 @@ void free_string_list(struct StringList *string_list)
 
 void append_string_list(struct StringList *string_list, const char *string)
 {
-    string_list->strings[string_list->size] = strset(string_list->strings[string_list->size], string);
-
+    strrst(&string_list->strings[string_list->size], string);
     string_list->size++;
 }
 
@@ -143,26 +142,39 @@ const char *curl_from_url(const char *url)
 }
 #pragma endregion // CURL
 
-char *strset(char *__restrict__ __dest, const char *__restrict__ __src)
+char *strset(const char *__restrict__ __src)
 {
-    if (__dest == NULL)
-    {
-        __dest = malloc((strlen(__src) + 1) * sizeof(char));
-        strcpy(__dest, __src);
-        return __dest;
-    }
-
-    char *__ptr = realloc(__dest, (strlen(__src) + 1) * sizeof(char));
+    char *__ptr = malloc((strlen(__src) + 1) * sizeof(char));
     if (__ptr == NULL)
     {
         printf("error: not enough memory\n");
-        return __dest;
+        return NULL;
+    }
+    strcpy(__ptr, __src);
+
+    return __ptr;
+}
+
+char *strrst(char **__restrict__ __dest, const char *__restrict__ __src)
+{
+    if (*__dest == NULL)
+    {
+        *__dest = malloc((strlen(__src) + 1) * sizeof(char));
+        strcpy(*__dest, __src);
+        return *__dest;
     }
 
-    __dest = __ptr;
-    strcpy(__dest, __src);
+    char *__ptr = realloc(*__dest, (strlen(__src) + 1) * sizeof(char));
+    if (__ptr == NULL)
+    {
+        printf("error: not enough memory\n");
+        return *__dest;
+    }
 
-    return __dest;
+    *__dest = __ptr;
+    strcpy(*__dest, __src);
+
+    return *__dest;
 }
 
 const char *concat_all_strings(const int n, ...)
@@ -322,7 +334,7 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
         {
             fclose(file);
 
-            return strset(NULL, val);
+            return strset(val);
         }
     }
 
