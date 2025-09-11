@@ -374,7 +374,7 @@ const int overwrite_property_from_properties_file(const char *path, const char *
             append_string_list(lines, line);
             continue;
         }
-        else if (strcmp(property, prop) == 1)
+        else if (strcmp(property, prop) == 0)
         {
             found = 0;
             sprintf(line, "%s=%s\n", prop, new_value);
