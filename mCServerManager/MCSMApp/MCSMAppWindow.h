@@ -15,4 +15,6 @@ static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win);
 
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win);
 
+void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win);
+
 #endif // MCSM_APP_WINDOW_H

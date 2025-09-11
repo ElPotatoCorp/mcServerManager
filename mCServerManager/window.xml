@@ -2,6 +2,7 @@
 <interface>
   <template class="MCSMAppWindow" parent="GtkApplicationWindow">
     <property name="title">MC Server Manager</property>
+    <signal name="destroy" handler="on_window_destroyed"/>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="header">
         <child type="end">

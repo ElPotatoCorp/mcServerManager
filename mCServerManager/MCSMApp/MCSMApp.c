@@ -4,6 +4,8 @@
 struct _MCSMApp
 {
     GtkApplication parent;
+
+    MCSMAppWindow *win;
 };
 
 G_DEFINE_TYPE(MCSMApp, mcsm_app, GTK_TYPE_APPLICATION);
@@ -12,7 +14,16 @@ static void preferences_activated(GSimpleAction *action, GVariant *parameter, gp
 
 static void quit_activated(GSimpleAction *action, GVariant *parameter, gpointer app)
 {
-    g_application_quit(G_APPLICATION(app));
+    GApplication *g_app = G_APPLICATION(app);
+
+    MCSMApp *mcsm_app = MCSM_APP(g_app);
+
+    if (mcsm_app->win)
+    {
+        on_window_destroyed(NULL, mcsm_app->win);
+    }
+
+    g_application_quit(g_app);
 }
 
 static GActionEntry app_entries[] =
@@ -33,10 +44,10 @@ static void mcsm_app_startup(GApplication *app)
 
 static void mcsm_app_activate(GApplication *app)
 {
-    MCSMAppWindow *win;
+    MCSMApp *mcsm_app = MCSM_APP(app);
 
-    win = mcsm_app_window_new(MCSM_APP(app));
-    gtk_window_present(GTK_WINDOW(win));
+    mcsm_app->win = mcsm_app_window_new(mcsm_app);
+    gtk_window_present(GTK_WINDOW(mcsm_app->win));
 }
 
 static void mcsm_app_init(MCSMApp *app) {}
