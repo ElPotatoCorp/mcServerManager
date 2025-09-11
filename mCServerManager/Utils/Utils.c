@@ -21,7 +21,8 @@ struct stat st = {0};
 struct StringList *new_string_list(void)
 {
     struct StringList *list = malloc(sizeof(struct StringList));
-    if (list) {
+    if (list)
+    {
         list->strings = malloc(MAX_LIST_LEN * sizeof(char *));
         list->size = 0;
     }
