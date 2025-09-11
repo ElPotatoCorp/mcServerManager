@@ -146,7 +146,7 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
     reverse_check_button(win->run_backup_CheckButton);
     #pragma endregion // Formatting Button
 
-    if (create_config_directory() == 0)
+    if (create_config_directory())
     {
         return;
     }
