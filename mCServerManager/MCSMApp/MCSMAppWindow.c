@@ -30,7 +30,7 @@ struct _MCSMAppWindow
 
     char *server_directory, *current_server, *current_server_directory, *start_script_name, *serv_props_path, *world_name;
 
-    GtkStringList *server_name_StringList;
+    GtkStringList *server_name_StringList, *gamemode_StringList, *difficulty_StringList;
 
     GtkWidget *gears;
     GtkWidget *serv_dir_loaded_Label;
