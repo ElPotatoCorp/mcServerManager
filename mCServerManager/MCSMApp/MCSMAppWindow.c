@@ -203,6 +203,7 @@ MCSMAppWindow *mcsm_app_window_new(MCSMApp *app)
 
 void mcsm_app_window_activate(MCSMAppWindow *win) { }
 
+#pragma region Refresh The Main Display
 static void refresh_entry(GtkEntry *entry, const char *properties_file_path, const char *property)
 {
     const char *value = get_value_from_properties_file(properties_file_path, property);
@@ -275,11 +276,23 @@ static void refresh_serv_infos(MCSMAppWindow *win)
     refresh_check_button(GTK_CHECK_BUTTON(win->nether_CheckButton), win->serv_props_path, NETHER_PROPERTY);
     refresh_check_button(GTK_CHECK_BUTTON(win->whitelist_CheckButton), win->serv_props_path, WHITELIST_PROPERTY);
 }
+#pragma endregion // Refresh The Main Display
 
 static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
 {
     GdkClipboard *clipboard = gtk_widget_get_clipboard(GTK_WIDGET(win));
-    gdk_clipboard_set_text(clipboard, "test"); 
+
+    GtkEntryBuffer *ip_entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->ip_Entry));
+    GtkEntryBuffer *port_entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->port_Entry));
+
+    const char *ip = gtk_entry_buffer_get_text(ip_entry_buffer);
+    const char *port = gtk_entry_buffer_get_text(port_entry_buffer);
+
+    const char *ip_port = concat_all_strings(3, ip, ":", port);
+
+    gdk_clipboard_set_text(clipboard, ip_port);
+    
+    free((char *)ip_port);
 }
 
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
