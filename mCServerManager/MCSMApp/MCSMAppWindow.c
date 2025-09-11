@@ -28,7 +28,7 @@ struct _MCSMAppWindow
 {
     GtkApplicationWindow parent;
 
-    char *current_server, *current_server_directory, *start_script_name, *serv_props_path, *world_name;
+    char *server_directory, *current_server, *current_server_directory, *start_script_name, *serv_props_path, *world_name;
 
     GtkStringList *server_name_StringList;
 
