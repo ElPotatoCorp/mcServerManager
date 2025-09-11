@@ -77,6 +77,68 @@ void print_string_list(const struct StringList *string_list)
 }
 #pragma endregion // StringList
 
+char *strset(const char *__restrict__ __src)
+{
+    char *__ptr = malloc((strlen(__src) + 1) * sizeof(char));
+    if (__ptr == NULL)
+    {
+        printf("error: not enough memory\n");
+        return NULL;
+    }
+    strcpy(__ptr, __src);
+
+    return __ptr;
+}
+
+char *strrst(char **__restrict__ __dest, const char *__restrict__ __src)
+{
+    if (*__dest == NULL)
+    {
+        *__dest = malloc((strlen(__src) + 1) * sizeof(char));
+        strcpy(*__dest, __src);
+        return *__dest;
+    }
+
+    char *__ptr = realloc(*__dest, (strlen(__src) + 1) * sizeof(char));
+    if (__ptr == NULL)
+    {
+        printf("error: not enough memory\n");
+        return *__dest;
+    }
+
+    *__dest = __ptr;
+    strcpy(*__dest, __src);
+
+    return *__dest;
+}
+
+const char *concat_all_strings(const int n, ...)
+{
+    va_list args;
+
+    size_t size_of_final_str = 0;
+    va_start(args, n);
+    for (int i = 0; i < n; i++)
+    {
+        size_of_final_str += strlen(va_arg(args, const char *));
+    }
+    va_end(args);
+
+    char *str = malloc((size_of_final_str + 1) * sizeof(char));
+    str[0] = '\0';
+
+    va_start(args, n);
+    for (int i = 0; i < n; i++)
+    {
+        strcat(str, va_arg(args, const char *));
+    }
+    va_end(args);
+
+    str[size_of_final_str] = '\0';
+
+    return str;
+}
+
 #pragma region CURL
 struct MemoryStruct
 {
@@ -141,68 +203,6 @@ const char *curl_from_url(const char *url)
     }
 }
 #pragma endregion // CURL
-
-char *strset(const char *__restrict__ __src)
-{
-    char *__ptr = malloc((strlen(__src) + 1) * sizeof(char));
-    if (__ptr == NULL)
-    {
-        printf("error: not enough memory\n");
-        return NULL;
-    }
-    strcpy(__ptr, __src);
-
-    return __ptr;
-}
-
-char *strrst(char **__restrict__ __dest, const char *__restrict__ __src)
-{
-    if (*__dest == NULL)
-    {
-        *__dest = malloc((strlen(__src) + 1) * sizeof(char));
-        strcpy(*__dest, __src);
-        return *__dest;
-    }
-
-    char *__ptr = realloc(*__dest, (strlen(__src) + 1) * sizeof(char));
-    if (__ptr == NULL)
-    {
-        printf("error: not enough memory\n");
-        return *__dest;
-    }
-
-    *__dest = __ptr;
-    strcpy(*__dest, __src);
-
-    return *__dest;
-}
-
-const char *concat_all_strings(const int n, ...)
-{
-    va_list args;
-
-    size_t size_of_final_str = 0;
-    va_start(args, n);
-    for (int i = 0; i < n; i++)
-    {
-        size_of_final_str += strlen(va_arg(args, const char *));
-    }
-    va_end(args);
-
-    char *str = malloc((size_of_final_str + 1) * sizeof(char));
-    str[0] = '\0';
-
-    va_start(args, n);
-    for (int i = 0; i < n; i++)
-    {
-        strcat(str, va_arg(args, const char *));
-    }
-    va_end(args);
-
-    str[size_of_final_str] = '\0';
-
-    return str;
-}
 
 const int exists(const char *path)
 {
