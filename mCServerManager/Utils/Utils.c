@@ -305,7 +305,7 @@ struct StringList *list_regular_files_from_path(const char *path)
     return files;
 }
 
-const char *get_value_from_properties_file_path(const char *path, const char *property)
+const char *get_value_from_properties_file(const char *path, const char *property)
 {
     if (!is_regular_file(path))
     {
@@ -345,7 +345,7 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
     return strset("");
 }
 
-const int overwrite_property_from_properties_file_path(const char *path, const char *property, const char *new_value)
+const int overwrite_property_from_properties_file(const char *path, const char *property, const char *new_value)
 {
     if (!is_regular_file(path))
     {

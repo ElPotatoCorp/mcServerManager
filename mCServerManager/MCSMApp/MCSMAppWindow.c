@@ -56,7 +56,7 @@ static void init_ip_entry(MCSMAppWindow *win)
 static void init_server_name_drop_down(MCSMAppWindow *win)
 {
     const char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, ".config");
-    win->server_directory = (char *)get_value_from_properties_file_path(config_file_path, SERVER_DIR_PROPERTY);
+    win->server_directory = (char *)get_value_from_properties_file(config_file_path, SERVER_DIR_PROPERTY);
 
     if (!is_directory(win->server_directory))
     {
@@ -205,20 +205,20 @@ void mcsm_app_window_activate(MCSMAppWindow *win) { }
 
 static void refresh_entry(GtkEntry *entry, const char *properties_file_path, const char *property)
 {
-    char *value = (char *)get_value_from_properties_file_path(properties_file_path, property);
+    const char *value = get_value_from_properties_file(properties_file_path, property);
     gtk_entry_set_text(GTK_ENTRY(entry), value);
-    free(value);
+    free((char *)value);
 }
 
 static void refresh_spin_button(GtkSpinButton *spin_button, const char *properties_file_path, const char *property)
 {
     int value;
-    char *str_value = (char *)get_value_from_properties_file_path(properties_file_path, property);
+    const char *str_value = get_value_from_properties_file(properties_file_path, property);
     if (strcmp(str_value, "") != 0 && sscanf(str_value, "%d", &value))
     {
         gtk_spin_button_set_value(spin_button, value);
     }
-    free(str_value);
+    free((char *)str_value);
 }
 
 static void refresh_serv_infos(MCSMAppWindow *win)
@@ -231,12 +231,12 @@ static void refresh_serv_infos(MCSMAppWindow *win)
         free((char *)server_config_file_path);
     }
 
-    win->world_name = (char *)get_value_from_properties_file_path(win->serv_props_path, WORLD_NAME_PROPERTY);
+    win->world_name = (char *)get_value_from_properties_file(win->serv_props_path, WORLD_NAME_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->world_name_Entry), win->world_name);
 
     refresh_entry(GTK_ENTRY(win->description_Entry), win->serv_props_path, DESCRIPTION_PROPERTY);
 
-    const char *port = get_value_from_properties_file_path(win->serv_props_path, PORT_PROPERTY);
+    const char *port = get_value_from_properties_file(win->serv_props_path, PORT_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->port_Entry), port);
     gtk_entry_set_text(GTK_ENTRY(win->editable_port_Entry), port);
 
