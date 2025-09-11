@@ -64,12 +64,7 @@ void free_string_list(struct StringList *string_list)
 
 void append_string_list(struct StringList *string_list, const char *string)
 {
-    size_t data_size = (strlen(string) + 1) * sizeof(char);
-
-    string_list->strings[string_list->size] = malloc(data_size);
-
-    strcpy(string_list->strings[string_list->size], string);
-
+    strset(string_list->strings[string_list->size], string);
     string_list->size++;
 }
 
@@ -326,10 +321,7 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
         {
             fclose(file);
 
-            char *c_val = malloc(MAX_STR_LEN * sizeof(char));
-            strncpy(c_val, val, MAX_STR_LEN - 1);
-            c_val[MAX_STR_LEN - 1] = '\0';
-            return c_val;
+            return strset(NULL, val);
         }
     }
 
