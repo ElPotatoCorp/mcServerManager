@@ -308,6 +308,8 @@ static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
     GtkEntryBuffer *entry_buffer = gtk_entry_get_buffer(entry);
 
     const char *new_value = gtk_entry_buffer_get_text(entry_buffer);
+
+    overwrite_property_from_properties_file(win->serv_props_path, property, new_value);
 }
 
 void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
