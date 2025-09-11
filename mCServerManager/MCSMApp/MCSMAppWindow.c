@@ -32,7 +32,7 @@ struct _MCSMAppWindow
 
 G_DEFINE_TYPE(MCSMAppWindow, mcsm_app_window, GTK_TYPE_APPLICATION_WINDOW)
 
-static void init_ip_port_section(MCSMAppWindow *win)
+static void init_ip_entry(MCSMAppWindow *win)
 {
     GtkEntryBuffer *entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->ip_Entry));
 
@@ -114,7 +114,7 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
     gtk_widget_set_visible(win->serv_dir_loaded_Label, FALSE);
 
     init_server_name_drop_down(win);
-    init_ip_port_section(win);
+    init_ip_entry(win);
 }
 
 static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
