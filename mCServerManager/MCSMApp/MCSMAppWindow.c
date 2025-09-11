@@ -58,6 +58,11 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
     const char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, ".config");
     win->server_directory = (char *)get_value_from_properties_file_path(config_file_path, SERVER_DIR_PROPERTY);
 
+    if (!is_directory(win->server_directory))
+    {
+        return;
+    }
+
     struct StringList *servers = list_directories_from_path(win->server_directory);
 
     char **str_servers = malloc(servers->size * sizeof(char *));
