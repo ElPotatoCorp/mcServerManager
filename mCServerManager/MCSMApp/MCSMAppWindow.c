@@ -32,6 +32,37 @@ struct _MCSMAppWindow
 
 G_DEFINE_TYPE(MCSMAppWindow, mcsm_app_window, GTK_TYPE_APPLICATION_WINDOW)
 
+static void init_server_name_drop_down(MCSMAppWindow *win)
+{
+    const char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, ".config");
+    win->current_server_directory = (char *)get_value_from_properties_file_path(config_file_path, SERVER_DIR_PROPERTY);
+
+    struct StringList *servers = list_directories_from_path(win->current_server_directory);
+
+    char **str_servers = malloc(servers->size * sizeof(char *));
+    for (int i = 0; i < servers->size; i++)
+    {
+        char *server = servers->strings[i];
+
+        str_servers[i] = malloc((strlen(server) + 1) * sizeof(char));
+        strcpy(str_servers[i],server);
+    }
+    str_servers[servers->size] = NULL;
+
+    win->server_name_StringList = gtk_string_list_new((const char * const*)str_servers);
+
+    gtk_drop_down_set_model(GTK_DROP_DOWN(win->server_name_DropDown), G_LIST_MODEL(win->server_name_StringList));
+
+    /* --- Free Section --- */
+    for (int i = 0; i < servers->size; i++)
+    {
+        free(str_servers[i]);
+    }
+    free(str_servers);
+    free_string_list(servers);
+    free((char *)config_file_path);
+}
+
 static void mcsm_app_window_init(MCSMAppWindow *win)
 {
     GtkBuilder *builder;
@@ -69,29 +100,7 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
         return;
     }
 
-    const char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, ".config");
-    win->current_server_directory = (char *)get_value_from_properties_file_path(config_file_path, SERVER_DIR_PROPERTY);
-
-    struct StringList *servers = list_directories_from_path(win->current_server_directory);
-    char **str_servers = malloc(servers->size * sizeof(char *));
-    for (int i = 0; i < servers->size; i++)
-    {
-        char *server = servers->strings[i];
-
-        str_servers[i] = malloc((strlen(server) + 1) * sizeof(char));
-        strcpy(str_servers[i],server);
-    }
-    str_servers[servers->size] = NULL;
-
-    win->server_name_StringList = gtk_string_list_new((const char * const*)str_servers);
-
-    for (int i = 0; i < servers->size; i++)
-    {
-        free(str_servers[i]);
-    }
-    free(str_servers);
-    free_string_list(servers);
-    free((char *)config_file_path);
+    init_server_name_drop_down(win);
 }
 
 static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
