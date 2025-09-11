@@ -163,13 +163,13 @@ struct StringList *list_directories_from_path(const char *path)
     struct StringList *entries = list_entries(path);
     struct StringList *directories = new_string_list();
 
-    char *entry_path = malloc(MAX_STR_LEN * sizeof(char));
+    char *entry_path = malloc(MAX_PATH_LEN * sizeof(char));
     for (int i = 0; i < entries->size; i++)
     {
         snprintf(entry_path, MAX_STR_LEN, "%s%s", path, entries->strings[i]);
         if (is_directory(entry_path))
         {
-            append_string_list(directories, entry_path);
+            append_string_list(directories, entries->strings[i]);
         }
     }
 
