@@ -438,7 +438,7 @@ const int create_config_directory(void)
 {
     if (is_directory("./config/"))
     {
-        return 1;
+        return 0;
     }
 
     if (mkdir("./config/", 0700) != 0)
@@ -449,7 +449,7 @@ const int create_config_directory(void)
 
     if (is_regular_file("./config/.config"))
     {
-        return 1;
+        return 0;
     }
 
     FILE *file = fopen("./config/.config", "w");
@@ -466,7 +466,7 @@ const int create_config_directory(void)
 
     if (is_directory("./config/") && is_regular_file("./config/.config"))
     {
-        return 0;
+        return 1;
     }
     else
     {
@@ -480,9 +480,9 @@ const int create_server_config_file(const char *server_name)
     if (exists(server_config_path))
     {
         free((char *)server_config_path);
-        return 1;
+        return 0;
     }
-    else if (!is_directory("./config/") && create_config_directory() > 0)
+    else if (!is_directory("./config/") && create_config_directory() != 1)
     {
         perror("There was an error creating the config directory");
         free((char *)server_config_path);
@@ -502,5 +502,5 @@ const int create_server_config_file(const char *server_name)
 
     fclose(file);
     free((char *)server_config_path);
-    return 0;
+    return 1;
 }
