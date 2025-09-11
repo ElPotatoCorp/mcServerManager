@@ -14,7 +14,7 @@ static void reverse_check_button(GtkWidget *widget)
 
 static void gtk_entry_set_text(GtkEntry *entry, const char *str)
 {
-    if (str == NULL)
+    if (strcmp(str, "") == 0)
     {
         return;
     }
