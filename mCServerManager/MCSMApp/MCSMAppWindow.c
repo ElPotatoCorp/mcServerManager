@@ -56,9 +56,9 @@ static void init_ip_entry(MCSMAppWindow *win)
 static void init_server_name_drop_down(MCSMAppWindow *win)
 {
     const char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, ".config");
-    win->current_server_directory = (char *)get_value_from_properties_file_path(config_file_path, SERVER_DIR_PROPERTY);
+    win->server_directory = (char *)get_value_from_properties_file_path(config_file_path, SERVER_DIR_PROPERTY);
 
-    struct StringList *servers = list_directories_from_path(win->current_server_directory);
+    struct StringList *servers = list_directories_from_path(win->server_directory);
 
     char **str_servers = malloc(servers->size * sizeof(char *));
     for (int i = 0; i < servers->size; i++)
@@ -73,6 +73,10 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
     win->server_name_StringList = gtk_string_list_new((const char * const*)str_servers);
 
     gtk_drop_down_set_model(GTK_DROP_DOWN(win->server_name_DropDown), G_LIST_MODEL(win->server_name_StringList));
+    gtk_drop_down_set_selected(GTK_DROP_DOWN(win->server_name_DropDown), 0);
+
+    win->current_server = malloc((strlen(str_servers[0]) + 1) * sizeof(char));
+    strcpy(win->current_server, str_servers[0]);
 
     /* --- Free Section --- */
     for (int i = 0; i < servers->size; i++)
@@ -82,6 +86,18 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
     free(str_servers);
     free_string_list(servers);
     free((char *)config_file_path);
+}
+
+static void init_key_values(MCSMAppWindow *win)
+{
+    init_server_name_drop_down(win);
+
+    const char *current_server = gtk_string_list_get_string(win->server_name_StringList, 0);
+
+    win->current_server = malloc((strlen(current_server) + 1) * sizeof(char));
+    strcpy(win->current_server, current_server);
+
+    win->current_server_directory = (char *)concat_all_strings(3, win->server_directory, win->current_server, "/");
 }
 
 static void mcsm_app_window_init(MCSMAppWindow *win)
@@ -123,7 +139,7 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
 
     gtk_widget_set_visible(win->serv_dir_loaded_Label, FALSE);
 
-    init_server_name_drop_down(win);
+    init_key_values(win);
     init_ip_entry(win);
 }
 
@@ -197,6 +213,10 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
     if (win->server_name_StringList != NULL)
     {
         g_object_unref(win->server_name_StringList);
+    }
+    if (win->server_directory != NULL)
+    {
+        free(win->server_directory);
     }
     if (win->current_server != NULL)
     {
