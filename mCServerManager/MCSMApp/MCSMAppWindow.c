@@ -155,6 +155,8 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
 
     init_key_values(win);
     init_ip_entry(win);
+
+    refresh_serv_infos(win);
 }
 
 static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
