@@ -221,6 +221,29 @@ static void refresh_spin_button(GtkSpinButton *spin_button, const char *properti
     free((char *)str_value);
 }
 
+static void refresh_drop_down(GtkDropDown *drop_down, GtkStringList *string_list, const char *properties_file_path, const char *property)
+{
+    const char *value = get_value_from_properties_file(properties_file_path, property);
+    guint pos = gtk_string_list_find(string_list, value);
+    if (pos != GTK_INVALID_LIST_POSITION)
+    {
+        gtk_drop_down_set_selected(drop_down, pos);
+    }
+    free((char *)value);
+}
+
+static void refresh_check_button(GtkCheckButton *check_button, const char *properties_file_path, const char *property)
+{
+    const char *value = get_value_from_properties_file(properties_file_path, property);
+
+    if (strcmp(value, "") != 0)
+    {
+        gtk_check_button_set_active(check_button, strcmp(value, "true") == 0);
+    }
+
+    free((char *)value);
+}
+
 static void refresh_serv_infos(MCSMAppWindow *win)
 {
     const char *server_config_file_path = concat_all_strings(3, CONFIG_FOLDER_PATH, win->current_server, ".properties");
@@ -242,6 +265,15 @@ static void refresh_serv_infos(MCSMAppWindow *win)
 
     refresh_spin_button(GTK_SPIN_BUTTON(win->max_players_SpinButton), win->serv_props_path, MAX_PLAYERS_PROPERTY);
     refresh_spin_button(GTK_SPIN_BUTTON(win->view_distance_SpinButton), win->serv_props_path, VIEW_DISTANCE_PROPERTY);
+
+    refresh_drop_down(GTK_DROP_DOWN(win->gamemode_DropDown), win->gamemode_StringList, win->serv_props_path, GAMEMODE_PROPERTY);
+    refresh_drop_down(GTK_DROP_DOWN(win->difficulty_DropDown), win->difficulty_StringList, win->serv_props_path, DIFFICULTY_PROPERTY);
+
+    refresh_check_button(GTK_CHECK_BUTTON(win->hardcore_CheckButton), win->serv_props_path, HARDCORE_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->pvp_CheckButton), win->serv_props_path, PVP_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->fly_CheckButton), win->serv_props_path, FLY_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->nether_CheckButton), win->serv_props_path, NETHER_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->whitelist_CheckButton), win->serv_props_path, WHITELIST_PROPERTY);
 }
 
 static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
