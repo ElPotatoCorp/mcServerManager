@@ -24,10 +24,6 @@ struct StringList *new_string_list(void)
     struct StringList *list = malloc(sizeof(struct StringList));
     if (list) {
         list->strings = malloc(MAX_LIST_LEN * sizeof(char *));
-        for (int i = 0; i < MAX_LIST_LEN; i++)
-        {
-            list->strings[i] = malloc(MAX_STR_LEN * sizeof(char));
-        }
         list->size = 0;
     }
     return list;
@@ -55,7 +51,7 @@ void free_string_list(struct StringList *string_list)
 {
     if (string_list)
     {
-        for (int i = 0; i < MAX_LIST_LEN; i++)
+        for (int i = 0; i < string_list->size; i++)
         {
             free(string_list->strings[i]);
         }
@@ -66,8 +62,12 @@ void free_string_list(struct StringList *string_list)
 
 void append_string_list(struct StringList *string_list, const char *string)
 {
-    strncpy(string_list->strings[string_list->size], string, MAX_STR_LEN - 1);
-    string_list->strings[string_list->size][MAX_STR_LEN - 1] = '\0';
+    size_t data_size = (strlen(string) + 1) * sizeof(char);
+
+    string_list->strings[string_list->size] = malloc(data_size);
+
+    strcpy(string_list->strings[string_list->size], string);
+
     string_list->size++;
 }
 
