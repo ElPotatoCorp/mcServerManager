@@ -136,6 +136,7 @@
                       <property name="column">1</property>
                       <property name="row">1</property>
                     </layout>
+                    <signal name="activate" handler="on_entry_activated"/>
                   </object>
                 </child>
                 <child>
@@ -154,6 +155,7 @@
                       <property name="column">1</property>
                       <property name="row">2</property>
                     </layout>
+                    <signal name="activate" handler="on_entry_activated"/>
                   </object>
                 </child>
                 <child>
