@@ -64,14 +64,34 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
     reverse_check_button(win->whitelist_CheckButton );
     reverse_check_button(win->run_backup_CheckButton);
 
-    if (create_config_directory() == 1)
+    if (create_config_directory() == 0)
     {
-        const char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, ".config");
-
-        win->current_server_directory = (char *)get_value_from_properties_file_path(config_file_path, SERVER_DIR_PROPERTY);
-
-        free((char *)config_file_path);
+        return;
     }
+
+    const char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, ".config");
+    win->current_server_directory = (char *)get_value_from_properties_file_path(config_file_path, SERVER_DIR_PROPERTY);
+
+    struct StringList *servers = list_directories_from_path(win->current_server_directory);
+    char **str_servers = malloc(servers->size * sizeof(char *));
+    for (int i = 0; i < servers->size; i++)
+    {
+        char *server = servers->strings[i];
+
+        str_servers[i] = malloc((strlen(server) + 1) * sizeof(char));
+        strcpy(str_servers[i],server);
+    }
+    str_servers[servers->size] = NULL;
+
+    win->server_name_StringList = gtk_string_list_new((const char * const*)str_servers);
+
+    for (int i = 0; i < servers->size; i++)
+    {
+        free(str_servers[i]);
+    }
+    free(str_servers);
+    free_string_list(servers);
+    free((char *)config_file_path);
 }
 
 static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
@@ -141,13 +161,16 @@ static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
 
 void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
 {
+    if (win->server_name_StringList != NULL)
+    {
+        g_object_unref(win->server_name_StringList);
+    }
     if (win->current_server != NULL)
     {
         free(win->current_server);
     }
     if (win->current_server_directory != NULL)
     {
-        printf("I had to free it.");
         free(win->current_server_directory);
     }
     if (win->start_script_name != NULL)

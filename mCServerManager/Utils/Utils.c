@@ -222,8 +222,6 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
         return "";
     }
 
-    printf("%s\n", path);
-
     char line[MAX_STR_LEN];
     char prop[MAX_STR_LEN];
     char val[MAX_STR_LEN];
