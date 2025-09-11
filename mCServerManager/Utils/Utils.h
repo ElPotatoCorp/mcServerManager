@@ -23,6 +23,9 @@ void append_string_list(struct StringList *string_list, const char *string);
 void print_string_list(const struct StringList *string_list);
 const char *concat_all_strings(const int n, ...);
 
+/* --- CURL --- */
+const char *curl_from_url(const char *url);
+
 /* --- Check the path --- */
 const int exists(const char *path);
 const int is_regular_file(const char *path);

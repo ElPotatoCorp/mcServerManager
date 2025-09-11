@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <stdarg.h>
 #include <dirent.h>
+#include <curl/curl.h>
 
 char cwd[MAX_PATH_LEN];
 static const int set_default_prog_path(void)
@@ -18,6 +19,7 @@ static const int set_default_prog_path(void)
 struct dirent *dir;
 struct stat st = {0};
 
+#pragma region StringList
 struct StringList *new_string_list(void)
 {
     struct StringList *list = malloc(sizeof(struct StringList));
@@ -78,6 +80,72 @@ void print_string_list(const struct StringList *string_list)
         printf("%s\n", string_list->strings[i]);
     }
 }
+#pragma endregion // StringList
+
+#pragma region CURL
+struct MemoryStruct
+{
+    char *memory;
+    size_t size;
+};
+
+static size_t write_memory_callback(void *contents, size_t size, size_t nmemb, void *userp)
+{
+    size_t realsize = size * nmemb;
+    struct MemoryStruct *mem = (struct MemoryStruct *)userp;
+
+    char *ptr = realloc(mem->memory, mem->size + realsize + 1);
+    if (ptr == NULL)
+    {
+        printf("error: not enough memory\n");
+        return 0;
+    }
+
+    mem->memory = ptr;
+    memcpy(&(mem->memory[mem->size]), contents, realsize);
+    mem->size += realsize;
+    mem->memory[mem->size] = 0;
+
+    return realsize;
+}
+
+const char *curl_from_url(const char *url)
+{
+    CURL *curl_handle;
+    CURLcode res;
+
+    struct MemoryStruct chunk;
+    chunk.memory = malloc(1);
+    chunk.size = 0;
+
+    curl_handle = curl_easy_init();
+    if (curl_handle)
+    {
+        curl_easy_setopt(curl_handle, CURLOPT_URL, url);
+        curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_memory_callback);
+        curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
+        curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+
+        res = curl_easy_perform(curl_handle);
+
+        if (res != CURLE_OK)
+        {
+            fprintf(stderr, "error: %s\n", curl_easy_strerror(res));
+            free(chunk.memory);
+            return NULL;
+        }
+        curl_easy_cleanup(curl_handle);
+
+        return chunk.memory;
+    }
+    else
+    {
+        free(chunk.memory);
+        return NULL;
+    }
+}
+#pragma endregion // CURL
 
 const char *concat_all_strings(const int n, ...)
 {
