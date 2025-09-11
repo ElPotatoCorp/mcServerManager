@@ -82,7 +82,7 @@ char *strset(const char *__restrict__ __src)
     char *__ptr = malloc((strlen(__src) + 1) * sizeof(char));
     if (__ptr == NULL)
     {
-        printf("error: not enough memory\n");
+        perror("error: not enough memory\n");
         return NULL;
     }
     strcpy(__ptr, __src);
@@ -102,7 +102,7 @@ char *strrst(char **__restrict__ __dest, const char *__restrict__ __src)
     char *__ptr = realloc(*__dest, (strlen(__src) + 1) * sizeof(char));
     if (__ptr == NULL)
     {
-        printf("error: not enough memory\n");
+        perror("error: not enough memory\n");
         return *__dest;
     }
 
@@ -154,7 +154,7 @@ static size_t write_memory_callback(void *contents, size_t size, size_t nmemb, v
     char *ptr = realloc(mem->memory, mem->size + realsize + 1);
     if (ptr == NULL)
     {
-        printf("error: not enough memory\n");
+        perror("error: not enough memory\n");
         return 0;
     }
 
