@@ -70,8 +70,7 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
     {
         char *server = servers->strings[i];
 
-        str_servers[i] = malloc((strlen(server) + 1) * sizeof(char));
-        strcpy(str_servers[i],server);
+        str_servers[i] = strset(server);
     }
     str_servers[servers->size] = NULL;
 
@@ -80,8 +79,7 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
     gtk_drop_down_set_model(GTK_DROP_DOWN(win->server_name_DropDown), G_LIST_MODEL(win->server_name_StringList));
     gtk_drop_down_set_selected(GTK_DROP_DOWN(win->server_name_DropDown), 0);
 
-    win->current_server = malloc((strlen(str_servers[0]) + 1) * sizeof(char));
-    strcpy(win->current_server, str_servers[0]);
+    win->current_server = strset(str_servers[0]);
 
     /* --- Free Section --- */
     for (int i = 0; i < servers->size; i++)
