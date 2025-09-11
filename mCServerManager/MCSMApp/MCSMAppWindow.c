@@ -203,6 +203,47 @@ MCSMAppWindow *mcsm_app_window_new(MCSMApp *app)
 
 void mcsm_app_window_activate(MCSMAppWindow *win) { }
 
+static void refresh_entry(GtkEntry *entry, const char *properties_file_path, const char *property)
+{
+    char *value = (char *)get_value_from_properties_file_path(properties_file_path, property);
+    gtk_entry_set_text(GTK_ENTRY(entry), value);
+    free(value);
+}
+
+static void refresh_spin_button(GtkSpinButton *spin_button, const char *properties_file_path, const char *property)
+{
+    int value;
+    char *str_value = (char *)get_value_from_properties_file_path(properties_file_path, property);
+    if (strcmp(str_value, "") != 0 && sscanf(str_value, "%d", &value))
+    {
+        gtk_spin_button_set_value(spin_button, value);
+    }
+    free(str_value);
+}
+
+static void refresh_serv_infos(MCSMAppWindow *win)
+{
+    const char *server_config_file_path = concat_all_strings(3, CONFIG_FOLDER_PATH, win->current_server, ".properties");
+    if (!create_server_config_file(win->current_server))
+    {
+        refresh_entry(GTK_ENTRY(win->start_script_Entry), server_config_file_path, START_SCRIPT_NAME_PROPERTY);
+        
+        free((char *)server_config_file_path);
+    }
+
+    win->world_name = (char *)get_value_from_properties_file_path(win->serv_props_path, WORLD_NAME_PROPERTY);
+    gtk_entry_set_text(GTK_ENTRY(win->world_name_Entry), win->world_name);
+
+    refresh_entry(GTK_ENTRY(win->description_Entry), win->serv_props_path, DESCRIPTION_PROPERTY);
+
+    const char *port = get_value_from_properties_file_path(win->serv_props_path, PORT_PROPERTY);
+    gtk_entry_set_text(GTK_ENTRY(win->port_Entry), port);
+    gtk_entry_set_text(GTK_ENTRY(win->editable_port_Entry), port);
+
+    refresh_spin_button(GTK_SPIN_BUTTON(win->max_players_SpinButton), win->serv_props_path, MAX_PLAYERS_PROPERTY);
+    refresh_spin_button(GTK_SPIN_BUTTON(win->view_distance_SpinButton), win->serv_props_path, VIEW_DISTANCE_PROPERTY);
+}
+
 static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
 {
     GdkClipboard *clipboard = gtk_widget_get_clipboard(GTK_WIDGET(win));
