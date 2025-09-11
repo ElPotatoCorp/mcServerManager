@@ -12,6 +12,18 @@ static void reverse_check_button(GtkWidget *widget)
     gtk_widget_set_margin_bottom(widget, -4);
 }
 
+static void gtk_entry_set_text(GtkEntry *entry, const char *str)
+{
+    if (str == NULL)
+    {
+        return;
+    }
+
+    GtkEntryBuffer *entry_buffer = gtk_entry_get_buffer(entry);
+
+    gtk_entry_buffer_set_text(entry_buffer, str, strlen(str));
+}
+
 struct _MCSMAppWindow
 {
     GtkApplicationWindow parent;
@@ -34,11 +46,9 @@ G_DEFINE_TYPE(MCSMAppWindow, mcsm_app_window, GTK_TYPE_APPLICATION_WINDOW)
 
 static void init_ip_entry(MCSMAppWindow *win)
 {
-    GtkEntryBuffer *entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->ip_Entry));
-
     const char *ip = curl_from_url("https://ipinfo.io/ip");
 
-    gtk_entry_buffer_set_text(entry_buffer, ip, strlen(ip));
+    gtk_entry_set_text(GTK_ENTRY(win->ip_Entry), ip);
 
     free((char *)ip);
 }
