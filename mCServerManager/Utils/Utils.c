@@ -133,9 +133,9 @@ struct StringList *list_entries(const char *path)
     int skip_relatives = 0; // Skip '.' and '..'
 
     DIR *d = opendir(path);
-    if (d) 
+    if (d)
     {
-        while ((dir = readdir(d)) != NULL) 
+        while ((dir = readdir(d)) != NULL)
         {
             if (skip_relatives >= 2)
             {
@@ -159,7 +159,6 @@ struct StringList *list_directories_from_path(const char *path)
         perror("There is a problem with the path");
         return NULL;
     }
-
 
     struct StringList *entries = list_entries(path);
     struct StringList *directories = new_string_list();
@@ -200,7 +199,7 @@ struct StringList *list_regular_files_from_path(const char *path)
             append_string_list(files, entry_path);
         }
     }
-    
+
     free_string_list(entries);
     free(entry_path);
 
@@ -242,7 +241,7 @@ const char *get_value_from_properties_file_path(const char *path, const char *pr
             return c_val;
         }
     }
-    
+
     fclose(file);
 
     return "";
@@ -284,7 +283,7 @@ const int overwrite_property_from_properties_file_path(const char *path, const c
         }
         append_string_list(lines, line);
     }
-    
+
     fclose(file);
 
     file = fopen(path, "w");
@@ -345,7 +344,7 @@ const int create_config_directory(void)
     {
         return 1;
     }
-    
+
     if (mkdir("./config/", 0700) != 0)
     {
         perror("There was an error creating the config directory");
