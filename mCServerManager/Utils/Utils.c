@@ -23,9 +23,9 @@ struct stat st = {0};
 struct StringList *new_string_list(void)
 {
     struct StringList *list = malloc(sizeof(struct StringList));
-    if (list)
+    if (list != NULL)
     {
-        list->strings = malloc(MAX_LIST_LEN * sizeof(char *));
+        list->strings = calloc(MAX_LIST_LEN, sizeof(char *));
         list->size = 0;
     }
     return list;
