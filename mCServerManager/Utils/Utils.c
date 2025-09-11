@@ -3,7 +3,6 @@
 #include <sys/stat.h>
 #include <stdarg.h>
 #include <dirent.h>
-#include <string.h>
 
 char cwd[MAX_PATH_LEN];
 static const int set_default_prog_path(void)
