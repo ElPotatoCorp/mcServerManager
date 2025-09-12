@@ -3,7 +3,7 @@
 #include "../Utils/Constants.h"
 #include "../Utils/Utils.h"
 
-char *server_directory, *current_server, *current_server_directory, *start_script_name, *server_properties, *world_name;
+static char *server_directory, *current_server, *current_server_directory, *start_script_name, *server_properties, *world_name;
 
 static void reverse_check_button(GtkWidget *widget)
 {
@@ -357,6 +357,12 @@ static void on_drop_down_selected(GtkDropDown *drop_down, MCSMAppWindow *win)
 {
     if (!gtk_widget_get_realized(GTK_WIDGET(drop_down)))
     {
+        return;
+    }
+
+    if (server_properties == NULL || is_str_empty(server_properties))
+    {
+        perror("The server_properties is not set");
         return;
     }
 
