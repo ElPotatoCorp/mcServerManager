@@ -3,6 +3,8 @@
 #include "../Utils/Constants.h"
 #include "../Utils/Utils.h"
 
+char *server_directory, *current_server, *current_server_directory, *start_script_name, *server_properties, *world_name;
+
 static void reverse_check_button(GtkWidget *widget)
 {
     gtk_widget_set_direction    (widget, GTK_TEXT_DIR_RTL);
@@ -27,8 +29,6 @@ static void gtk_entry_set_text(GtkEntry *entry, const char *str)
 struct _MCSMAppWindow
 {
     GtkApplicationWindow parent;
-
-    char *server_directory, *current_server, *current_server_directory, *start_script_name, *server_properties, *world_name;
 
     GtkStringList *server_name_StringList, *gamemode_StringList, *difficulty_StringList;
 
@@ -56,16 +56,16 @@ static void init_ip_entry(MCSMAppWindow *win)
 static void init_server_name_drop_down(MCSMAppWindow *win)
 {
     const char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, ".config");
-    win->server_directory = (char *)get_value_from_properties_file(config_file_path, SERVER_DIR_PROPERTY);
+    server_directory = (char *)get_value_from_properties_file(config_file_path, SERVER_DIR_PROPERTY);
 
-    if (!is_directory(win->server_directory))
+    if (!is_directory(server_directory))
     {
         return;
     }
 
     gtk_widget_set_visible(win->serv_dir_loaded_Label, FALSE);
 
-    struct StringList *servers = list_directories_from_path(win->server_directory);
+    struct StringList *servers = list_directories_from_path(server_directory);
 
     char **str_servers = malloc(servers->size * sizeof(char *));
     for (int i = 0; i < servers->size; i++)
@@ -81,7 +81,7 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
     gtk_drop_down_set_model(GTK_DROP_DOWN(win->server_name_DropDown), G_LIST_MODEL(win->server_name_StringList));
     gtk_drop_down_set_selected(GTK_DROP_DOWN(win->server_name_DropDown), 0);
 
-    win->current_server = strset(str_servers[0]);
+    current_server = strset(str_servers[0]);
 
     /* --- Free Section --- */
     for (int i = 0; i < servers->size; i++)
@@ -105,11 +105,11 @@ static void init_key_values(MCSMAppWindow *win)
 
     const char *current_server = gtk_string_list_get_string(win->server_name_StringList, 0);
 
-    win->current_server = strset(current_server);
+    current_server = strset(current_server);
 
-    win->current_server_directory = (char *)concat_all_strings(3, win->server_directory, win->current_server, "/");
+    current_server_directory = (char *)concat_all_strings(3, server_directory, current_server, "/");
 
-    win->server_properties = (char *)concat_all_strings(2, win->current_server_directory, "server.properties");
+    server_properties = (char *)concat_all_strings(2, current_server_directory, "server.properties");
 }
 
 static void mcsm_app_window_init(MCSMAppWindow *win)
@@ -248,34 +248,34 @@ static void refresh_check_button(GtkCheckButton *check_button, const char *prope
 
 static void refresh_serv_infos(MCSMAppWindow *win)
 {
-    const char *server_config_file_path = concat_all_strings(3, CONFIG_FOLDER_PATH, win->current_server, ".properties");
-    if (!create_server_config_file(win->current_server))
+    const char *server_config_file_path = concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
+    if (!create_server_config_file(current_server))
     {
         refresh_entry(GTK_ENTRY(win->start_script_Entry), server_config_file_path, START_SCRIPT_NAME_PROPERTY);
         
         free((char *)server_config_file_path);
     }
 
-    win->world_name = (char *)get_value_from_properties_file(win->server_properties, WORLD_NAME_PROPERTY);
-    gtk_entry_set_text(GTK_ENTRY(win->world_name_Entry), win->world_name);
+    world_name = (char *)get_value_from_properties_file(server_properties, WORLD_NAME_PROPERTY);
+    gtk_entry_set_text(GTK_ENTRY(win->world_name_Entry), world_name);
 
-    refresh_entry(GTK_ENTRY(win->description_Entry), win->server_properties, DESCRIPTION_PROPERTY);
+    refresh_entry(GTK_ENTRY(win->description_Entry), server_properties, DESCRIPTION_PROPERTY);
 
-    const char *port = get_value_from_properties_file(win->server_properties, PORT_PROPERTY);
+    const char *port = get_value_from_properties_file(server_properties, PORT_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->port_Entry), port);
     gtk_entry_set_text(GTK_ENTRY(win->editable_port_Entry), port);
 
-    refresh_spin_button(GTK_SPIN_BUTTON(win->max_players_SpinButton), win->server_properties, MAX_PLAYERS_PROPERTY);
-    refresh_spin_button(GTK_SPIN_BUTTON(win->view_distance_SpinButton), win->server_properties, VIEW_DISTANCE_PROPERTY);
+    refresh_spin_button(GTK_SPIN_BUTTON(win->max_players_SpinButton), server_properties, MAX_PLAYERS_PROPERTY);
+    refresh_spin_button(GTK_SPIN_BUTTON(win->view_distance_SpinButton), server_properties, VIEW_DISTANCE_PROPERTY);
 
-    refresh_drop_down(GTK_DROP_DOWN(win->gamemode_DropDown), win->gamemode_StringList, win->server_properties, GAMEMODE_PROPERTY);
-    refresh_drop_down(GTK_DROP_DOWN(win->difficulty_DropDown), win->difficulty_StringList, win->server_properties, DIFFICULTY_PROPERTY);
+    refresh_drop_down(GTK_DROP_DOWN(win->gamemode_DropDown), win->gamemode_StringList, server_properties, GAMEMODE_PROPERTY);
+    refresh_drop_down(GTK_DROP_DOWN(win->difficulty_DropDown), win->difficulty_StringList, server_properties, DIFFICULTY_PROPERTY);
 
-    refresh_check_button(GTK_CHECK_BUTTON(win->hardcore_CheckButton), win->server_properties, HARDCORE_PROPERTY);
-    refresh_check_button(GTK_CHECK_BUTTON(win->pvp_CheckButton), win->server_properties, PVP_PROPERTY);
-    refresh_check_button(GTK_CHECK_BUTTON(win->fly_CheckButton), win->server_properties, FLY_PROPERTY);
-    refresh_check_button(GTK_CHECK_BUTTON(win->nether_CheckButton), win->server_properties, NETHER_PROPERTY);
-    refresh_check_button(GTK_CHECK_BUTTON(win->whitelist_CheckButton), win->server_properties, WHITELIST_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->hardcore_CheckButton), server_properties, HARDCORE_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->pvp_CheckButton), server_properties, PVP_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->fly_CheckButton), server_properties, FLY_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->nether_CheckButton), server_properties, NETHER_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->whitelist_CheckButton), server_properties, WHITELIST_PROPERTY);
 }
 #pragma endregion // Refresh The Main Display
 
@@ -298,7 +298,7 @@ static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
 
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
 {
-    if (win->server_properties == NULL || strcmp(win->server_properties,"") == 0)
+    if (server_properties == NULL || strcmp(server_properties,"") == 0)
     {
         perror("The server_directory is not set");
         return;
@@ -331,12 +331,12 @@ static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
         }
     }
 
-    overwrite_property_from_properties_file(win->server_properties, property, new_value);
+    overwrite_property_from_properties_file(server_properties, property, new_value);
 }
 
 static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWindow *win)
 {
-    if (win->server_properties == NULL || strcmp(win->server_properties,"") == 0)
+    if (server_properties == NULL || strcmp(server_properties,"") == 0)
     {
         perror("The server_directory is not set");
         return;
@@ -349,7 +349,7 @@ static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWind
     char new_value[10];
     sprintf(new_value, "%d", int_value);
 
-    overwrite_property_from_properties_file(win->server_properties, property, new_value);
+    overwrite_property_from_properties_file(server_properties, property, new_value);
 }
 
 }
@@ -368,28 +368,28 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
     {
         g_object_unref(win->difficulty_StringList);
     }
-    if (win->server_directory != NULL)
+    if (server_directory != NULL)
     {
-        free(win->server_directory);
+        free(server_directory);
     }
-    if (win->current_server != NULL)
+    if (current_server != NULL)
     {
-        free(win->current_server);
+        free(current_server);
     }
-    if (win->current_server_directory != NULL)
+    if (current_server_directory != NULL)
     {
-        free(win->current_server_directory);
+        free(current_server_directory);
     }
-    if (win->server_properties != NULL)
+    if (server_properties != NULL)
     {
-        free(win->server_properties);
+        free(server_properties);
     }
-    if (win->start_script_name != NULL)
+    if (start_script_name != NULL)
     {
-        free(win->start_script_name);
+        free(start_script_name);
     }
-    if (win->world_name != NULL)
+    if (world_name != NULL)
     {
-        free(win->world_name);
+        free(world_name);
     }
 }
