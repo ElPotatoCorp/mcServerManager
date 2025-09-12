@@ -194,6 +194,7 @@ static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
     gtk_widget_class_bind_template_callback(widget_class, on_copy_button_clicked);
     gtk_widget_class_bind_template_callback(widget_class, on_entry_activated);
     gtk_widget_class_bind_template_callback(widget_class, on_spin_button_value_changed);
+    gtk_widget_class_bind_template_callback(widget_class, on_drop_down_selected);
     gtk_widget_class_bind_template_callback(widget_class, on_window_destroyed);
 }
 
@@ -216,7 +217,7 @@ static void refresh_spin_button(GtkSpinButton *spin_button, const char *properti
 {
     int value;
     const char *str_value = get_value_from_properties_file(properties_file_path, property);
-    if (strcmp(str_value, "") != 0 && sscanf(str_value, "%d", &value))
+    if (!is_str_empty(str_value) && sscanf(str_value, "%d", &value))
     {
         gtk_spin_button_set_value(spin_button, value);
     }
@@ -238,7 +239,7 @@ static void refresh_check_button(GtkCheckButton *check_button, const char *prope
 {
     const char *value = get_value_from_properties_file(properties_file_path, property);
 
-    if (strcmp(value, "") != 0)
+    if (!is_str_empty(value))
     {
         gtk_check_button_set_active(check_button, strcmp(value, "true") == 0);
     }
@@ -298,9 +299,9 @@ static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
 
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
 {
-    if (server_properties == NULL || strcmp(server_properties,"") == 0)
+    if (server_properties == NULL || is_str_empty(server_properties))
     {
-        perror("The server_directory is not set");
+        perror("The server_properties is not set");
         return;
     }
 
@@ -336,9 +337,9 @@ static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
 
 static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWindow *win)
 {
-    if (server_properties == NULL || strcmp(server_properties,"") == 0)
+    if (server_properties == NULL || is_str_empty(server_properties))
     {
-        perror("The server_directory is not set");
+        perror("The server_properties is not set");
         return;
     }
     
@@ -352,6 +353,27 @@ static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWind
     overwrite_property_from_properties_file(server_properties, property, new_value);
 }
 
+static void on_drop_down_selected(GtkDropDown *drop_down, MCSMAppWindow *win)
+{
+    if (!gtk_widget_get_realized(GTK_WIDGET(drop_down)))
+    {
+        return;
+    }
+
+    const char *property = g_object_get_data(G_OBJECT(drop_down), "prop");
+
+    guint pos = gtk_drop_down_get_selected(drop_down);
+
+    if (pos == GTK_INVALID_LIST_POSITION)
+    {
+        return;
+    }
+
+    GtkStringList *string_list = GTK_STRING_LIST(gtk_drop_down_get_model(drop_down));
+
+    const char *new_value = gtk_string_list_get_string(string_list, pos);
+
+    overwrite_property_from_properties_file(server_properties, property, new_value);
 }
 
 void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
