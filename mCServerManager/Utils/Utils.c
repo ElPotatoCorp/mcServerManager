@@ -112,6 +112,11 @@ char *strrst(char **__restrict__ __dest, const char *__restrict__ __src)
     return *__dest;
 }
 
+const int is_str_empty(const char *str)
+{
+    return str[0] == '\0';
+}
+
 const char *concat_all_strings(const int n, ...)
 {
     va_list args;

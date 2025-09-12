@@ -25,6 +25,7 @@ void print_string_list(const struct StringList *string_list);
 /* --- String Handling --- */
 char *strset(const char *__restrict__ __src);
 char *strrst(char **__restrict__ __dest, const char *__restrict__ __src);
+const int is_str_empty(const char *str);
 const char *concat_all_strings(const int n, ...);
 
 /* --- CURL --- */
