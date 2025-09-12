@@ -30,7 +30,9 @@ struct _MCSMAppWindow
 {
     GtkApplicationWindow parent;
 
-    GtkStringList *server_name_StringList, *gamemode_StringList, *difficulty_StringList;
+    GtkStringList *server_name_StringList, *backups_StringList, *gamemode_StringList, *difficulty_StringList;
+
+    GtkSingleSelection *backups_SingleSelection;
 
     GtkWidget *gears;
     GtkWidget *serv_dir_loaded_Label;
@@ -248,6 +250,32 @@ static void refresh_check_button(GtkCheckButton *check_button, const char *prope
     free((char *)value);
 }
 
+static void refresh_backups_list_view(GtkListView *list_view, GtkStringList *string_list, GtkSingleSelection *single_selection)
+{
+    const char *backups_path = concat_all_strings(2, current_server_directory, "backups/");
+    struct StringList *backups = list_regular_files_from_path(backups_path);
+
+    printf("%s\n", backups_path);
+    print_string_list(backups);
+
+    if (string_list != NULL)
+    {
+        g_object_unref(string_list);
+    }
+    if (single_selection != NULL)
+    {
+        g_object_unref(single_selection);
+    }
+    
+    string_list = gtk_string_list_new((const char * const *)backups->strings);
+    single_selection = gtk_single_selection_new(G_LIST_MODEL(single_selection));
+
+    gtk_list_view_set_model(list_view, GTK_SELECTION_MODEL(single_selection));
+
+    free((char *)backups_path);
+    free_string_list(backups);
+}
+
 static void refresh_serv_infos(MCSMAppWindow *win)
 {
     const char *server_config_file_path = concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
@@ -281,6 +309,7 @@ static void refresh_serv_infos(MCSMAppWindow *win)
 }
 #pragma endregion // Refresh The Main Display
 
+#pragma region Signals
 static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
 {
     GdkClipboard *clipboard = gtk_widget_get_clipboard(GTK_WIDGET(win));
@@ -404,6 +433,10 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
     {
         g_object_unref(win->server_name_StringList);
     }
+    if (win->backups_StringList != NULL)
+    {
+        g_object_unref(win->backups_StringList);
+    }
     if (win->gamemode_StringList != NULL)
     {
         g_object_unref(win->gamemode_StringList);
@@ -411,6 +444,10 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
     if (win->difficulty_StringList != NULL)
     {
         g_object_unref(win->difficulty_StringList);
+    }
+    if (win->backups_SingleSelection != NULL)
+    {
+        g_object_unref(win->backups_SingleSelection);
     }
     if (server_directory != NULL)
     {
@@ -437,3 +474,4 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
         free(world_name);
     }
 }
+#pragma endregion // Signals
