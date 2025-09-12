@@ -1,0 +1,7 @@
+#!/bin/bash
+
+parent_folder=$(dirname "$1")
+file_name=$(basename "$1")
+
+cd "$parent_folder"
+bash "$file_name"

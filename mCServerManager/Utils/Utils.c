@@ -77,6 +77,7 @@ void print_string_list(const struct StringList *string_list)
 }
 #pragma endregion // StringList
 
+#pragma region Strings
 char *strset(const char *__restrict__ __src)
 {
     char *__ptr = malloc((strlen(__src) + 1) * sizeof(char));
@@ -143,6 +144,7 @@ const char *concat_all_strings(const int n, ...)
 
     return str;
 }
+#pragma endregion // Strings
 
 #pragma region CURL
 struct MemoryStruct
