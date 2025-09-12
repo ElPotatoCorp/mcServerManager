@@ -17,6 +17,9 @@
         "initializer_list": "c",
         "ranges": "c",
         "span": "c",
-        "charconv": "c"
+        "charconv": "c",
+        "chrono": "c",
+        "text_encoding": "c",
+        "typeinfo": "c"
     }
 }

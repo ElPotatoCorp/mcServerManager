@@ -181,6 +181,7 @@
                         <property name="step-increment">1</property>
                       </object>
                     </property>
+                    <signal name="value-changed" handler="on_spin_button_value_changed"/>
                   </object>
                 </child>
                 <child>
@@ -206,6 +207,7 @@
                         <property name="step-increment">1</property>
                       </object>
                     </property>
+                    <signal name="value-changed" handler="on_spin_button_value_changed"/>
                   </object>
                 </child>
                 <child>

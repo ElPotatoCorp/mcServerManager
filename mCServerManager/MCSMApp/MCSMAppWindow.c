@@ -28,7 +28,7 @@ struct _MCSMAppWindow
 {
     GtkApplicationWindow parent;
 
-    char *server_directory, *current_server, *current_server_directory, *start_script_name, *serv_props_path, *world_name;
+    char *server_directory, *current_server, *current_server_directory, *start_script_name, *server_properties, *world_name;
 
     GtkStringList *server_name_StringList, *gamemode_StringList, *difficulty_StringList;
 
@@ -109,7 +109,7 @@ static void init_key_values(MCSMAppWindow *win)
 
     win->current_server_directory = (char *)concat_all_strings(3, win->server_directory, win->current_server, "/");
 
-    win->serv_props_path = (char *)concat_all_strings(2, win->current_server_directory, "server.properties");
+    win->server_properties = (char *)concat_all_strings(2, win->current_server_directory, "server.properties");
 }
 
 static void mcsm_app_window_init(MCSMAppWindow *win)
@@ -193,6 +193,7 @@ static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
     /* --- Signals Handler --- */
     gtk_widget_class_bind_template_callback(widget_class, on_copy_button_clicked);
     gtk_widget_class_bind_template_callback(widget_class, on_entry_activated);
+    gtk_widget_class_bind_template_callback(widget_class, on_spin_button_value_changed);
     gtk_widget_class_bind_template_callback(widget_class, on_window_destroyed);
 }
 
@@ -255,26 +256,26 @@ static void refresh_serv_infos(MCSMAppWindow *win)
         free((char *)server_config_file_path);
     }
 
-    win->world_name = (char *)get_value_from_properties_file(win->serv_props_path, WORLD_NAME_PROPERTY);
+    win->world_name = (char *)get_value_from_properties_file(win->server_properties, WORLD_NAME_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->world_name_Entry), win->world_name);
 
-    refresh_entry(GTK_ENTRY(win->description_Entry), win->serv_props_path, DESCRIPTION_PROPERTY);
+    refresh_entry(GTK_ENTRY(win->description_Entry), win->server_properties, DESCRIPTION_PROPERTY);
 
-    const char *port = get_value_from_properties_file(win->serv_props_path, PORT_PROPERTY);
+    const char *port = get_value_from_properties_file(win->server_properties, PORT_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->port_Entry), port);
     gtk_entry_set_text(GTK_ENTRY(win->editable_port_Entry), port);
 
-    refresh_spin_button(GTK_SPIN_BUTTON(win->max_players_SpinButton), win->serv_props_path, MAX_PLAYERS_PROPERTY);
-    refresh_spin_button(GTK_SPIN_BUTTON(win->view_distance_SpinButton), win->serv_props_path, VIEW_DISTANCE_PROPERTY);
+    refresh_spin_button(GTK_SPIN_BUTTON(win->max_players_SpinButton), win->server_properties, MAX_PLAYERS_PROPERTY);
+    refresh_spin_button(GTK_SPIN_BUTTON(win->view_distance_SpinButton), win->server_properties, VIEW_DISTANCE_PROPERTY);
 
-    refresh_drop_down(GTK_DROP_DOWN(win->gamemode_DropDown), win->gamemode_StringList, win->serv_props_path, GAMEMODE_PROPERTY);
-    refresh_drop_down(GTK_DROP_DOWN(win->difficulty_DropDown), win->difficulty_StringList, win->serv_props_path, DIFFICULTY_PROPERTY);
+    refresh_drop_down(GTK_DROP_DOWN(win->gamemode_DropDown), win->gamemode_StringList, win->server_properties, GAMEMODE_PROPERTY);
+    refresh_drop_down(GTK_DROP_DOWN(win->difficulty_DropDown), win->difficulty_StringList, win->server_properties, DIFFICULTY_PROPERTY);
 
-    refresh_check_button(GTK_CHECK_BUTTON(win->hardcore_CheckButton), win->serv_props_path, HARDCORE_PROPERTY);
-    refresh_check_button(GTK_CHECK_BUTTON(win->pvp_CheckButton), win->serv_props_path, PVP_PROPERTY);
-    refresh_check_button(GTK_CHECK_BUTTON(win->fly_CheckButton), win->serv_props_path, FLY_PROPERTY);
-    refresh_check_button(GTK_CHECK_BUTTON(win->nether_CheckButton), win->serv_props_path, NETHER_PROPERTY);
-    refresh_check_button(GTK_CHECK_BUTTON(win->whitelist_CheckButton), win->serv_props_path, WHITELIST_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->hardcore_CheckButton), win->server_properties, HARDCORE_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->pvp_CheckButton), win->server_properties, PVP_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->fly_CheckButton), win->server_properties, FLY_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->nether_CheckButton), win->server_properties, NETHER_PROPERTY);
+    refresh_check_button(GTK_CHECK_BUTTON(win->whitelist_CheckButton), win->server_properties, WHITELIST_PROPERTY);
 }
 #pragma endregion // Refresh The Main Display
 
@@ -297,7 +298,7 @@ static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
 
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
 {
-    if (win->serv_props_path == NULL || strcmp(win->serv_props_path,"") == 0)
+    if (win->server_properties == NULL || strcmp(win->server_properties,"") == 0)
     {
         perror("The server_directory is not set");
         return;
@@ -330,7 +331,27 @@ static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
         }
     }
 
-    overwrite_property_from_properties_file(win->serv_props_path, property, new_value);
+    overwrite_property_from_properties_file(win->server_properties, property, new_value);
+}
+
+static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWindow *win)
+{
+    if (win->server_properties == NULL || strcmp(win->server_properties,"") == 0)
+    {
+        perror("The server_directory is not set");
+        return;
+    }
+    
+    const char *property = g_object_get_data(G_OBJECT(spin_button), "prop");
+
+    int int_value = gtk_spin_button_get_value_as_int(spin_button);
+
+    char new_value[10];
+    sprintf(new_value, "%d", int_value);
+
+    overwrite_property_from_properties_file(win->server_properties, property, new_value);
+}
+
 }
 
 void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
@@ -359,9 +380,9 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
     {
         free(win->current_server_directory);
     }
-    if (win->serv_props_path != NULL)
+    if (win->server_properties != NULL)
     {
-        free(win->serv_props_path);
+        free(win->server_properties);
     }
     if (win->start_script_name != NULL)
     {
