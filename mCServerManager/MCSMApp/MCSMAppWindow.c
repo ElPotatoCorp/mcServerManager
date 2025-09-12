@@ -195,6 +195,7 @@ static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
     gtk_widget_class_bind_template_callback(widget_class, on_entry_activated);
     gtk_widget_class_bind_template_callback(widget_class, on_spin_button_value_changed);
     gtk_widget_class_bind_template_callback(widget_class, on_drop_down_selected);
+    gtk_widget_class_bind_template_callback(widget_class, on_check_button_toggled);
     gtk_widget_class_bind_template_callback(widget_class, on_window_destroyed);
 }
 
@@ -378,6 +379,21 @@ static void on_drop_down_selected(GtkDropDown *drop_down, MCSMAppWindow *win)
     GtkStringList *string_list = GTK_STRING_LIST(gtk_drop_down_get_model(drop_down));
 
     const char *new_value = gtk_string_list_get_string(string_list, pos);
+
+    overwrite_property_from_properties_file(server_properties, property, new_value);
+}
+
+static void on_check_button_toggled(GtkCheckButton *check_button, GtkWindow *win)
+{
+    if (server_properties == NULL || is_str_empty(server_properties))
+    {
+        perror("The server_properties is not set");
+        return;
+    }
+
+    const char *property = g_object_get_data(G_OBJECT(check_button), "prop");
+
+    const char *new_value = gtk_check_button_get_active(GTK_CHECK_BUTTON(check_button)) ? "true" : "false";
 
     overwrite_property_from_properties_file(server_properties, property, new_value);
 }

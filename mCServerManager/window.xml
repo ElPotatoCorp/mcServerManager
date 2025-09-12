@@ -276,6 +276,7 @@
                       <property name="column-span">2</property>
                     </layout>
                     <property name="label">Hardcore</property>
+                    <signal name="toggled" handler="on_check_button_toggled"/>
                   </object>                  
                 </child>
                 <child>
@@ -286,6 +287,7 @@
                       <property name="column-span">2</property>
                     </layout>
                     <property name="label">PVP</property>
+                    <signal name="toggled" handler="on_check_button_toggled"/>
                   </object>                  
                 </child>
                 <child>
@@ -296,6 +298,7 @@
                       <property name="column-span">2</property>
                     </layout>
                     <property name="label">Allow Flight</property>
+                    <signal name="toggled" handler="on_check_button_toggled"/>
                   </object>                  
                 </child>
                 <child>
@@ -306,6 +309,7 @@
                       <property name="column-span">2</property>
                     </layout>
                     <property name="label">Allow Nether</property>
+                    <signal name="toggled" handler="on_check_button_toggled"/>
                   </object>                  
                 </child>
                 <child>
@@ -316,6 +320,7 @@
                       <property name="column-span">2</property>
                     </layout>
                     <property name="label">Enable Whitelist</property>
+                    <signal name="toggled" handler="on_check_button_toggled"/>
                   </object>                  
                 </child>
               </object>
