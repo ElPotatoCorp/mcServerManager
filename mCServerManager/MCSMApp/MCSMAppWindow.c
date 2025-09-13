@@ -30,7 +30,7 @@ struct _MCSMAppWindow
 {
     GtkApplicationWindow parent;
 
-    GtkStringList *server_name_StringList, *backups_StringList, *gamemode_StringList, *difficulty_StringList;
+    GtkStringList *server_name_StringList, *backups_StringList;
 
     GtkSingleSelection *backups_SingleSelection;
 
@@ -98,12 +98,6 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
 static void init_key_values(MCSMAppWindow *win)
 {
     init_server_name_drop_down(win);
-
-    char *gamemodes[4] = { "survival", "creative", "spectator", "adventure" };
-    win->gamemode_StringList = gtk_string_list_new((const char * const *)gamemodes);
-
-    char *difficulties[4] = { "peaceful", "easy", "normal", "hard" };
-    win->difficulty_StringList = gtk_string_list_new((const char * const *)difficulties);
 
     const char *current_server = gtk_string_list_get_string(win->server_name_StringList, 0);
 
@@ -227,15 +221,19 @@ static void refresh_spin_button(GtkSpinButton *spin_button, const char *properti
     free((char *)str_value);
 }
 
-static void refresh_drop_down(GtkDropDown *drop_down, GtkStringList *string_list, const char *properties_file_path, const char *property)
+static void refresh_drop_down(GtkDropDown *drop_down, const char *properties_file_path, const char *property)
 {
-    const char *value = get_value_from_properties_file(properties_file_path, property);
+    char *value = (char *)get_value_from_properties_file(properties_file_path, property);
+    value[0] = value[0] - 32;
+
+    GtkStringList *string_list = GTK_STRING_LIST(gtk_drop_down_get_model(drop_down));
+
     guint pos = gtk_string_list_find(string_list, value);
     if (pos != GTK_INVALID_LIST_POSITION)
     {
         gtk_drop_down_set_selected(drop_down, pos);
     }
-    free((char *)value);
+    free(value);
 }
 
 static void refresh_check_button(GtkCheckButton *check_button, const char *properties_file_path, const char *property)
@@ -255,8 +253,8 @@ static void refresh_backups_list_view(GtkListView *list_view, GtkStringList *str
     const char *backups_path = concat_all_strings(2, current_server_directory, "backups/");
     struct StringList *backups = list_regular_files_from_path(backups_path);
 
-    printf("%s\n", backups_path);
-    print_string_list(backups);
+    /*printf("%s\n", backups_path);
+    print_string_list(backups);*/
 
     if (string_list != NULL)
     {
@@ -298,14 +296,16 @@ static void refresh_serv_infos(MCSMAppWindow *win)
     refresh_spin_button(GTK_SPIN_BUTTON(win->max_players_SpinButton), server_properties, MAX_PLAYERS_PROPERTY);
     refresh_spin_button(GTK_SPIN_BUTTON(win->view_distance_SpinButton), server_properties, VIEW_DISTANCE_PROPERTY);
 
-    refresh_drop_down(GTK_DROP_DOWN(win->gamemode_DropDown), win->gamemode_StringList, server_properties, GAMEMODE_PROPERTY);
-    refresh_drop_down(GTK_DROP_DOWN(win->difficulty_DropDown), win->difficulty_StringList, server_properties, DIFFICULTY_PROPERTY);
+    refresh_drop_down(GTK_DROP_DOWN(win->gamemode_DropDown), server_properties, GAMEMODE_PROPERTY);
+    refresh_drop_down(GTK_DROP_DOWN(win->difficulty_DropDown), server_properties, DIFFICULTY_PROPERTY);
 
     refresh_check_button(GTK_CHECK_BUTTON(win->hardcore_CheckButton), server_properties, HARDCORE_PROPERTY);
     refresh_check_button(GTK_CHECK_BUTTON(win->pvp_CheckButton), server_properties, PVP_PROPERTY);
     refresh_check_button(GTK_CHECK_BUTTON(win->fly_CheckButton), server_properties, FLY_PROPERTY);
     refresh_check_button(GTK_CHECK_BUTTON(win->nether_CheckButton), server_properties, NETHER_PROPERTY);
     refresh_check_button(GTK_CHECK_BUTTON(win->whitelist_CheckButton), server_properties, WHITELIST_PROPERTY);
+
+    refresh_backups_list_view(GTK_LIST_VIEW(win->backups_ListView), win->backups_StringList, win->backups_SingleSelection);
 }
 #pragma endregion // Refresh The Main Display
 
@@ -407,9 +407,12 @@ static void on_drop_down_selected(GtkDropDown *drop_down, MCSMAppWindow *win)
 
     GtkStringList *string_list = GTK_STRING_LIST(gtk_drop_down_get_model(drop_down));
 
-    const char *new_value = gtk_string_list_get_string(string_list, pos);
+    char *new_value = strset(gtk_string_list_get_string(string_list, pos));
+    new_value[0] = new_value[0] + 32;
 
     overwrite_property_from_properties_file(server_properties, property, new_value);
+
+    free(new_value);
 }
 
 static void on_check_button_toggled(GtkCheckButton *check_button, GtkWindow *win)
@@ -422,7 +425,7 @@ static void on_check_button_toggled(GtkCheckButton *check_button, GtkWindow *win
 
     const char *property = g_object_get_data(G_OBJECT(check_button), "prop");
 
-    const char *new_value = gtk_check_button_get_active(GTK_CHECK_BUTTON(check_button)) ? "true" : "false";
+    char *new_value = gtk_check_button_get_active(GTK_CHECK_BUTTON(check_button)) ? "true" : "false";
 
     overwrite_property_from_properties_file(server_properties, property, new_value);
 }
@@ -436,14 +439,6 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
     if (win->backups_StringList != NULL)
     {
         g_object_unref(win->backups_StringList);
-    }
-    if (win->gamemode_StringList != NULL)
-    {
-        g_object_unref(win->gamemode_StringList);
-    }
-    if (win->difficulty_StringList != NULL)
-    {
-        g_object_unref(win->difficulty_StringList);
     }
     if (win->backups_SingleSelection != NULL)
     {
