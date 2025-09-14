@@ -33,6 +33,7 @@ struct _MCSMAppWindow
     GtkStringList *server_name_StringList, *backups_StringList;
 
     GtkSingleSelection *backups_SingleSelection;
+    GtkListItemFactory *backups_Factory;
 
     GtkWidget *gears;
     GtkWidget *serv_dir_loaded_Label;
@@ -45,6 +46,16 @@ struct _MCSMAppWindow
 };
 
 G_DEFINE_TYPE(MCSMAppWindow, mcsm_app_window, GTK_TYPE_APPLICATION_WINDOW)
+
+static void init_list_view(MCSMAppWindow *win)
+{
+    win->backups_Factory = gtk_signal_list_item_factory_new();
+
+    g_signal_connect (win->backups_Factory, "setup", G_CALLBACK (setup_listitem_cb), NULL);
+    g_signal_connect (win->backups_Factory, "bind", G_CALLBACK (bind_listitem_cb), NULL);
+
+    gtk_list_view_set_factory(GTK_LIST_VIEW(win->backups_ListView), win->backups_Factory);
+}
 
 static void init_ip_entry(MCSMAppWindow *win)
 {
@@ -78,7 +89,7 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
     }
     str_servers[servers->size] = NULL;
 
-    win->server_name_StringList = gtk_string_list_new((const char * const*)str_servers);
+    win->server_name_StringList = gtk_string_list_new((const char *const *)str_servers);
 
     gtk_drop_down_set_model(GTK_DROP_DOWN(win->server_name_DropDown), G_LIST_MODEL(win->server_name_StringList));
     gtk_drop_down_set_selected(GTK_DROP_DOWN(win->server_name_DropDown), 0);
@@ -144,6 +155,8 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
     reverse_check_button(win->run_backup_CheckButton);
     #pragma endregion // Formatting Button
 
+    init_list_view(win);
+
     if (create_config_directory())
     {
         return;
@@ -200,7 +213,7 @@ MCSMAppWindow *mcsm_app_window_new(MCSMApp *app)
     return g_object_new(MCSM_APP_WINDOW_TYPE, "application", app, NULL);
 }
 
-void mcsm_app_window_activate(MCSMAppWindow *win) { }
+void mcsm_app_window_activate(MCSMAppWindow *win) {}
 
 #pragma region Refresh The Main Display
 static void refresh_entry(GtkEntry *entry, const char *properties_file_path, const char *property)
@@ -248,13 +261,11 @@ static void refresh_check_button(GtkCheckButton *check_button, const char *prope
     free((char *)value);
 }
 
-static void refresh_backups_list_view(GtkListView *list_view, GtkStringList *string_list, GtkSingleSelection *single_selection)
+static void refresh_backups_list_view(GtkListView *list_view, GtkSingleSelection *single_selection, GtkStringList *string_list)
 {
     const char *backups_path = concat_all_strings(2, current_server_directory, "backups/");
     struct StringList *backups = list_regular_files_from_path(backups_path);
 
-    /*printf("%s\n", backups_path);
-    print_string_list(backups);*/
 
     if (string_list != NULL)
     {
@@ -265,11 +276,12 @@ static void refresh_backups_list_view(GtkListView *list_view, GtkStringList *str
         g_object_unref(single_selection);
     }
     
-    string_list = gtk_string_list_new((const char * const *)backups->strings);
-    single_selection = gtk_single_selection_new(G_LIST_MODEL(single_selection));
+    string_list = gtk_string_list_new((const char *const *)backups->strings);
+    
+    single_selection = gtk_single_selection_new(G_LIST_MODEL(string_list));
 
     gtk_list_view_set_model(list_view, GTK_SELECTION_MODEL(single_selection));
-
+    
     free((char *)backups_path);
     free_string_list(backups);
 }
@@ -280,7 +292,7 @@ static void refresh_serv_infos(MCSMAppWindow *win)
     if (!create_server_config_file(current_server))
     {
         refresh_entry(GTK_ENTRY(win->start_script_Entry), server_config_file_path, START_SCRIPT_NAME_PROPERTY);
-        
+
         free((char *)server_config_file_path);
     }
 
@@ -305,7 +317,7 @@ static void refresh_serv_infos(MCSMAppWindow *win)
     refresh_check_button(GTK_CHECK_BUTTON(win->nether_CheckButton), server_properties, NETHER_PROPERTY);
     refresh_check_button(GTK_CHECK_BUTTON(win->whitelist_CheckButton), server_properties, WHITELIST_PROPERTY);
 
-    refresh_backups_list_view(GTK_LIST_VIEW(win->backups_ListView), win->backups_StringList, win->backups_SingleSelection);
+    refresh_backups_list_view(GTK_LIST_VIEW(win->backups_ListView), win->backups_SingleSelection, win->backups_StringList);
 }
 #pragma endregion // Refresh The Main Display
 
@@ -323,8 +335,37 @@ static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
     const char *ip_port = concat_all_strings(3, ip, ":", port);
 
     gdk_clipboard_set_text(clipboard, ip_port);
-    
+
     free((char *)ip_port);
+}
+
+static void setup_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item)
+{
+    GtkWidget *label;
+
+    label = gtk_label_new(NULL);
+    gtk_label_set_xalign(GTK_LABEL(label), GTK_ALIGN_FILL);
+    
+    gtk_list_item_set_child(list_item, label);
+}
+
+static void bind_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item)
+{
+    GtkWidget *label = gtk_list_item_get_child(list_item);
+    if (label == NULL)
+    {
+        return;
+    }
+
+    GtkStringObject *item = GTK_STRING_OBJECT(gtk_list_item_get_item(list_item));
+    if (item == NULL)
+    {
+        return;
+    }
+
+    const char *text = gtk_string_object_get_string(item);
+
+    gtk_label_set_text(GTK_LABEL(label), text ? text : "");
 }
 
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
@@ -372,7 +413,7 @@ static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWind
         perror("The server_properties is not set");
         return;
     }
-    
+
     const char *property = g_object_get_data(G_OBJECT(spin_button), "prop");
 
     int int_value = gtk_spin_button_get_value_as_int(spin_button);
@@ -443,6 +484,10 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
     if (win->backups_SingleSelection != NULL)
     {
         g_object_unref(win->backups_SingleSelection);
+    }
+    if (win->backups_Factory != NULL)
+    {
+        g_object_unref(win->backups_Factory);
     }
     if (server_directory != NULL)
     {
