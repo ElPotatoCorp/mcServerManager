@@ -110,9 +110,7 @@ static void init_key_values(MCSMAppWindow *win)
 {
     init_server_name_drop_down(win);
 
-    const char *current_server = gtk_string_list_get_string(win->server_name_StringList, 0);
-
-    current_server = strset(current_server);
+    current_server = strset(gtk_string_list_get_string(win->server_name_StringList, 0));
 
     current_server_directory = (char *)concat_all_strings(3, server_directory, current_server, "/");
 
@@ -291,10 +289,14 @@ static void refresh_serv_infos(MCSMAppWindow *win)
     const char *server_config_file_path = concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
     if (!create_server_config_file(current_server))
     {
-        refresh_entry(GTK_ENTRY(win->start_script_Entry), server_config_file_path, START_SCRIPT_NAME_PROPERTY);
-
-        free((char *)server_config_file_path);
+        if (start_script_name != NULL)
+        {
+            free(start_script_name);
+        }
+        start_script_name = get_value_from_properties_file(server_config_file_path, START_SCRIPT_NAME_PROPERTY);
+        gtk_entry_set_text(GTK_ENTRY(win->start_script_Entry), start_script_name);
     }
+    free((char *)server_config_file_path);
 
     world_name = (char *)get_value_from_properties_file(server_properties, WORLD_NAME_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->world_name_Entry), world_name);
@@ -366,6 +368,42 @@ static void bind_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item
     const char *text = gtk_string_object_get_string(item);
 
     gtk_label_set_text(GTK_LABEL(label), text ? text : "");
+}
+
+static void on_server_drop_down_selected(GtkDropDown *drop_down, MCSMAppWindow *win)
+{
+    if (!gtk_widget_get_realized(GTK_WIDGET(drop_down)))
+    {
+        return;
+    }
+
+    guint pos = gtk_drop_down_get_selected(drop_down);
+
+    if (pos == GTK_INVALID_LIST_POSITION)
+    {
+        return;
+    }
+
+    GtkStringList *string_list = GTK_STRING_LIST(gtk_drop_down_get_model(drop_down));
+
+    if (current_server != NULL)
+    {
+        free(current_server);
+    }
+    if (current_server_directory != NULL)
+    {
+        free(current_server_directory);
+    }
+    if (server_properties != NULL)
+    {
+        free(server_properties);
+    }
+    
+    current_server = strset(gtk_string_list_get_string(string_list, pos));
+    current_server_directory = (char *)concat_all_strings(3, server_directory, current_server, "/");
+    server_properties = (char *)concat_all_strings(2, current_server_directory, "server.properties");
+
+    // refresh_serv_infos(win);
 }
 
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
