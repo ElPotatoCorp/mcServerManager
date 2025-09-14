@@ -302,7 +302,7 @@ struct StringList *list_regular_files_from_path(const char *path)
         snprintf(entry_path, MAX_STR_LEN, "%s%s", path, entries->strings[i]);
         if (is_regular_file(entry_path))
         {
-            append_string_list(files, entry_path);
+            append_string_list(files, entries->strings[i]);
         }
     }
 
