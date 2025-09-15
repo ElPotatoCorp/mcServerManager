@@ -10,6 +10,15 @@
 #define MAX_STR_LEN 128
 #define MAX_LIST_LEN 64
 
+#define free(X) mcsm_free( X, __FILE__, __LINE__, __FUNCTION__)
+
+void *mcsm_free(void *ptr, const char *file, int line, const char *func)
+{
+    printf ("Freed = %s, %i, %s, %p[%li]\n", file, line, func, ptr, sizeof(ptr));
+    free(ptr);
+    ptr = NULL;
+}
+
 /* --- A good ol' struct for a basic list of string --- */
 struct StringList 
 {
