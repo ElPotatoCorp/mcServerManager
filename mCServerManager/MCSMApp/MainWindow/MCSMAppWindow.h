@@ -15,11 +15,11 @@ static void refresh_serv_infos(MCSMAppWindow *win);
 
 static void setup_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item);
 static void bind_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item);
-static void on_server_drop_down_selected(GtkDropDown *drop_down, MCSMAppWindow *win);
+static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MCSMAppWindow *win);
 static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win);
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win);
 static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWindow *win);
-static void on_drop_down_selected(GtkDropDown *drop_down, MCSMAppWindow *win);
+static void on_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MCSMAppWindow *win);
 static void on_check_button_toggled(GtkCheckButton *check_button, GtkWindow *win);
 void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win);
 

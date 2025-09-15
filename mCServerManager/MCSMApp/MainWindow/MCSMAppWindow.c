@@ -1,7 +1,7 @@
-#include "MCSMApp.h"
+#include "../MCSMApp.h"
 #include "MCSMAppWindow.h"
-#include "../Utils/Constants.h"
-#include "../Utils/Utils.h"
+#include "../../Utils/Constants.h"
+#include "../../Utils/Utils.h"
 
 static char *server_directory, *current_server, *current_server_directory, *start_script_name, *server_properties, *world_name;
 
@@ -198,6 +198,7 @@ static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
     gtk_widget_class_bind_template_child(widget_class, MCSMAppWindow, backups_ListView        );
 
     /* --- Signals Handler --- */
+    gtk_widget_class_bind_template_callback(widget_class, on_server_drop_down_selected);
     gtk_widget_class_bind_template_callback(widget_class, on_copy_button_clicked);
     gtk_widget_class_bind_template_callback(widget_class, on_entry_activated);
     gtk_widget_class_bind_template_callback(widget_class, on_spin_button_value_changed);
@@ -264,7 +265,6 @@ static void refresh_backups_list_view(GtkListView *list_view, GtkSingleSelection
     const char *backups_path = concat_all_strings(2, current_server_directory, "backups/");
     struct StringList *backups = list_regular_files_from_path(backups_path);
 
-
     if (string_list != NULL)
     {
         g_object_unref(string_list);
@@ -293,13 +293,14 @@ static void refresh_serv_infos(MCSMAppWindow *win)
         {
             free(start_script_name);
         }
-        start_script_name = get_value_from_properties_file(server_config_file_path, START_SCRIPT_NAME_PROPERTY);
+        start_script_name = (char *)get_value_from_properties_file(server_config_file_path, START_SCRIPT_NAME_PROPERTY);
         gtk_entry_set_text(GTK_ENTRY(win->start_script_Entry), start_script_name);
     }
     free((char *)server_config_file_path);
 
     world_name = (char *)get_value_from_properties_file(server_properties, WORLD_NAME_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->world_name_Entry), world_name);
+    free(world_name);
 
     refresh_entry(GTK_ENTRY(win->description_Entry), server_properties, DESCRIPTION_PROPERTY);
 
@@ -370,7 +371,7 @@ static void bind_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item
     gtk_label_set_text(GTK_LABEL(label), text ? text : "");
 }
 
-static void on_server_drop_down_selected(GtkDropDown *drop_down, MCSMAppWindow *win)
+static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MCSMAppWindow *win)
 {
     if (!gtk_widget_get_realized(GTK_WIDGET(drop_down)))
     {
@@ -403,7 +404,7 @@ static void on_server_drop_down_selected(GtkDropDown *drop_down, MCSMAppWindow *
     current_server_directory = (char *)concat_all_strings(3, server_directory, current_server, "/");
     server_properties = (char *)concat_all_strings(2, current_server_directory, "server.properties");
 
-    // refresh_serv_infos(win);
+    refresh_serv_infos(win);
 }
 
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
@@ -442,6 +443,8 @@ static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
     }
 
     overwrite_property_from_properties_file(server_properties, property, new_value);
+
+    refresh_serv_infos(win);
 }
 
 static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWindow *win)
@@ -462,13 +465,8 @@ static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWind
     overwrite_property_from_properties_file(server_properties, property, new_value);
 }
 
-static void on_drop_down_selected(GtkDropDown *drop_down, MCSMAppWindow *win)
+static void on_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MCSMAppWindow *win)
 {
-    if (!gtk_widget_get_realized(GTK_WIDGET(drop_down)))
-    {
-        return;
-    }
-
     if (server_properties == NULL || is_str_empty(server_properties))
     {
         perror("The server_properties is not set");

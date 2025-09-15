@@ -1,5 +1,5 @@
 #include "MCSMApp.h"
-#include "MCSMAppWindow.h"
+#include "MainWindow/MCSMAppWindow.h"
 
 struct _MCSMApp
 {
