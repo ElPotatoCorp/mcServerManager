@@ -325,23 +325,6 @@ static void refresh_serv_infos(MCSMAppWindow *win)
 #pragma endregion // Refresh The Main Display
 
 #pragma region Signals
-static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
-{
-    GdkClipboard *clipboard = gtk_widget_get_clipboard(GTK_WIDGET(win));
-
-    GtkEntryBuffer *ip_entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->ip_Entry));
-    GtkEntryBuffer *port_entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->port_Entry));
-
-    const char *ip = gtk_entry_buffer_get_text(ip_entry_buffer);
-    const char *port = gtk_entry_buffer_get_text(port_entry_buffer);
-
-    const char *ip_port = concat_all_strings(3, ip, ":", port);
-
-    gdk_clipboard_set_text(clipboard, ip_port);
-
-    free((char *)ip_port);
-}
-
 static void setup_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item)
 {
     GtkWidget *label;
@@ -407,6 +390,23 @@ static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gpa
     refresh_serv_infos(win);
 }
 
+static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
+{
+    GdkClipboard *clipboard = gtk_widget_get_clipboard(GTK_WIDGET(win));
+    
+    GtkEntryBuffer *ip_entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->ip_Entry));
+    GtkEntryBuffer *port_entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->port_Entry));
+    
+    const char *ip = gtk_entry_buffer_get_text(ip_entry_buffer);
+    const char *port = gtk_entry_buffer_get_text(port_entry_buffer);
+    
+    const char *ip_port = concat_all_strings(3, ip, ":", port);
+    
+    gdk_clipboard_set_text(clipboard, ip_port);
+    
+    free((char *)ip_port);
+}
+
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
 {
     if (server_properties == NULL || is_str_empty(server_properties))
@@ -443,8 +443,6 @@ static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
     }
 
     overwrite_property_from_properties_file(server_properties, property, new_value);
-
-    refresh_serv_infos(win);
 }
 
 static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWindow *win)
