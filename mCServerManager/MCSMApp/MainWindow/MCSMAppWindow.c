@@ -3,7 +3,7 @@
 #include "../../Utils/Constants.h"
 #include "../../Utils/Utils.h"
 
-static char *server_directory, *current_server, *current_server_directory, *start_script_name, *server_properties, *world_name;
+static char *server_directory = NULL, *server_config_file = NULL, *current_server = NULL, *current_server_directory = NULL, *start_script_name = NULL, *server_properties = NULL, *world_name = NULL;
 
 static void reverse_check_button(GtkWidget *widget)
 {
@@ -110,6 +110,8 @@ static void init_key_values(MCSMAppWindow *win)
 {
     init_server_name_drop_down(win);
 
+    server_config_file = (char *)concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
+
     current_server = strset(gtk_string_list_get_string(win->server_name_StringList, 0));
 
     current_server_directory = (char *)concat_all_strings(3, server_directory, current_server, "/");
@@ -199,6 +201,7 @@ static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
 
     /* --- Signals Handler --- */
     gtk_widget_class_bind_template_callback(widget_class, on_server_drop_down_selected);
+    gtk_widget_class_bind_template_callback(widget_class, on_open_start_script_clicked);
     gtk_widget_class_bind_template_callback(widget_class, on_copy_button_clicked);
     gtk_widget_class_bind_template_callback(widget_class, on_entry_activated);
     gtk_widget_class_bind_template_callback(widget_class, on_spin_button_value_changed);
@@ -286,17 +289,15 @@ static void refresh_backups_list_view(GtkListView *list_view, GtkSingleSelection
 
 static void refresh_serv_infos(MCSMAppWindow *win)
 {
-    const char *server_config_file_path = concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
     if (!create_server_config_file(current_server))
     {
         if (start_script_name != NULL)
         {
             free(start_script_name);
         }
-        start_script_name = (char *)get_value_from_properties_file(server_config_file_path, START_SCRIPT_NAME_PROPERTY);
+        start_script_name = (char *)get_value_from_properties_file(server_config_file, START_SCRIPT_NAME_PROPERTY);
         gtk_entry_set_text(GTK_ENTRY(win->start_script_Entry), start_script_name);
     }
-    free((char *)server_config_file_path);
 
     world_name = (char *)get_value_from_properties_file(server_properties, WORLD_NAME_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->world_name_Entry), world_name);
@@ -331,7 +332,7 @@ static void setup_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_ite
 
     label = gtk_label_new(NULL);
     gtk_label_set_xalign(GTK_LABEL(label), GTK_ALIGN_FILL);
-    
+
     gtk_list_item_set_child(list_item, label);
 }
 
@@ -370,6 +371,10 @@ static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gpa
 
     GtkStringList *string_list = GTK_STRING_LIST(gtk_drop_down_get_model(drop_down));
 
+    if (server_config_file != NULL)
+    {
+        free(server_config_file);
+    }
     if (current_server != NULL)
     {
         free(current_server);
@@ -382,7 +387,8 @@ static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gpa
     {
         free(server_properties);
     }
-    
+
+    server_config_file = (char *)concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
     current_server = strset(gtk_string_list_get_string(string_list, pos));
     current_server_directory = (char *)concat_all_strings(3, server_directory, current_server, "/");
     server_properties = (char *)concat_all_strings(2, current_server_directory, "server.properties");
@@ -390,20 +396,87 @@ static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gpa
     refresh_serv_infos(win);
 }
 
+static void on_open_start_script_clicked(GtkButton *button, MCSMAppWindow *win)
+{
+    GFile *default_folder = g_file_new_for_path(current_server_directory);
+    GtkFileDialog *dialog = gtk_file_dialog_new();
+    GListStore *filters = g_list_store_new(GTK_TYPE_FILE_FILTER);
+    GCancellable *cancellable = g_cancellable_new();
+    
+    GtkFileFilter *filter = gtk_file_filter_new();
+    gtk_file_filter_set_name(filter, "Bash");
+    gtk_file_filter_add_pattern(filter, "*.sh");
+    g_list_store_append(filters, filter);
+    g_object_unref(filter);
+
+    filter = gtk_file_filter_new();
+    gtk_file_filter_set_name(filter, "Any");
+    gtk_file_filter_add_pattern(filter, "*");
+    g_list_store_append(filters, filter);
+    g_object_unref(filter);
+
+    gtk_file_dialog_set_initial_folder(dialog, default_folder);
+    gtk_file_dialog_set_filters(dialog, G_LIST_MODEL(filters));
+
+    gtk_file_dialog_open(dialog, GTK_WINDOW(win), cancellable, on_start_script_file_dialog_finished, win);
+
+    g_object_unref(cancellable);
+    g_object_unref(filters);
+    g_object_unref(dialog);
+    g_object_unref(default_folder);
+}
+
+static void on_start_script_file_dialog_finished(GObject *object, GAsyncResult *res, gpointer user_data)
+{
+    GtkFileDialog *dialog = GTK_FILE_DIALOG(object);
+    MCSMAppWindow *win = MCSM_APP_WINDOW(user_data);
+    GError *err = NULL;
+
+    GFile *file = gtk_file_dialog_open_finish(dialog, res, &err);
+
+    if (err != NULL)
+    {
+        if (err->code == GTK_DIALOG_ERROR_DISMISSED)
+        {
+            perror("It has been cancelled by the user.");
+        }
+        else
+        {
+            perror(err->message);
+        }
+        g_error_free(err);
+        return;
+    }
+
+    if (file == NULL)
+    {
+        return;
+    }
+
+    create_server_config_file(current_server);
+
+    char *file_name = g_file_get_basename(file);
+    overwrite_property_from_properties_file(server_config_file, START_SCRIPT_NAME_PROPERTY, file_name);
+    gtk_entry_set_text(GTK_ENTRY(win->start_script_Entry), file_name);
+
+    g_free(file_name);
+    g_object_unref(file);
+}
+
 static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
 {
     GdkClipboard *clipboard = gtk_widget_get_clipboard(GTK_WIDGET(win));
-    
+
     GtkEntryBuffer *ip_entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->ip_Entry));
     GtkEntryBuffer *port_entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->port_Entry));
-    
+
     const char *ip = gtk_entry_buffer_get_text(ip_entry_buffer);
     const char *port = gtk_entry_buffer_get_text(port_entry_buffer);
-    
+
     const char *ip_port = concat_all_strings(3, ip, ":", port);
-    
+
     gdk_clipboard_set_text(clipboard, ip_port);
-    
+
     free((char *)ip_port);
 }
 

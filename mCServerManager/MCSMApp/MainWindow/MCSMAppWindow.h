@@ -16,6 +16,8 @@ static void refresh_serv_infos(MCSMAppWindow *win);
 static void setup_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item);
 static void bind_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item);
 static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MCSMAppWindow *win);
+static void on_open_start_script_clicked(GtkButton *button, MCSMAppWindow *win);
+static void on_start_script_file_dialog_finished(GObject *object, GAsyncResult *res, gpointer user_data);
 static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win);
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win);
 static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWindow *win);

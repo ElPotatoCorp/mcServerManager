@@ -95,6 +95,7 @@
                 <child>
                   <object class="GtkButton" id="start_script_Button">
                     <property name="label">📂</property>
+                    <signal name="clicked" handler="on_open_start_script_clicked"/>
                   </object>
                 </child>
               </object>
