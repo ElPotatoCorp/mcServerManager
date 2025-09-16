@@ -5,6 +5,57 @@
 #include <dirent.h>
 #include <curl/curl.h>
 
+int DEBUG_PTR = 0;
+size_t PTR_COUNTER = 0;
+
+void *_malloc(size_t __size, const char *file, int line, const char *func)
+{
+    PTR_COUNTER += 1;
+
+    void *ptr = malloc(__size);
+    if (DEBUG_PTR)
+    {
+        printf("[%d] Allocated = %s, %i, %s, %p[%li]\n", PTR_COUNTER, file, line, func, ptr, __size);
+    }
+    return ptr;
+}
+void *_calloc(size_t __nmemb, size_t __size, const char *file, int line, const char *func)
+{
+    PTR_COUNTER += 1;
+
+    void *ptr = calloc(__nmemb, __size);
+    if (DEBUG_PTR)
+    {
+        printf("[%d] Callocated = %s, %i, %s, %p[%li]\n", PTR_COUNTER, file, line, func, ptr, __size);
+    }
+    return ptr;
+}
+void *_realloc(void *__ptr, size_t __size, const char *name, const char *file, int line, const char *func)
+{
+    void *ptr = realloc(__ptr, __size);
+    if (DEBUG_PTR)
+    {
+        printf("[%d] Rallocated [%s] = %s, %i, %s, %p[%li]\n", PTR_COUNTER, name, file, line, func, ptr, __size);
+    }
+    return ptr;
+}
+void _free(void *ptr, const char *name, const char *file, int line, const char *func)
+{
+    PTR_COUNTER -= 1;
+
+    if (DEBUG_PTR)
+    {
+        printf("[%d] Freed [%s] = %s, %i, %s, %p[%li]\n", PTR_COUNTER, name, file, line, func, ptr, sizeof(ptr));
+    }
+    free(ptr);
+    ptr = NULL;
+}
+
+void ptr_remaining(void)
+{
+    printf("There are %d allocated pointers remaining.\n", PTR_COUNTER);
+}
+
 char cwd[MAX_PATH_LEN];
 static const int set_default_prog_path(void)
 {
@@ -22,10 +73,10 @@ struct stat st = {0};
 #pragma region StringList
 struct StringList *new_string_list(void)
 {
-    struct StringList *list = malloc(sizeof(struct StringList));
+    struct StringList *list = mcsm_malloc(sizeof(struct StringList));
     if (list != NULL)
     {
-        list->strings = calloc(MAX_LIST_LEN, sizeof(char *));
+        list->strings = mcsm_calloc(MAX_LIST_LEN, sizeof(char *));
         list->size = 0;
     }
     return list;
@@ -51,15 +102,16 @@ struct StringList *new_string_list_from_strings(const int n, ...)
 
 void free_string_list(struct StringList *string_list)
 {
-    if (string_list)
+    if (string_list != NULL)
     {
         for (int i = 0; i < string_list->size; i++)
         {
-            free(string_list->strings[i]);
+            mcsm_free(string_list->strings[i]);
         }
-        free(string_list->strings);
+        mcsm_free(string_list->strings);
+
     }
-    free(string_list);
+    mcsm_free(string_list);
 }
 
 void append_string_list(struct StringList *string_list, const char *string)
@@ -80,7 +132,7 @@ void print_string_list(const struct StringList *string_list)
 #pragma region Strings
 char *strset(const char *__restrict__ __src)
 {
-    char *__ptr = malloc((strlen(__src) + 1) * sizeof(char));
+    char *__ptr = mcsm_malloc((strlen(__src) + 1) * sizeof(char));
     if (__ptr == NULL)
     {
         perror("error: not enough memory\n");
@@ -95,12 +147,12 @@ char *strrst(char **__restrict__ __dest, const char *__restrict__ __src)
 {
     if (*__dest == NULL)
     {
-        *__dest = malloc((strlen(__src) + 1) * sizeof(char));
+        *__dest = mcsm_malloc((strlen(__src) + 1) * sizeof(char));
         strcpy(*__dest, __src);
         return *__dest;
     }
 
-    char *__ptr = realloc(*__dest, (strlen(__src) + 1) * sizeof(char));
+    char *__ptr = mcsm_realloc(*__dest, (strlen(__src) + 1) * sizeof(char));
     if (__ptr == NULL)
     {
         perror("error: not enough memory\n");
@@ -130,7 +182,7 @@ const char *concat_all_strings(const int n, ...)
     }
     va_end(args);
 
-    char *str = malloc((size_of_final_str + 1) * sizeof(char));
+    char *str = mcsm_malloc((size_of_final_str + 1) * sizeof(char));
     str[0] = '\0';
 
     va_start(args, n);
@@ -158,7 +210,7 @@ static size_t write_memory_callback(void *contents, size_t size, size_t nmemb, v
     size_t realsize = size * nmemb;
     struct MemoryStruct *mem = (struct MemoryStruct *)userp;
 
-    char *ptr = realloc(mem->memory, mem->size + realsize + 1);
+    char *ptr = mcsm_realloc(mem->memory, mem->size + realsize + 1);
     if (ptr == NULL)
     {
         perror("error: not enough memory\n");
@@ -179,7 +231,7 @@ const char *curl_from_url(const char *url)
     CURLcode res;
 
     struct MemoryStruct chunk;
-    chunk.memory = malloc(1);
+    chunk.memory = mcsm_malloc(1);
     chunk.size = 0;
 
     curl_handle = curl_easy_init();
@@ -196,7 +248,7 @@ const char *curl_from_url(const char *url)
         if (res != CURLE_OK)
         {
             fprintf(stderr, "error: %s\n", curl_easy_strerror(res));
-            free(chunk.memory);
+            mcsm_free(chunk.memory);
             return NULL;
         }
         curl_easy_cleanup(curl_handle);
@@ -205,7 +257,7 @@ const char *curl_from_url(const char *url)
     }
     else
     {
-        free(chunk.memory);
+        mcsm_free(chunk.memory);
         return NULL;
     }
 }
@@ -269,7 +321,7 @@ struct StringList *list_directories_from_path(const char *path)
     struct StringList *entries = list_entries(path);
     struct StringList *directories = new_string_list();
 
-    char *entry_path = malloc(MAX_PATH_LEN * sizeof(char));
+    char *entry_path = mcsm_malloc(MAX_PATH_LEN * sizeof(char));
     for (int i = 0; i < entries->size; i++)
     {
         snprintf(entry_path, MAX_STR_LEN, "%s%s", path, entries->strings[i]);
@@ -280,7 +332,7 @@ struct StringList *list_directories_from_path(const char *path)
     }
 
     free_string_list(entries);
-    free(entry_path);
+    mcsm_free(entry_path);
 
     return directories;
 }
@@ -296,7 +348,7 @@ struct StringList *list_regular_files_from_path(const char *path)
     struct StringList *entries = list_entries(path);
     struct StringList *files = new_string_list();
 
-    char *entry_path = malloc(MAX_STR_LEN * sizeof(char));
+    char *entry_path = mcsm_malloc(MAX_STR_LEN * sizeof(char));
     for (int i = 0; i < entries->size; i++)
     {
         snprintf(entry_path, MAX_STR_LEN, "%s%s", path, entries->strings[i]);
@@ -307,7 +359,7 @@ struct StringList *list_regular_files_from_path(const char *path)
     }
 
     free_string_list(entries);
-    free(entry_path);
+    mcsm_free(entry_path);
 
     return files;
 }
@@ -399,6 +451,7 @@ const int overwrite_property_from_properties_file(const char *path, const char *
     }
 
     fclose(file);
+    free_string_list(lines);
 
     return found;
 }
@@ -423,7 +476,7 @@ void easy_zip_from_path(const char *from, const char *entry_name, const char *to
 
     execl("/usr/bin/sh", "sh", "-c", command, 0);
 
-    free((char *)command);
+    mcsm_free((char *)command);
 
     chdir(cwd);
 }
@@ -440,7 +493,7 @@ void easy_unzip_from_path(const char *from, const char *to)
 
     execl("/usr/bin/sh", "sh", "-c", command, 0);
 
-    free((char *)command);
+    mcsm_free((char *)command);
 }
 
 const int create_config_directory(void)
@@ -488,13 +541,13 @@ const int create_server_config_file(const char *server_name)
     const char *server_config_path = concat_all_strings(3, "./config/", server_name, ".properties");
     if (exists(server_config_path))
     {
-        free((char *)server_config_path);
+        mcsm_free((char *)server_config_path);
         return 0;
     }
     else if (!is_directory("./config/") && create_config_directory() != 1)
     {
         perror("There was an error creating the config directory");
-        free((char *)server_config_path);
+        mcsm_free((char *)server_config_path);
         return 2;
     }
 
@@ -503,13 +556,13 @@ const int create_server_config_file(const char *server_name)
     if (file == NULL)
     {
         perror("There was an error opening the properties file");
-        free((char *)server_config_path);
+        mcsm_free((char *)server_config_path);
         return 2;
     }
 
     fputs("start-script-name=\n", file);
 
     fclose(file);
-    free((char *)server_config_path);
+    mcsm_free((char *)server_config_path);
     return 1;
 }

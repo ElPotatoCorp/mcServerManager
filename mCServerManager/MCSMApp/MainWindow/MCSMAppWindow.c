@@ -16,7 +16,7 @@ static void reverse_check_button(GtkWidget *widget)
 
 static void gtk_entry_set_text(GtkEntry *entry, const char *str)
 {
-    if (strcmp(str, "") == 0)
+    if (is_str_empty(str))
     {
         return;
     }
@@ -63,7 +63,7 @@ static void init_ip_entry(MCSMAppWindow *win)
 
     gtk_entry_set_text(GTK_ENTRY(win->ip_Entry), ip);
 
-    free((char *)ip);
+    mcsm_free((char *)ip);
 }
 
 static void init_server_name_drop_down(MCSMAppWindow *win)
@@ -80,7 +80,7 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
 
     struct StringList *servers = list_directories_from_path(server_directory);
 
-    char **str_servers = malloc(servers->size * sizeof(char *));
+    char **str_servers = mcsm_malloc(servers->size * sizeof(char *));
     for (int i = 0; i < servers->size; i++)
     {
         char *server = servers->strings[i];
@@ -96,14 +96,14 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
 
     current_server = strset(str_servers[0]);
 
-    /* --- Free Section --- */
+    /* --- free Section --- */
     for (int i = 0; i < servers->size; i++)
     {
-        free(str_servers[i]);
+        mcsm_free(str_servers[i]);
     }
-    free(str_servers);
+    mcsm_free(str_servers);
     free_string_list(servers);
-    free((char *)config_file_path);
+    mcsm_free((char *)config_file_path);
 }
 
 static void init_key_values(MCSMAppWindow *win)
@@ -111,8 +111,6 @@ static void init_key_values(MCSMAppWindow *win)
     init_server_name_drop_down(win);
 
     server_config_file = (char *)concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
-
-    current_server = strset(gtk_string_list_get_string(win->server_name_StringList, 0));
 
     current_server_directory = (char *)concat_all_strings(3, server_directory, current_server, "/");
 
@@ -222,7 +220,7 @@ static void refresh_entry(GtkEntry *entry, const char *properties_file_path, con
 {
     const char *value = get_value_from_properties_file(properties_file_path, property);
     gtk_entry_set_text(GTK_ENTRY(entry), value);
-    free((char *)value);
+    mcsm_free((char *)value);
 }
 
 static void refresh_spin_button(GtkSpinButton *spin_button, const char *properties_file_path, const char *property)
@@ -233,7 +231,7 @@ static void refresh_spin_button(GtkSpinButton *spin_button, const char *properti
     {
         gtk_spin_button_set_value(spin_button, value);
     }
-    free((char *)str_value);
+    mcsm_free((char *)str_value);
 }
 
 static void refresh_drop_down(GtkDropDown *drop_down, const char *properties_file_path, const char *property)
@@ -248,7 +246,7 @@ static void refresh_drop_down(GtkDropDown *drop_down, const char *properties_fil
     {
         gtk_drop_down_set_selected(drop_down, pos);
     }
-    free(value);
+    mcsm_free(value);
 }
 
 static void refresh_check_button(GtkCheckButton *check_button, const char *properties_file_path, const char *property)
@@ -260,7 +258,7 @@ static void refresh_check_button(GtkCheckButton *check_button, const char *prope
         gtk_check_button_set_active(check_button, strcmp(value, "true") == 0);
     }
 
-    free((char *)value);
+    mcsm_free((char *)value);
 }
 
 static void refresh_backups_list_view(GtkListView *list_view, GtkSingleSelection *single_selection, GtkStringList *string_list)
@@ -283,7 +281,7 @@ static void refresh_backups_list_view(GtkListView *list_view, GtkSingleSelection
 
     gtk_list_view_set_model(list_view, GTK_SELECTION_MODEL(single_selection));
     
-    free((char *)backups_path);
+    mcsm_free((char *)backups_path);
     free_string_list(backups);
 }
 
@@ -293,7 +291,7 @@ static void refresh_serv_infos(MCSMAppWindow *win)
     {
         if (start_script_name != NULL)
         {
-            free(start_script_name);
+            mcsm_free(start_script_name);
         }
         start_script_name = (char *)get_value_from_properties_file(server_config_file, START_SCRIPT_NAME_PROPERTY);
         gtk_entry_set_text(GTK_ENTRY(win->start_script_Entry), start_script_name);
@@ -301,13 +299,13 @@ static void refresh_serv_infos(MCSMAppWindow *win)
 
     world_name = (char *)get_value_from_properties_file(server_properties, WORLD_NAME_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->world_name_Entry), world_name);
-    free(world_name);
 
     refresh_entry(GTK_ENTRY(win->description_Entry), server_properties, DESCRIPTION_PROPERTY);
 
     const char *port = get_value_from_properties_file(server_properties, PORT_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->port_Entry), port);
     gtk_entry_set_text(GTK_ENTRY(win->editable_port_Entry), port);
+    mcsm_free((char *)port);
 
     refresh_spin_button(GTK_SPIN_BUTTON(win->max_players_SpinButton), server_properties, MAX_PLAYERS_PROPERTY);
     refresh_spin_button(GTK_SPIN_BUTTON(win->view_distance_SpinButton), server_properties, VIEW_DISTANCE_PROPERTY);
@@ -373,19 +371,19 @@ static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gpa
 
     if (server_config_file != NULL)
     {
-        free(server_config_file);
+        mcsm_free(server_config_file);
     }
     if (current_server != NULL)
     {
-        free(current_server);
+        mcsm_free(current_server);
     }
     if (current_server_directory != NULL)
     {
-        free(current_server_directory);
+        mcsm_free(current_server_directory);
     }
     if (server_properties != NULL)
     {
-        free(server_properties);
+        mcsm_free(server_properties);
     }
 
     server_config_file = (char *)concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
@@ -477,7 +475,7 @@ static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
 
     gdk_clipboard_set_text(clipboard, ip_port);
 
-    free((char *)ip_port);
+    mcsm_free((char *)ip_port);
 }
 
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
@@ -560,7 +558,7 @@ static void on_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MC
 
     overwrite_property_from_properties_file(server_properties, property, new_value);
 
-    free(new_value);
+    mcsm_free(new_value);
 }
 
 static void on_check_button_toggled(GtkCheckButton *check_button, GtkWindow *win)
@@ -598,27 +596,33 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
     }
     if (server_directory != NULL)
     {
-        free(server_directory);
+        mcsm_free(server_directory);
     }
     if (current_server != NULL)
     {
-        free(current_server);
+        mcsm_free(current_server);
     }
     if (current_server_directory != NULL)
     {
-        free(current_server_directory);
+        mcsm_free(current_server_directory);
+    }
+    if (server_config_file != NULL)
+    {
+        mcsm_free(server_config_file);
     }
     if (server_properties != NULL)
     {
-        free(server_properties);
+        mcsm_free(server_properties);
     }
     if (start_script_name != NULL)
     {
-        free(start_script_name);
+        mcsm_free(start_script_name);
     }
     if (world_name != NULL)
     {
-        free(world_name);
+        mcsm_free(world_name);
     }
+
+    ptr_remaining();
 }
 #pragma endregion // Signals
