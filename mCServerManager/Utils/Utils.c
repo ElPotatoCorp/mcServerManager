@@ -5,7 +5,8 @@
 #include <dirent.h>
 #include <curl/curl.h>
 
-int DEBUG_PTR = 0;
+#pragma region Memory Management
+int DEBUG_PTR = 1;
 size_t PTR_COUNTER = 0;
 
 void *_malloc(size_t __size, const char *file, int line, const char *func)
@@ -45,7 +46,7 @@ void _free(void *ptr, const char *name, const char *file, int line, const char *
 
     if (DEBUG_PTR)
     {
-        printf("[%d] Freed [%s] = %s, %i, %s, %p[%li]\n", PTR_COUNTER, name, file, line, func, ptr, sizeof(ptr));
+        printf("[%d] Freed [%s] = %s, %i, %s, %p\n", PTR_COUNTER, name, file, line, func, ptr);
     }
     free(ptr);
     ptr = NULL;
@@ -55,6 +56,7 @@ void ptr_remaining(void)
 {
     printf("There are %d allocated pointers remaining.\n", PTR_COUNTER);
 }
+#pragma endregion // Memory Management
 
 char cwd[MAX_PATH_LEN];
 static const int set_default_prog_path(void)

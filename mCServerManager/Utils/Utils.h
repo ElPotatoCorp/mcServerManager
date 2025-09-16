@@ -10,14 +10,19 @@
 #define MAX_STR_LEN 128
 #define MAX_LIST_LEN 64
 
+/* --- Memory Management --- */
 void *_malloc(size_t __s, const char *file, int line, const char *func);
 #define mcsm_malloc(X) _malloc( X, __FILE__, __LINE__, __FUNCTION__)
+
 void *_calloc(size_t __nmemb, size_t __size, const char *file, int line, const char *func);
 #define mcsm_calloc(X, Y) _calloc(X, Y, __FILE__, __LINE__, __FUNCTION__)
+
 void *_realloc(void *__ptr, size_t __size, const char *name, const char *file, int line, const char *func);
 #define mcsm_realloc(X, Y) _realloc(X, Y, #X, __FILE__, __LINE__, __FUNCTION__)
+
 void _free(void *ptr, const char *name, const char *file, int line, const char *func);
 #define mcsm_free(X) _free( X, #X, __FILE__, __LINE__, __FUNCTION__)
+
 void ptr_remaining(void);
 
 /* --- A good ol' struct for a basic list of string --- */

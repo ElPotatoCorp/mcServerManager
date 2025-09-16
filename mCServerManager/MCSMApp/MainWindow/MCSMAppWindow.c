@@ -297,6 +297,10 @@ static void refresh_serv_infos(MCSMAppWindow *win)
         gtk_entry_set_text(GTK_ENTRY(win->start_script_Entry), start_script_name);
     }
 
+    if (world_name != NULL)
+    {
+        mcsm_free(world_name);
+    }
     world_name = (char *)get_value_from_properties_file(server_properties, WORLD_NAME_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->world_name_Entry), world_name);
 
