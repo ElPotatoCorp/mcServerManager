@@ -59,11 +59,16 @@ static void init_list_view(MCSMAppWindow *win)
 
 static void init_ip_entry(MCSMAppWindow *win)
 {
-    const char *ip = curl_from_url("https://ipinfo.io/ip");
-
-    gtk_entry_set_text(GTK_ENTRY(win->ip_Entry), ip);
-
-    mcsm_free((char *)ip);
+    const char *ip = curl_from_url("https://ifconfig.me/ip");
+    if (ip == NULL)
+    {
+        gtk_entry_set_text(GTK_ENTRY(win->ip_Entry), "INVALID");
+    }
+    else
+    {
+        gtk_entry_set_text(GTK_ENTRY(win->ip_Entry), ip);
+        mcsm_free((char *)ip);
+    }
 }
 
 static void init_server_name_drop_down(MCSMAppWindow *win)
