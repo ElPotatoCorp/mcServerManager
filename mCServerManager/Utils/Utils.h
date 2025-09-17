@@ -11,17 +11,26 @@
 #define MAX_LIST_LEN 64
 
 /* --- Memory Management --- */
-void *_malloc(size_t __s, const char *file, int line, const char *func);
-#define mcsm_malloc(X) _malloc( X, __FILE__, __LINE__, __FUNCTION__)
+void *_mcsm_malloc(size_t __s, const char *file, int line, const char *func);
+#define mcsm_malloc(X) _mcsm_malloc( X, __FILE__, __LINE__, __FUNCTION__)
 
-void *_calloc(size_t __nmemb, size_t __size, const char *file, int line, const char *func);
-#define mcsm_calloc(X, Y) _calloc(X, Y, __FILE__, __LINE__, __FUNCTION__)
+void *_mcsm_calloc(size_t __nmemb, size_t __size, const char *file, int line, const char *func);
+#define mcsm_calloc(X, Y) _mcsm_calloc(X, Y, __FILE__, __LINE__, __FUNCTION__)
 
-void *_realloc(void *__ptr, size_t __size, const char *name, const char *file, int line, const char *func);
-#define mcsm_realloc(X, Y) _realloc(X, Y, #X, __FILE__, __LINE__, __FUNCTION__)
+void *_mcsm_realloc(void *__ptr, size_t __size, const char *name, const char *file, int line, const char *func);
+#define mcsm_realloc(X, Y) _mcsm_realloc(X, Y, #X, __FILE__, __LINE__, __FUNCTION__)
 
-void _free(void *ptr, const char *name, const char *file, int line, const char *func);
-#define mcsm_free(X) _free( X, #X, __FILE__, __LINE__, __FUNCTION__)
+void *_mcsm_g_object_new(void *ptr);
+#define mcsm_g_object_new(X) _mcsm_g_object_new(X)
+
+void _mcsm_free(void *ptr, const char *name, const char *file, int line, const char *func);
+#define mcsm_free(X) _mcsm_free( X, #X, __FILE__, __LINE__, __FUNCTION__)
+
+void _mcsm_g_free(void *ptr);
+#define mcsm_g_free(X) _mcsm_g_free(X)
+
+void _mcsm_g_clear_object(void *ptr);
+#define mcsm_g_clear_object(X) _mcsm_g_clear_object(X)
 
 void ptr_remaining(void);
 

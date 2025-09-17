@@ -1,5 +1,6 @@
 #include "Utils.h"
 
+#include <gtk/gtk.h>
 #include <sys/stat.h>
 #include <stdarg.h>
 #include <dirent.h>
@@ -9,7 +10,7 @@
 int DEBUG_PTR = 1;
 size_t PTR_COUNTER = 0;
 
-void *_malloc(size_t __size, const char *file, int line, const char *func)
+void *_mcsm_malloc(size_t __size, const char *file, int line, const char *func)
 {
     PTR_COUNTER += 1;
 
@@ -20,7 +21,7 @@ void *_malloc(size_t __size, const char *file, int line, const char *func)
     }
     return ptr;
 }
-void *_calloc(size_t __nmemb, size_t __size, const char *file, int line, const char *func)
+void *_mcsm_calloc(size_t __nmemb, size_t __size, const char *file, int line, const char *func)
 {
     PTR_COUNTER += 1;
 
@@ -31,7 +32,7 @@ void *_calloc(size_t __nmemb, size_t __size, const char *file, int line, const c
     }
     return ptr;
 }
-void *_realloc(void *__ptr, size_t __size, const char *name, const char *file, int line, const char *func)
+void *_mcsm_realloc(void *__ptr, size_t __size, const char *name, const char *file, int line, const char *func)
 {
     void *ptr = realloc(__ptr, __size);
     if (DEBUG_PTR)
@@ -40,7 +41,17 @@ void *_realloc(void *__ptr, size_t __size, const char *name, const char *file, i
     }
     return ptr;
 }
-void _free(void *ptr, const char *name, const char *file, int line, const char *func)
+void *_mcsm_g_object_new(void *ptr)
+{
+    if (ptr != NULL)
+    {
+        PTR_COUNTER += 1;
+    }
+    
+    return ptr;
+}
+
+void _mcsm_free(void *ptr, const char *name, const char *file, int line, const char *func)
 {
     PTR_COUNTER -= 1;
 
@@ -50,6 +61,26 @@ void _free(void *ptr, const char *name, const char *file, int line, const char *
     }
     free(ptr);
     ptr = NULL;
+}
+void _mcsm_g_free(void *ptr)
+{
+    if (ptr == NULL)
+    {
+        return;
+    }
+
+    PTR_COUNTER -= 1;
+    g_clear_pointer(&ptr, g_free);
+}
+void _mcsm_g_clear_object(void *ptr)
+{
+    if (ptr == NULL)
+    {
+        return;
+    }
+
+    PTR_COUNTER -= 1;
+    g_clear_object(&ptr);
 }
 
 void ptr_remaining(void)

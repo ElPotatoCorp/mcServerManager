@@ -22,6 +22,7 @@
         "text_encoding": "c",
         "typeinfo": "c",
         "future": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "mcsmappwindow.h": "c"
     }
 }
