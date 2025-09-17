@@ -49,7 +49,7 @@ G_DEFINE_TYPE(MCSMAppWindow, mcsm_app_window, GTK_TYPE_APPLICATION_WINDOW)
 
 static void init_list_view(MCSMAppWindow *win)
 {
-    win->backups_Factory = gtk_signal_list_item_factory_new();
+    win->backups_Factory = mcsm_g_object_new(gtk_signal_list_item_factory_new());
 
     g_signal_connect (win->backups_Factory, "setup", G_CALLBACK (setup_listitem_cb), NULL);
     g_signal_connect (win->backups_Factory, "bind", G_CALLBACK (bind_listitem_cb), NULL);
@@ -94,7 +94,7 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
     }
     str_servers[servers->size] = NULL;
 
-    win->server_name_StringList = gtk_string_list_new((const char *const *)str_servers);
+    win->server_name_StringList = mcsm_g_object_new(gtk_string_list_new((const char *const *)str_servers));
 
     gtk_drop_down_set_model(GTK_DROP_DOWN(win->server_name_DropDown), G_LIST_MODEL(win->server_name_StringList));
     gtk_drop_down_set_selected(GTK_DROP_DOWN(win->server_name_DropDown), 0);
@@ -129,10 +129,10 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
 
     gtk_widget_init_template(GTK_WIDGET(win));
 
-    builder = gtk_builder_new_from_resource("/mcsm/menu.xml");
+    builder = mcsm_g_object_new(gtk_builder_new_from_resource("/mcsm/menu.xml"));
     menu = G_MENU_MODEL(gtk_builder_get_object(builder, "menu"));
     gtk_menu_button_set_menu_model(GTK_MENU_BUTTON(win->gears), menu);
-    g_object_unref(builder);
+    mcsm_g_clear_object(builder);
 
     #pragma region Linking Attributes
     g_object_set_data(G_OBJECT(win->world_name_Entry        ), "prop", (char *)WORLD_NAME_PROPERTY   );
@@ -273,16 +273,16 @@ static void refresh_backups_list_view(GtkListView *list_view, GtkSingleSelection
 
     if (string_list != NULL)
     {
-        g_object_unref(string_list);
+        mcsm_g_clear_object(string_list);
     }
     if (single_selection != NULL)
     {
-        g_object_unref(single_selection);
+        mcsm_g_clear_object(single_selection);
     }
     
-    string_list = gtk_string_list_new((const char *const *)backups->strings);
+    string_list = mcsm_g_object_new(gtk_string_list_new((const char *const *)backups->strings));
     
-    single_selection = gtk_single_selection_new(G_LIST_MODEL(string_list));
+    single_selection = mcsm_g_object_new(gtk_single_selection_new(G_LIST_MODEL(string_list)));
 
     gtk_list_view_set_model(list_view, GTK_SELECTION_MODEL(single_selection));
     
@@ -405,32 +405,32 @@ static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gpa
 
 static void on_open_start_script_clicked(GtkButton *button, MCSMAppWindow *win)
 {
-    GFile *default_folder = g_file_new_for_path(current_server_directory);
-    GtkFileDialog *dialog = gtk_file_dialog_new();
-    GListStore *filters = g_list_store_new(GTK_TYPE_FILE_FILTER);
-    GCancellable *cancellable = g_cancellable_new();
+    GFile *default_folder = mcsm_g_object_new(g_file_new_for_path(current_server_directory));
+    GtkFileDialog *dialog = mcsm_g_object_new(gtk_file_dialog_new());
+    GListStore *filters = mcsm_g_object_new(g_list_store_new(GTK_TYPE_FILE_FILTER));
+    GCancellable *cancellable = mcsm_g_object_new(g_cancellable_new());
     
-    GtkFileFilter *filter = gtk_file_filter_new();
+    GtkFileFilter *filter = mcsm_g_object_new(gtk_file_filter_new());
     gtk_file_filter_set_name(filter, "Bash");
     gtk_file_filter_add_pattern(filter, "*.sh");
     g_list_store_append(filters, filter);
-    g_object_unref(filter);
+    mcsm_g_clear_object(filter);
 
-    filter = gtk_file_filter_new();
+    filter = mcsm_g_object_new(gtk_file_filter_new());
     gtk_file_filter_set_name(filter, "Any");
     gtk_file_filter_add_pattern(filter, "*");
     g_list_store_append(filters, filter);
-    g_object_unref(filter);
+    mcsm_g_clear_object(filter);
 
     gtk_file_dialog_set_initial_folder(dialog, default_folder);
     gtk_file_dialog_set_filters(dialog, G_LIST_MODEL(filters));
 
     gtk_file_dialog_open(dialog, GTK_WINDOW(win), cancellable, on_start_script_file_dialog_finished, win);
 
-    g_object_unref(cancellable);
-    g_object_unref(filters);
-    g_object_unref(dialog);
-    g_object_unref(default_folder);
+    mcsm_g_clear_object(cancellable);
+    mcsm_g_clear_object(filters);
+    mcsm_g_clear_object(dialog);
+    mcsm_g_clear_object(default_folder);
 }
 
 static void on_start_script_file_dialog_finished(GObject *object, GAsyncResult *res, gpointer user_data)
@@ -466,8 +466,8 @@ static void on_start_script_file_dialog_finished(GObject *object, GAsyncResult *
     overwrite_property_from_properties_file(server_config_file, START_SCRIPT_NAME_PROPERTY, file_name);
     gtk_entry_set_text(GTK_ENTRY(win->start_script_Entry), file_name);
 
-    g_free(file_name);
-    g_object_unref(file);
+    mcsm_g_free(file_name);
+    mcsm_g_clear_object(file);
 }
 
 static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
@@ -589,19 +589,19 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
 {
     if (win->server_name_StringList != NULL)
     {
-        g_object_unref(win->server_name_StringList);
+        mcsm_g_clear_object(win->server_name_StringList);
     }
     if (win->backups_StringList != NULL)
     {
-        g_object_unref(win->backups_StringList);
+        mcsm_g_clear_object(win->backups_StringList);
     }
     if (win->backups_SingleSelection != NULL)
     {
-        g_object_unref(win->backups_SingleSelection);
+        mcsm_g_clear_object(win->backups_SingleSelection);
     }
     if (win->backups_Factory != NULL)
     {
-        g_object_unref(win->backups_Factory);
+        mcsm_g_clear_object(win->backups_Factory);
     }
     if (server_directory != NULL)
     {
