@@ -20,17 +20,17 @@ void *_mcsm_calloc(size_t __nmemb, size_t __size, const char *file, int line, co
 void *_mcsm_realloc(void *__ptr, size_t __size, const char *name, const char *file, int line, const char *func);
 #define mcsm_realloc(X, Y) _mcsm_realloc(X, Y, #X, __FILE__, __LINE__, __FUNCTION__)
 
-void *_mcsm_g_object_new(void *ptr);
-#define mcsm_g_object_new(X) _mcsm_g_object_new(X)
+void *_mcsm_g_object_new(void *ptr, const char *name, const char *file, int line, const char *func);
+#define mcsm_g_object_new(X) _mcsm_g_object_new(X, #X, __FILE__, __LINE__, __FUNCTION__)
 
 void _mcsm_free(void *ptr, const char *name, const char *file, int line, const char *func);
 #define mcsm_free(X) _mcsm_free(X, #X, __FILE__, __LINE__, __FUNCTION__)
 
-void _mcsm_g_object_unref(void *ptr);
-#define mcsm_g_object_unref(X) _mcsm_g_object_unref(X)
+void _mcsm_g_object_unref(void *ptr, const char *name, const char *file, int line, const char *func);
+#define mcsm_g_object_unref(X) _mcsm_g_object_unref(X, #X, __FILE__, __LINE__, __FUNCTION__)
 
-void _mcsm_g_free(void *ptr);
-#define mcsm_g_free(X) _mcsm_g_free(X)
+void _mcsm_g_free(void *ptr, const char *name, const char *file, int line, const char *func);
+#define mcsm_g_free(X) _mcsm_g_free(X, #X, __FILE__, __LINE__, __FUNCTION__)
 
 void ptr_remaining(void);
 

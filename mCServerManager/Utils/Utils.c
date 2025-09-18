@@ -41,13 +41,17 @@ void *_mcsm_realloc(void *__ptr, size_t __size, const char *name, const char *fi
     }
     return ptr;
 }
-void *_mcsm_g_object_new(void *ptr)
+void *_mcsm_g_object_new(void *ptr, const char *name, const char *file, int line, const char *func)
 {
     if (ptr != NULL)
     {
         PTR_COUNTER += 1;
     }
     
+    if (DEBUG_PTR)
+    {
+        printf("[%d] New GObject [%s] = %s, %i, %s, %p\n", PTR_COUNTER, name, file, line, func, ptr);
+    }
     return ptr;
 }
 
@@ -68,7 +72,7 @@ void _mcsm_free(void *ptr, const char *name, const char *file, int line, const c
     ptr = NULL;
 }
 
-void _mcsm_g_object_unref(void *ptr)
+void _mcsm_g_object_unref(void *ptr, const char *name, const char *file, int line, const char *func)
 {
     if (ptr == NULL)
     {
@@ -76,9 +80,14 @@ void _mcsm_g_object_unref(void *ptr)
     }
 
     PTR_COUNTER -= 1;
+
+    if (DEBUG_PTR)
+    {
+        printf("[%d] Unrefed GObject [%s] = %s, %i, %s, %p\n", PTR_COUNTER, name, file, line, func, ptr);
+    }
     g_object_unref((gpointer *)ptr);
 }
-void _mcsm_g_free(void *ptr)
+void _mcsm_g_free(void *ptr, const char *name, const char *file, int line, const char *func)
 {
     if (ptr == NULL)
     {
@@ -86,12 +95,20 @@ void _mcsm_g_free(void *ptr)
     }
 
     PTR_COUNTER -= 1;
+
+    if (DEBUG_PTR)
+    {
+        printf("[%d] Freed G Stuff [%s] = %s, %i, %s, %p\n", PTR_COUNTER, name, file, line, func, ptr);
+    }
     g_clear_pointer(&ptr, g_free);
 }
 
-void ptr_remaining(void)
+inline void ptr_remaining(void)
 {
-    printf("There are %d allocated pointers remaining.\n", PTR_COUNTER);
+    if (DEBUG_PTR)
+    {
+        printf("There are %d allocated pointers remaining.\n", PTR_COUNTER);
+    }
 }
 #pragma endregion // Memory Management
 
