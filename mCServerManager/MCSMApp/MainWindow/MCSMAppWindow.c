@@ -50,7 +50,7 @@ G_DEFINE_TYPE(MCSMAppWindow, mcsm_app_window, GTK_TYPE_APPLICATION_WINDOW)
 static void init_list_view(MCSMAppWindow *win)
 {
     // Create the factory
-    win->backups_Factory = gtk_signal_list_item_factory_new();
+    win->backups_Factory = mcsm_g_object_new(gtk_signal_list_item_factory_new());
     g_signal_connect(win->backups_Factory, "setup", G_CALLBACK(setup_listitem_cb), NULL);
     g_signal_connect(win->backups_Factory, "bind", G_CALLBACK(bind_listitem_cb), NULL);
 
@@ -58,8 +58,8 @@ static void init_list_view(MCSMAppWindow *win)
     gtk_list_view_set_factory(GTK_LIST_VIEW(win->backups_ListView), GTK_LIST_ITEM_FACTORY(win->backups_Factory));
 
     // Create an empty string list and wrap in single selection
-    win->backups_StringList = gtk_string_list_new(NULL);
-    win->backups_SingleSelection = gtk_single_selection_new(G_LIST_MODEL(win->backups_StringList));
+    win->backups_StringList = gtk_string_list_new(NULL); // No 'mcsm_g_object_new' because the backups_SingleSelection will take the ownership.
+    win->backups_SingleSelection = mcsm_g_object_new(gtk_single_selection_new(G_LIST_MODEL(win->backups_StringList)));
 
     // Assign model to the list view
     gtk_list_view_set_model(GTK_LIST_VIEW(win->backups_ListView), GTK_SELECTION_MODEL(win->backups_SingleSelection));
@@ -140,7 +140,7 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
     builder = mcsm_g_object_new(gtk_builder_new_from_resource("/mcsm/menu.xml"));
     menu = G_MENU_MODEL(gtk_builder_get_object(builder, "menu"));
     gtk_menu_button_set_menu_model(GTK_MENU_BUTTON(win->gears), menu);
-    mcsm_g_clear_object(&builder);
+    mcsm_g_object_unref(builder);
 
     #pragma region Linking Attributes
     g_object_set_data(G_OBJECT(win->world_name_Entry        ), "prop", (char *)WORLD_NAME_PROPERTY   );
@@ -462,7 +462,7 @@ static void on_start_script_file_dialog_finished(GObject *object, GAsyncResult *
     gtk_entry_set_text(GTK_ENTRY(win->start_script_Entry), file_name);
 
     mcsm_g_free(file_name);
-    g_clear_object(&file);
+    mcsm_g_object_unref(file);
 }
 
 static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
@@ -586,23 +586,16 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
     {
         return;
     }
-    /* Detach model & factory so the view no longer holds references */
+
     if (GTK_IS_LIST_VIEW(win->backups_ListView)) {
         gtk_list_view_set_model(GTK_LIST_VIEW(win->backups_ListView), NULL);
         gtk_list_view_set_factory(GTK_LIST_VIEW(win->backups_ListView), NULL);
     }
+    mcsm_g_object_unref(win->backups_SingleSelection);
+    mcsm_g_object_unref(win->backups_Factory);
+    
+    mcsm_g_object_unref(win->server_name_StringList);
 
-    printf("Error in this secton\n");
-    /* Safely drop our references. g_clear_object() sets the pointer to NULL. */
-    mcsm_g_object_unref((gpointer *)&win->server_name_StringList);
-    printf("Passed 1\n");
-    mcsm_g_object_unref((gpointer *)&win->backups_StringList);
-    printf("Passed 2\n");
-    mcsm_g_object_unref((gpointer *)&win->backups_SingleSelection);
-    printf("Passed 3\n");
-    mcsm_g_object_unref((gpointer *)&win->backups_Factory);
-    printf("Passed 4\n");
-    /* Free plain C allocations (make sure these are heap pointers allocated with g_malloc/g_strdup) */
     mcsm_free(server_directory);
     mcsm_free(current_server);
     mcsm_free(current_server_directory);
@@ -611,8 +604,6 @@ void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
     mcsm_free(start_script_name);
     mcsm_free(world_name);
 
-    /* If you need to free the window struct itself, do it here. But usually GTK owns the widget. */
     ptr_remaining();
-    printf("I stop there\n");
 }
 #pragma endregion // Signals
