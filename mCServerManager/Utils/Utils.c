@@ -513,7 +513,7 @@ void easy_zip_from_path(const char *from, const char *entry_name, const char *to
 
     const char *command = concat_all_strings(5, "zip -r \"", to, "$(date +%Y-%m-%d-%H-%M-%S)\" \"", entry_name, "\"");
 
-    execl("/usr/bin/sh", "sh", "-c", command, 0);
+    system(command);
 
     mcsm_free((char *)command);
 
