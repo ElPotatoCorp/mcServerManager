@@ -53,6 +53,11 @@ void *_mcsm_g_object_new(void *ptr)
 
 void _mcsm_free(void *ptr, const char *name, const char *file, int line, const char *func)
 {
+    if (ptr == NULL)
+    {
+        return;
+    }
+
     PTR_COUNTER -= 1;
 
     if (DEBUG_PTR)
@@ -570,33 +575,32 @@ const int create_config_directory(void)
     }
 }
 
-const int create_server_config_file(const char *server_name)
+const int create_server_config_file(const char *server_config_file)
 {
-    const char *server_config_path = concat_all_strings(3, "./config/", server_name, ".properties");
-    if (exists(server_config_path))
+    if (exists(server_config_file))
     {
-        mcsm_free((char *)server_config_path);
+        mcsm_free((char *)server_config_file);
         return 0;
     }
     else if (!is_directory("./config/") && create_config_directory() != 1)
     {
         perror("There was an error creating the config directory");
-        mcsm_free((char *)server_config_path);
+        mcsm_free((char *)server_config_file);
         return 2;
     }
 
-    FILE *file = fopen(server_config_path, "w");
+    FILE *file = fopen(server_config_file, "w");
 
     if (file == NULL)
     {
-        perror("There was an error opening the properties file");
-        mcsm_free((char *)server_config_path);
+        perror("There was an error opening/creating the properties file");
+        mcsm_free((char *)server_config_file);
         return 2;
     }
 
     fputs("start-script-name=\n", file);
 
     fclose(file);
-    mcsm_free((char *)server_config_path);
+    mcsm_free((char *)server_config_file);
     return 1;
 }

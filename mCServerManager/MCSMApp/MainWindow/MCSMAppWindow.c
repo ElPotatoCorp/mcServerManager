@@ -287,20 +287,14 @@ static void refresh_backups_list_view(MCSMAppWindow *win)
 
 static void refresh_serv_infos(MCSMAppWindow *win)
 {
-    if (!create_server_config_file(current_server))
+    if (!create_server_config_file(server_config_file))
     {
-        if (start_script_name != NULL)
-        {
-            mcsm_free(start_script_name);
-        }
+        mcsm_free(start_script_name);
         start_script_name = (char *)get_value_from_properties_file(server_config_file, START_SCRIPT_NAME_PROPERTY);
         gtk_entry_set_text(GTK_ENTRY(win->start_script_Entry), start_script_name);
     }
 
-    if (world_name != NULL)
-    {
-        mcsm_free(world_name);
-    }
+    mcsm_free(world_name);
     world_name = (char *)get_value_from_properties_file(server_properties, WORLD_NAME_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->world_name_Entry), world_name);
 
@@ -373,22 +367,10 @@ static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gpa
 
     GtkStringList *string_list = GTK_STRING_LIST(gtk_drop_down_get_model(drop_down));
 
-    if (server_config_file != NULL)
-    {
-        mcsm_free(server_config_file);
-    }
-    if (current_server != NULL)
-    {
-        mcsm_free(current_server);
-    }
-    if (current_server_directory != NULL)
-    {
-        mcsm_free(current_server_directory);
-    }
-    if (server_properties != NULL)
-    {
-        mcsm_free(server_properties);
-    }
+    mcsm_free(server_config_file);
+    mcsm_free(current_server);
+    mcsm_free(current_server_directory);
+    mcsm_free(server_properties);
 
     server_config_file = (char *)concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
     current_server = strset(gtk_string_list_get_string(string_list, pos));
@@ -455,7 +437,7 @@ static void on_start_script_file_dialog_finished(GObject *object, GAsyncResult *
         return;
     }
 
-    create_server_config_file(current_server);
+    create_server_config_file(server_config_file);
 
     char *file_name = g_file_get_basename(file);
     overwrite_property_from_properties_file(server_config_file, START_SCRIPT_NAME_PROPERTY, file_name);
