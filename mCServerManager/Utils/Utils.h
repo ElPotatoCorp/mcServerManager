@@ -10,6 +10,8 @@
 #define MAX_STR_LEN 128
 #define MAX_LIST_LEN 64
 
+size_t PTR_COUNTER = 0;
+
 /* --- Memory Management --- */
 void *_mcsm_malloc(size_t __s, const char *file, int line, const char *func);
 #define mcsm_malloc(X) _mcsm_malloc( X, __FILE__, __LINE__, __FUNCTION__)
@@ -26,11 +28,19 @@ void *_mcsm_g_object_new(void *ptr);
 void _mcsm_free(void *ptr, const char *name, const char *file, int line, const char *func);
 #define mcsm_free(X) _mcsm_free( X, #X, __FILE__, __LINE__, __FUNCTION__)
 
+void _mcsm_g_object_unref(void *ptr);
+#define mcsm_g_object_unref(X) _mcsm_g_object_unref(X)
+
+#define mcsm_g_clear_object(ptr) \
+    do { \
+        if (*(ptr) != NULL) { \
+            PTR_COUNTER -= 1; \
+            g_clear_object((GObject **)(ptr)); \
+        } \
+    } while (0)
+
 void _mcsm_g_free(void *ptr);
 #define mcsm_g_free(X) _mcsm_g_free(X)
-
-void _mcsm_g_clear_object(void *ptr);
-#define mcsm_g_clear_object(X) _mcsm_g_clear_object(X)
 
 void ptr_remaining(void);
 

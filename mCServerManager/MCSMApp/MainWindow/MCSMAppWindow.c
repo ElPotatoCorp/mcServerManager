@@ -49,12 +49,20 @@ G_DEFINE_TYPE(MCSMAppWindow, mcsm_app_window, GTK_TYPE_APPLICATION_WINDOW)
 
 static void init_list_view(MCSMAppWindow *win)
 {
-    win->backups_Factory = mcsm_g_object_new(gtk_signal_list_item_factory_new());
+    // Create the factory
+    win->backups_Factory = gtk_signal_list_item_factory_new();
+    g_signal_connect(win->backups_Factory, "setup", G_CALLBACK(setup_listitem_cb), NULL);
+    g_signal_connect(win->backups_Factory, "bind", G_CALLBACK(bind_listitem_cb), NULL);
 
-    g_signal_connect (win->backups_Factory, "setup", G_CALLBACK (setup_listitem_cb), NULL);
-    g_signal_connect (win->backups_Factory, "bind", G_CALLBACK (bind_listitem_cb), NULL);
+    // Assign factory to the list view
+    gtk_list_view_set_factory(GTK_LIST_VIEW(win->backups_ListView), GTK_LIST_ITEM_FACTORY(win->backups_Factory));
 
-    gtk_list_view_set_factory(GTK_LIST_VIEW(win->backups_ListView), win->backups_Factory);
+    // Create an empty string list and wrap in single selection
+    win->backups_StringList = gtk_string_list_new(NULL);
+    win->backups_SingleSelection = gtk_single_selection_new(G_LIST_MODEL(win->backups_StringList));
+
+    // Assign model to the list view
+    gtk_list_view_set_model(GTK_LIST_VIEW(win->backups_ListView), GTK_SELECTION_MODEL(win->backups_SingleSelection));
 }
 
 static void init_ip_entry(MCSMAppWindow *win)
@@ -132,7 +140,7 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
     builder = mcsm_g_object_new(gtk_builder_new_from_resource("/mcsm/menu.xml"));
     menu = G_MENU_MODEL(gtk_builder_get_object(builder, "menu"));
     gtk_menu_button_set_menu_model(GTK_MENU_BUTTON(win->gears), menu);
-    mcsm_g_clear_object(builder);
+    mcsm_g_clear_object(&builder);
 
     #pragma region Linking Attributes
     g_object_set_data(G_OBJECT(win->world_name_Entry        ), "prop", (char *)WORLD_NAME_PROPERTY   );
@@ -266,25 +274,12 @@ static void refresh_check_button(GtkCheckButton *check_button, const char *prope
     mcsm_free((char *)value);
 }
 
-static void refresh_backups_list_view(GtkListView *list_view, GtkSingleSelection *single_selection, GtkStringList *string_list)
+static void refresh_backups_list_view(MCSMAppWindow *win)
 {
     const char *backups_path = concat_all_strings(2, current_server_directory, "backups/");
     struct StringList *backups = list_regular_files_from_path(backups_path);
 
-    if (string_list != NULL)
-    {
-        mcsm_g_clear_object(string_list);
-    }
-    if (single_selection != NULL)
-    {
-        mcsm_g_clear_object(single_selection);
-    }
-    
-    string_list = mcsm_g_object_new(gtk_string_list_new((const char *const *)backups->strings));
-    
-    single_selection = mcsm_g_object_new(gtk_single_selection_new(G_LIST_MODEL(string_list)));
-
-    gtk_list_view_set_model(list_view, GTK_SELECTION_MODEL(single_selection));
+    gtk_string_list_splice(win->backups_StringList, 0, g_list_model_get_n_items(G_LIST_MODEL(win->backups_StringList)), (const char *const *)backups->strings);
     
     mcsm_free((char *)backups_path);
     free_string_list(backups);
@@ -328,7 +323,7 @@ static void refresh_serv_infos(MCSMAppWindow *win)
     refresh_check_button(GTK_CHECK_BUTTON(win->nether_CheckButton), server_properties, NETHER_PROPERTY);
     refresh_check_button(GTK_CHECK_BUTTON(win->whitelist_CheckButton), server_properties, WHITELIST_PROPERTY);
 
-    refresh_backups_list_view(GTK_LIST_VIEW(win->backups_ListView), win->backups_SingleSelection, win->backups_StringList);
+    refresh_backups_list_view(win);
 }
 #pragma endregion // Refresh The Main Display
 
@@ -414,23 +409,23 @@ static void on_open_start_script_clicked(GtkButton *button, MCSMAppWindow *win)
     gtk_file_filter_set_name(filter, "Bash");
     gtk_file_filter_add_pattern(filter, "*.sh");
     g_list_store_append(filters, filter);
-    mcsm_g_clear_object(filter);
+    mcsm_g_object_unref(filter);
 
     filter = mcsm_g_object_new(gtk_file_filter_new());
     gtk_file_filter_set_name(filter, "Any");
     gtk_file_filter_add_pattern(filter, "*");
     g_list_store_append(filters, filter);
-    mcsm_g_clear_object(filter);
+    mcsm_g_object_unref(filter);
 
     gtk_file_dialog_set_initial_folder(dialog, default_folder);
     gtk_file_dialog_set_filters(dialog, G_LIST_MODEL(filters));
 
     gtk_file_dialog_open(dialog, GTK_WINDOW(win), cancellable, on_start_script_file_dialog_finished, win);
 
-    mcsm_g_clear_object(cancellable);
-    mcsm_g_clear_object(filters);
-    mcsm_g_clear_object(dialog);
-    mcsm_g_clear_object(default_folder);
+    mcsm_g_object_unref(cancellable);
+    mcsm_g_object_unref(filters);
+    mcsm_g_object_unref(dialog);
+    mcsm_g_object_unref(default_folder);
 }
 
 static void on_start_script_file_dialog_finished(GObject *object, GAsyncResult *res, gpointer user_data)
@@ -467,7 +462,7 @@ static void on_start_script_file_dialog_finished(GObject *object, GAsyncResult *
     gtk_entry_set_text(GTK_ENTRY(win->start_script_Entry), file_name);
 
     mcsm_g_free(file_name);
-    mcsm_g_clear_object(file);
+    g_clear_object(&file);
 }
 
 static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
@@ -587,51 +582,37 @@ static void on_check_button_toggled(GtkCheckButton *check_button, GtkWindow *win
 
 void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
 {
-    if (win->server_name_StringList != NULL)
+    if (win == NULL)
     {
-        mcsm_g_clear_object(win->server_name_StringList);
+        return;
     }
-    if (win->backups_StringList != NULL)
-    {
-        mcsm_g_clear_object(win->backups_StringList);
-    }
-    if (win->backups_SingleSelection != NULL)
-    {
-        mcsm_g_clear_object(win->backups_SingleSelection);
-    }
-    if (win->backups_Factory != NULL)
-    {
-        mcsm_g_clear_object(win->backups_Factory);
-    }
-    if (server_directory != NULL)
-    {
-        mcsm_free(server_directory);
-    }
-    if (current_server != NULL)
-    {
-        mcsm_free(current_server);
-    }
-    if (current_server_directory != NULL)
-    {
-        mcsm_free(current_server_directory);
-    }
-    if (server_config_file != NULL)
-    {
-        mcsm_free(server_config_file);
-    }
-    if (server_properties != NULL)
-    {
-        mcsm_free(server_properties);
-    }
-    if (start_script_name != NULL)
-    {
-        mcsm_free(start_script_name);
-    }
-    if (world_name != NULL)
-    {
-        mcsm_free(world_name);
+    /* Detach model & factory so the view no longer holds references */
+    if (GTK_IS_LIST_VIEW(win->backups_ListView)) {
+        gtk_list_view_set_model(GTK_LIST_VIEW(win->backups_ListView), NULL);
+        gtk_list_view_set_factory(GTK_LIST_VIEW(win->backups_ListView), NULL);
     }
 
+    printf("Error in this secton\n");
+    /* Safely drop our references. g_clear_object() sets the pointer to NULL. */
+    mcsm_g_object_unref((gpointer *)&win->server_name_StringList);
+    printf("Passed 1\n");
+    mcsm_g_object_unref((gpointer *)&win->backups_StringList);
+    printf("Passed 2\n");
+    mcsm_g_object_unref((gpointer *)&win->backups_SingleSelection);
+    printf("Passed 3\n");
+    mcsm_g_object_unref((gpointer *)&win->backups_Factory);
+    printf("Passed 4\n");
+    /* Free plain C allocations (make sure these are heap pointers allocated with g_malloc/g_strdup) */
+    mcsm_free(server_directory);
+    mcsm_free(current_server);
+    mcsm_free(current_server_directory);
+    mcsm_free(server_config_file);
+    mcsm_free(server_properties);
+    mcsm_free(start_script_name);
+    mcsm_free(world_name);
+
+    /* If you need to free the window struct itself, do it here. But usually GTK owns the widget. */
     ptr_remaining();
+    printf("I stop there\n");
 }
 #pragma endregion // Signals

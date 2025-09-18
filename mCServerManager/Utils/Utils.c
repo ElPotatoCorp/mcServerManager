@@ -8,7 +8,6 @@
 
 #pragma region Memory Management
 int DEBUG_PTR = 1;
-size_t PTR_COUNTER = 0;
 
 void *_mcsm_malloc(size_t __size, const char *file, int line, const char *func)
 {
@@ -62,6 +61,17 @@ void _mcsm_free(void *ptr, const char *name, const char *file, int line, const c
     free(ptr);
     ptr = NULL;
 }
+
+void _mcsm_g_object_unref(void *ptr)
+{
+    if (ptr == NULL)
+    {
+        return;
+    }
+
+    PTR_COUNTER -= 1;
+    g_object_unref(ptr);
+}
 void _mcsm_g_free(void *ptr)
 {
     if (ptr == NULL)
@@ -71,16 +81,6 @@ void _mcsm_g_free(void *ptr)
 
     PTR_COUNTER -= 1;
     g_clear_pointer(&ptr, g_free);
-}
-void _mcsm_g_clear_object(void *ptr)
-{
-    if (ptr == NULL)
-    {
-        return;
-    }
-
-    PTR_COUNTER -= 1;
-    g_clear_object(&ptr);
 }
 
 void ptr_remaining(void)
