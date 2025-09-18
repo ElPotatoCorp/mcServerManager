@@ -352,6 +352,7 @@
               <object class="GtkButton" id="make_backup_Button">
                 <property name="margin-bottom">5</property>
                 <property name="label">Make Backup</property>
+                <signal name="clicked" handler="on_make_backup_button_clicked"/>
               </object>
             </child>
             <child>

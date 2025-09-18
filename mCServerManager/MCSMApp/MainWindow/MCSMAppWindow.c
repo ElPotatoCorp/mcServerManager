@@ -26,6 +26,12 @@ static void gtk_entry_set_text(GtkEntry *entry, const char *str)
     gtk_entry_buffer_set_text(entry_buffer, str, strlen(str));
 }
 
+typedef struct
+{
+    MCSMAppWindow *win;
+    struct StringList *str_data;
+} ThreadData;
+
 struct _MCSMAppWindow
 {
     GtkApplicationWindow parent;
@@ -218,6 +224,7 @@ static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
     gtk_widget_class_bind_template_callback(widget_class, on_spin_button_value_changed);
     gtk_widget_class_bind_template_callback(widget_class, on_drop_down_selected);
     gtk_widget_class_bind_template_callback(widget_class, on_check_button_toggled);
+    gtk_widget_class_bind_template_callback(widget_class, on_make_backup_button_clicked);
     gtk_widget_class_bind_template_callback(widget_class, on_window_destroyed);
 }
 
@@ -320,6 +327,30 @@ static void refresh_serv_infos(MCSMAppWindow *win)
     refresh_backups_list_view(win);
 }
 #pragma endregion // Refresh The Main Display
+
+static gboolean on_making_backup_finished(ThreadData *thread_data)
+{
+    refresh_backups_list_view(thread_data->win);
+
+    if (thread_data != NULL)
+    {
+        free_string_list(thread_data->str_data);
+        mcsm_free(thread_data);
+    }
+
+    return G_SOURCE_REMOVE;
+}
+
+static void make_backup_async(ThreadData *thread_data)
+{
+    const char *from = thread_data->str_data->strings[0];
+    const char *entry_name = thread_data->str_data->strings[1];
+    const char *to = thread_data->str_data->strings[2];
+
+    easy_zip_from_path(from, entry_name, to);
+
+    g_idle_add((GSourceFunc)on_making_backup_finished, thread_data);
+}
 
 #pragma region Signals
 static void setup_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item)
@@ -560,6 +591,20 @@ static void on_check_button_toggled(GtkCheckButton *check_button, GtkWindow *win
     char *new_value = gtk_check_button_get_active(GTK_CHECK_BUTTON(check_button)) ? "true" : "false";
 
     overwrite_property_from_properties_file(server_properties, property, new_value);
+}
+
+static void on_make_backup_button_clicked(GtkButton *button, MCSMAppWindow *win)
+{
+    const char *backups_directory = concat_all_strings(2, current_server_directory, "backups/");
+    
+    ThreadData *thread_data = mcsm_malloc(sizeof(ThreadData));
+    thread_data->win = win;
+    thread_data->str_data = new_string_list_from_strings(3, current_server_directory, world_name, backups_directory);
+
+    GThread *thread = g_thread_new("make-backup-thread", (GThreadFunc)make_backup_async, thread_data);
+    g_thread_unref(thread);
+
+    mcsm_free((char *)backups_directory);
 }
 
 void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
