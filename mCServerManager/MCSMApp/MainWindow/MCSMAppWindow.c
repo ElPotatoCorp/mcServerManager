@@ -578,7 +578,7 @@ static void on_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MC
     mcsm_free(new_value);
 }
 
-static void on_check_button_toggled(GtkCheckButton *check_button, GtkWindow *win)
+static void on_check_button_toggled(GtkCheckButton *check_button, MCSMAppWindow *win)
 {
     if (server_properties == NULL || is_str_empty(server_properties))
     {

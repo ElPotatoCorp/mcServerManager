@@ -22,7 +22,7 @@ static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win);
 static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win);
 static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWindow *win);
 static void on_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MCSMAppWindow *win);
-static void on_check_button_toggled(GtkCheckButton *check_button, GtkWindow *win);
+static void on_check_button_toggled(GtkCheckButton *check_button, MCSMAppWindow *win);
 static void on_make_backup_button_clicked(GtkButton *button, MCSMAppWindow *win);
 void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win);
 
