@@ -130,7 +130,7 @@ struct StringList *new_string_list_from_strings(const int n, ...)
     va_list args;
 
     va_start(args, n);
-    for (int i = 0; i < n + 1; i++)
+    for (int i = 0; i < n; i++)
     {
         append_string_list(string_list, va_arg(args, const char *));
     }
