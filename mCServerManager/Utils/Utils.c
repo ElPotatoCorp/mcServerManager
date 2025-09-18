@@ -579,13 +579,11 @@ const int create_server_config_file(const char *server_config_file)
 {
     if (exists(server_config_file))
     {
-        mcsm_free((char *)server_config_file);
         return 0;
     }
     else if (!is_directory("./config/") && create_config_directory() != 1)
     {
         perror("There was an error creating the config directory");
-        mcsm_free((char *)server_config_file);
         return 2;
     }
 
@@ -594,13 +592,11 @@ const int create_server_config_file(const char *server_config_file)
     if (file == NULL)
     {
         perror("There was an error opening/creating the properties file");
-        mcsm_free((char *)server_config_file);
         return 2;
     }
 
     fputs("start-script-name=\n", file);
 
     fclose(file);
-    mcsm_free((char *)server_config_file);
     return 1;
 }
