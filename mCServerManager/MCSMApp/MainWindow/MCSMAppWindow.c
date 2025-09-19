@@ -74,7 +74,7 @@ static void init_list_view(MCSMAppWindow *win)
 
 static void init_ip_entry(MCSMAppWindow *win)
 {
-    char *ip = curl_from_url("https://ifconfig.me/ip");
+    char *ip = curl_from_url("https://ipinfo.io/ip");
     if (ip == NULL)
     {
         gtk_entry_set_text(GTK_ENTRY(win->ip_Entry), "INVALID");
