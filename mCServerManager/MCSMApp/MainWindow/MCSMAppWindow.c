@@ -88,7 +88,12 @@ static void init_ip_entry(MCSMAppWindow *win)
 static void init_server_name_drop_down(MCSMAppWindow *win)
 {
     char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, "/.config");
-    server_directory = get_value_from_properties_file(config_file_path, SERVER_DIR_PROPERTY);
+    char *relative_path = get_value_from_properties_file(config_file_path, SERVER_DIR_PROPERTY);
+    get_real_path(&relative_path, relative_path);
+
+    server_directory = concat_all_strings(2, relative_path, "/");
+
+    mcsm_free(relative_path);
 
     if (!is_directory(server_directory))
     {
@@ -127,19 +132,14 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
 
 static void init_key_values(MCSMAppWindow *win)
 {
-    char *relative_path;
+    server_config_file = concat_all_strings(4, CONFIG_FOLDER_PATH, "/", current_server, ".properties");
+    get_real_path(&server_config_file, server_config_file);
 
-    relative_path = concat_all_strings(4, CONFIG_FOLDER_PATH, "/", current_server, ".properties");
-    get_real_path(&server_config_file, relative_path);
-    mcsm_free(relative_path);
+    current_server_directory = concat_all_strings(4, server_directory, "/", current_server, "/");
+    get_real_path(&current_server_directory, current_server_directory);
 
-    relative_path = concat_all_strings(4, server_directory, "/", current_server, "/");
-    get_real_path(&current_server_directory, relative_path);
-    mcsm_free(relative_path);
-
-    relative_path = concat_all_strings(2, current_server_directory, "/server.properties");
-    get_real_path(&server_properties, relative_path);
-    mcsm_free(relative_path);
+    server_properties = concat_all_strings(2, current_server_directory, "/server.properties");
+    get_real_path(&server_properties, server_properties);
 }
 
 static void mcsm_app_window_init(MCSMAppWindow *win)
@@ -412,6 +412,8 @@ static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gpa
     mcsm_free(server_properties);
 
     server_config_file = concat_all_strings(4, CONFIG_FOLDER_PATH, "/", current_server, ".properties");
+    get_real_path(&server_config_file, server_config_file);
+
     current_server = strset(gtk_string_list_get_string(string_list, pos));
     current_server_directory = concat_all_strings(4, server_directory, "/", current_server, "/");
     server_properties = concat_all_strings(2, current_server_directory, "/server.properties");
@@ -455,7 +457,7 @@ static void on_start_script_file_dialog_finished(GObject *object, GAsyncResult *
     MCSMAppWindow *win = MCSM_APP_WINDOW(user_data);
     GError *err = NULL;
 
-    GFile *file = gtk_file_dialog_open_finish(dialog, res, &err);
+    GFile *file = mcsm_g_object_new(gtk_file_dialog_open_finish(dialog, res, &err));
 
     if (err != NULL)
     {
@@ -478,9 +480,10 @@ static void on_start_script_file_dialog_finished(GObject *object, GAsyncResult *
 
     create_server_config_file(server_config_file);
 
-    char *file_name = g_file_get_basename(file);
+    char *file_name = mcsm_g_object_new(g_file_get_basename(file));
     overwrite_property_from_properties_file(server_config_file, START_SCRIPT_NAME_PROPERTY, file_name);
     gtk_entry_set_text(GTK_ENTRY(win->start_script_Entry), file_name);
+    strrst(&start_script_name, file_name);
 
     mcsm_g_free(file_name);
     mcsm_g_object_unref(file);
