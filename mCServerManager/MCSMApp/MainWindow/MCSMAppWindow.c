@@ -29,6 +29,7 @@ static void gtk_entry_set_text(GtkEntry *entry, const char *str)
 typedef struct
 {
     MCSMAppWindow *win;
+    GThread *thread;
     struct StringList *str_data;
 } ThreadData;
 
@@ -336,17 +337,13 @@ static void refresh_serv_infos(MCSMAppWindow *win)
 }
 #pragma endregion // Refresh The Main Display
 
-static gboolean on_making_backup_finished(ThreadData *thread_data)
+static void launch_server(MCSMAppWindow *win)
 {
-    refresh_backups_list_view(thread_data->win);
+    char *command = concat_all_strings(5, "gnome-terminal -- bash -c \"bash __start_server__ \"", current_server_directory, "/", start_script_name, "\"; exec bash\" 2>/dev/null &");
+    system(command);
+    mcsm_free(command);
 
-    if (thread_data != NULL)
-    {
-        free_string_list(thread_data->str_data);
-        mcsm_free(thread_data);
-    }
-
-    return G_SOURCE_REMOVE;
+    gtk_window_close(GTK_WINDOW(win));
 }
 
 static void make_backup_async(ThreadData *thread_data)
@@ -357,7 +354,31 @@ static void make_backup_async(ThreadData *thread_data)
 
     easy_zip_from_path(from, entry_name, to);
 
-    g_idle_add((GSourceFunc)on_making_backup_finished, thread_data);
+    refresh_backups_list_view(thread_data->win);
+
+    if (thread_data != NULL)
+    {
+        free_string_list(thread_data->str_data);
+        mcsm_free(thread_data);
+    }
+}
+
+static gpointer load_backup_async(ThreadData *thread_data)
+{
+    const char *from = thread_data->str_data->strings[0];
+    const char *to = thread_data->str_data->strings[1];
+
+    easy_unzip_from_path(from, to);
+
+    MCSMAppWindow *win = thread_data->win;
+    GThread *thread = thread_data->thread;
+
+    free_string_list(thread_data->str_data);
+    mcsm_free(thread_data);
+
+    g_idle_add((GSourceFunc)launch_server, win);
+
+    return NULL; // end thread
 }
 
 #pragma region Signals
@@ -628,11 +649,32 @@ static void on_run_button_clicked(GtkButton *button, MCSMAppWindow *win)
         return on_open_start_script_clicked(NULL, win);
     }
 
-    char *command = concat_all_strings(5, "gnome-terminal -- bash -c \"bash __start_server__ \"", current_server_directory, "/", start_script_name, "\"; exec bash\" 2>/dev/null &");
-    system(command);
-    mcsm_free(command);
+    if (gtk_check_button_get_active(GTK_CHECK_BUTTON(win->run_backup_CheckButton)))
+    {
+        guint pos = gtk_single_selection_get_selected(win->backups_SingleSelection);
 
-    gtk_window_close(GTK_WINDOW(win));
+        if (pos == GTK_INVALID_LIST_POSITION)
+        {
+            perror("Selection invalid");
+            return;
+        }
+
+        const char *backup_name = gtk_string_list_get_string(win->backups_StringList, pos);
+
+        char *backup_path = concat_all_strings(3, current_server_directory, "/backups/", backup_name);
+
+        ThreadData *thread_data = mcsm_malloc(sizeof(ThreadData));
+        thread_data->win = win;
+        thread_data->str_data = new_string_list_from_strings(2, backup_path, current_server_directory);
+
+        thread_data->thread = g_thread_new("load-backup-thread", (GThreadFunc)load_backup_async, thread_data);
+
+        mcsm_free(backup_path);
+
+        return;
+    }
+
+    launch_server(win);
 }
 
 void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
