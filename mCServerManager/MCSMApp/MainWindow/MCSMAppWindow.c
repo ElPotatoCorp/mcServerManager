@@ -88,7 +88,7 @@ static void init_ip_entry(MCSMAppWindow *win)
 static void init_server_name_drop_down(MCSMAppWindow *win)
 {
     char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, ".config");
-    server_directory = (char *)get_value_from_properties_file(config_file_path, SERVER_DIR_PROPERTY);
+    server_directory = get_value_from_properties_file(config_file_path, SERVER_DIR_PROPERTY);
 
     if (!is_directory(server_directory))
     {
@@ -129,11 +129,11 @@ static void init_key_values(MCSMAppWindow *win)
 {
     init_server_name_drop_down(win);
 
-    server_config_file = (char *)concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
+    server_config_file = concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
 
-    current_server_directory = (char *)concat_all_strings(3, server_directory, current_server, "/");
+    current_server_directory = concat_all_strings(3, server_directory, current_server, "/");
 
-    server_properties = (char *)concat_all_strings(2, current_server_directory, "server.properties");
+    server_properties = concat_all_strings(2, current_server_directory, "server.properties");
 }
 
 static void mcsm_app_window_init(MCSMAppWindow *win)
@@ -256,7 +256,7 @@ static void refresh_spin_button(GtkSpinButton *spin_button, const char *properti
 
 static void refresh_drop_down(GtkDropDown *drop_down, const char *properties_file_path, const char *property)
 {
-    char *value = (char *)get_value_from_properties_file(properties_file_path, property);
+    char *value = get_value_from_properties_file(properties_file_path, property);
     value[0] = value[0] - 32;
 
     GtkStringList *string_list = GTK_STRING_LIST(gtk_drop_down_get_model(drop_down));
@@ -297,12 +297,12 @@ static void refresh_serv_infos(MCSMAppWindow *win)
     if (!create_server_config_file(server_config_file))
     {
         mcsm_free(start_script_name);
-        start_script_name = (char *)get_value_from_properties_file(server_config_file, START_SCRIPT_NAME_PROPERTY);
+        start_script_name = get_value_from_properties_file(server_config_file, START_SCRIPT_NAME_PROPERTY);
         gtk_entry_set_text(GTK_ENTRY(win->start_script_Entry), start_script_name);
     }
 
     mcsm_free(world_name);
-    world_name = (char *)get_value_from_properties_file(server_properties, WORLD_NAME_PROPERTY);
+    world_name = get_value_from_properties_file(server_properties, WORLD_NAME_PROPERTY);
     gtk_entry_set_text(GTK_ENTRY(win->world_name_Entry), world_name);
 
     refresh_entry(GTK_ENTRY(win->description_Entry), server_properties, DESCRIPTION_PROPERTY);
@@ -403,10 +403,10 @@ static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gpa
     mcsm_free(current_server_directory);
     mcsm_free(server_properties);
 
-    server_config_file = (char *)concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
+    server_config_file = concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
     current_server = strset(gtk_string_list_get_string(string_list, pos));
-    current_server_directory = (char *)concat_all_strings(3, server_directory, current_server, "/");
-    server_properties = (char *)concat_all_strings(2, current_server_directory, "server.properties");
+    current_server_directory = concat_all_strings(3, server_directory, current_server, "/");
+    server_properties = concat_all_strings(2, current_server_directory, "server.properties");
 
     refresh_serv_infos(win);
 }
