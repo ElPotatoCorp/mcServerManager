@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-const char *CONFIG_FOLDER_PATH  = "./config/";
+const char *CONFIG_FOLDER_PATH  = "./config";
 const char *SERVER_DIR_PROPERTY = "server-directory";
 
 const char *START_SCRIPT_NAME_PROPERTY = "start-script-name";

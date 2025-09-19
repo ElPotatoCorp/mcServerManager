@@ -87,7 +87,7 @@ static void init_ip_entry(MCSMAppWindow *win)
 
 static void init_server_name_drop_down(MCSMAppWindow *win)
 {
-    char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, ".config");
+    char *config_file_path = concat_all_strings(2, CONFIG_FOLDER_PATH, "/.config");
     server_directory = get_value_from_properties_file(config_file_path, SERVER_DIR_PROPERTY);
 
     if (!is_directory(server_directory))
@@ -128,12 +128,19 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
 static void init_key_values(MCSMAppWindow *win)
 {
     init_server_name_drop_down(win);
+    char *relative_path;
 
-    server_config_file = concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
+    relative_path = concat_all_strings(4, CONFIG_FOLDER_PATH, "/", current_server, ".properties");
+    get_real_path(&server_config_file, relative_path);
+    mcsm_free(relative_path);
 
-    current_server_directory = concat_all_strings(3, server_directory, current_server, "/");
+    relative_path = concat_all_strings(4, server_directory, "/", current_server, "/");
+    get_real_path(&current_server_directory, relative_path);
+    mcsm_free(relative_path);
 
-    server_properties = concat_all_strings(2, current_server_directory, "server.properties");
+    relative_path = concat_all_strings(2, current_server_directory, "/server.properties");
+    get_real_path(&server_properties, relative_path);
+    mcsm_free(relative_path);
 }
 
 static void mcsm_app_window_init(MCSMAppWindow *win)
@@ -283,7 +290,7 @@ static void refresh_check_button(GtkCheckButton *check_button, const char *prope
 
 static void refresh_backups_list_view(MCSMAppWindow *win)
 {
-    char *backups_path = concat_all_strings(2, current_server_directory, "backups/");
+    char *backups_path = concat_all_strings(2, current_server_directory, "/backups/");
     struct StringList *backups = list_regular_files_from_path(backups_path);
 
     gtk_string_list_splice(win->backups_StringList, 0, g_list_model_get_n_items(G_LIST_MODEL(win->backups_StringList)), (const char *const *)backups->strings);
@@ -403,10 +410,10 @@ static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gpa
     mcsm_free(current_server_directory);
     mcsm_free(server_properties);
 
-    server_config_file = concat_all_strings(3, CONFIG_FOLDER_PATH, current_server, ".properties");
+    server_config_file = concat_all_strings(4, CONFIG_FOLDER_PATH, "/", current_server, ".properties");
     current_server = strset(gtk_string_list_get_string(string_list, pos));
-    current_server_directory = concat_all_strings(3, server_directory, current_server, "/");
-    server_properties = concat_all_strings(2, current_server_directory, "server.properties");
+    current_server_directory = concat_all_strings(4, server_directory, "/", current_server, "/");
+    server_properties = concat_all_strings(2, current_server_directory, "/server.properties");
 
     refresh_serv_infos(win);
 }
@@ -595,7 +602,7 @@ static void on_check_button_toggled(GtkCheckButton *check_button, MCSMAppWindow 
 
 static void on_make_backup_button_clicked(GtkButton *button, MCSMAppWindow *win)
 {
-    char *backups_directory = concat_all_strings(2, current_server_directory, "backups/");
+    char *backups_directory = concat_all_strings(2, current_server_directory, "/backups/");
     
     ThreadData *thread_data = mcsm_malloc(sizeof(ThreadData));
     thread_data->win = win;

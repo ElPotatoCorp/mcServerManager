@@ -334,6 +334,19 @@ const int is_directory(const char *path)
     return exists(path) && S_ISDIR(st.st_mode);
 }
 
+void get_real_path(char **__dest, const char *path)
+{
+    char resolved_name[MAX_STR_LEN + 1];
+    char *ptr = realpath(path, resolved_name);
+
+    if (ptr == NULL)
+    {
+        perror("There was an error converting the relative path to an absolute path");
+        return;
+    }
+    strrst(__dest, resolved_name);
+}
+
 struct StringList *list_entries(const char *path)
 {
     if (!is_directory(path))

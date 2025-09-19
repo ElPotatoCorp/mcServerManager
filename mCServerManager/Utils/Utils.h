@@ -6,7 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MAX_STR_LEN 512
+#define MAX_STR_LEN 4096
 #define MAX_LIST_LEN 64
 
 /* --- Memory Management --- */
@@ -65,6 +65,7 @@ struct StringList *list_directories_from_path(const char *path);
 struct StringList *list_regular_files_from_path(const char *path);
 
 /* --- File handling --- */
+void get_real_path(char **__dest, const char *path);
 char *get_value_from_properties_file(const char *path, const char *property);
 const int overwrite_property_from_properties_file(const char *path, const char *property, const char *new_value);
 void easy_zip_from_path(const char *from, const char *entry_name, const char *to);
