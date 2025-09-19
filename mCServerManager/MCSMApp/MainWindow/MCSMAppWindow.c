@@ -127,7 +127,6 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
 
 static void init_key_values(MCSMAppWindow *win)
 {
-    init_server_name_drop_down(win);
     char *relative_path;
 
     relative_path = concat_all_strings(4, CONFIG_FOLDER_PATH, "/", current_server, ".properties");
@@ -186,6 +185,7 @@ static void mcsm_app_window_init(MCSMAppWindow *win)
         return;
     }
 
+    init_server_name_drop_down(win);
     init_key_values(win);
     init_ip_entry(win);
 
