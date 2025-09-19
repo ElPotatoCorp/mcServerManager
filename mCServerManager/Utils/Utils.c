@@ -226,7 +226,7 @@ const int is_str_empty(const char *str)
     return str[0] == '\0';
 }
 
-const char *concat_all_strings(const int n, ...)
+char *concat_all_strings(const int n, ...)
 {
     va_list args;
 
@@ -281,7 +281,7 @@ static size_t write_memory_callback(void *contents, size_t size, size_t nmemb, v
     return realsize;
 }
 
-const char *curl_from_url(const char *url)
+char *curl_from_url(const char *url)
 {
     CURL *curl_handle;
     CURLcode res;
@@ -411,7 +411,7 @@ struct StringList *list_regular_files_from_path(const char *path)
         {
             append_string_list(files, entries->strings[i]);
         }
-        free((char *)entry_path);
+        mcsm_free(entry_path);
     }
 
     free_string_list(entries);
@@ -419,7 +419,7 @@ struct StringList *list_regular_files_from_path(const char *path)
     return files;
 }
 
-const char *get_value_from_properties_file(const char *path, const char *property)
+char *get_value_from_properties_file(const char *path, const char *property)
 {
     if (!is_regular_file(path))
     {
@@ -531,7 +531,7 @@ void easy_zip_from_path(const char *from, const char *entry_name, const char *to
 
     system(command);
 
-    mcsm_free((char *)command);
+    mcsm_free(command);
 
     chdir(cwd);
 }
@@ -548,7 +548,7 @@ void easy_unzip_from_path(const char *from, const char *to)
 
     execl("/usr/bin/sh", "sh", "-c", command, 0);
 
-    mcsm_free((char *)command);
+    mcsm_free(command);
 }
 
 const int create_config_directory(void)
