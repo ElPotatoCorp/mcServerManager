@@ -625,7 +625,7 @@ static void on_run_button_clicked(GtkButton *button, MCSMAppWindow *win)
         return on_open_start_script_clicked(NULL, win);
     }
 
-    char *command = concat_all_strings(5, "ptyxis -- bash -c \"bash __start_server__ \"", current_server_directory, "/", start_script_name, "\"; exec bash\" 2>/dev/null &");
+    char *command = concat_all_strings(5, "gnome-terminal -- bash -c \"bash __start_server__ \"", current_server_directory, "/", start_script_name, "\"; exec bash\" 2>/dev/null &");
     system(command);
     mcsm_free(command);
 
