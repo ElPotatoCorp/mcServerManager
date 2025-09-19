@@ -112,7 +112,7 @@ inline void ptr_remaining(void)
 }
 #pragma endregion // Memory Management
 
-char cwd[MAX_PATH_LEN];
+char cwd[MAX_STR_LEN];
 static const int set_default_prog_path(void)
 {
     if (getcwd(cwd, sizeof(cwd)) == NULL)
@@ -377,18 +377,17 @@ struct StringList *list_directories_from_path(const char *path)
     struct StringList *entries = list_entries(path);
     struct StringList *directories = new_string_list();
 
-    char *entry_path = mcsm_malloc(MAX_PATH_LEN * sizeof(char));
     for (int i = 0; i < entries->size; i++)
     {
-        snprintf(entry_path, MAX_STR_LEN, "%s%s", path, entries->strings[i]);
+        char *entry_path = concat_all_strings(2, path, entries->strings[i]);
         if (is_directory(entry_path))
         {
             append_string_list(directories, entries->strings[i]);
         }
+        mcsm_free(entry_path);
     }
 
     free_string_list(entries);
-    mcsm_free(entry_path);
 
     return directories;
 }
@@ -404,18 +403,18 @@ struct StringList *list_regular_files_from_path(const char *path)
     struct StringList *entries = list_entries(path);
     struct StringList *files = new_string_list();
 
-    char *entry_path = mcsm_malloc(MAX_STR_LEN * sizeof(char));
+    
     for (int i = 0; i < entries->size; i++)
     {
-        snprintf(entry_path, MAX_STR_LEN, "%s%s", path, entries->strings[i]);
+        char *entry_path = concat_all_strings(2, path, entries->strings[i]);
         if (is_regular_file(entry_path))
         {
             append_string_list(files, entries->strings[i]);
         }
+        free((char *)entry_path);
     }
 
     free_string_list(entries);
-    mcsm_free(entry_path);
 
     return files;
 }

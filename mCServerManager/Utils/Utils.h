@@ -6,8 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MAX_PATH_LEN 1024
-#define MAX_STR_LEN 128
+#define MAX_STR_LEN 512
 #define MAX_LIST_LEN 64
 
 /* --- Memory Management --- */
