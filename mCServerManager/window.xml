@@ -378,6 +378,7 @@
             <child>
               <object class="GtkButton" id="run_Button">
                 <property name="label">RUN</property>
+                <signal name="clicked" handler="on_run_button_clicked"/>
               </object>
             </child>
           </object>

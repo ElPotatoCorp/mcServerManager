@@ -232,6 +232,7 @@ static void mcsm_app_window_class_init(MCSMAppWindowClass *class)
     gtk_widget_class_bind_template_callback(widget_class, on_drop_down_selected);
     gtk_widget_class_bind_template_callback(widget_class, on_check_button_toggled);
     gtk_widget_class_bind_template_callback(widget_class, on_make_backup_button_clicked);
+    gtk_widget_class_bind_template_callback(widget_class, on_run_button_clicked);
     gtk_widget_class_bind_template_callback(widget_class, on_window_destroyed);
 }
 
@@ -612,6 +613,23 @@ static void on_make_backup_button_clicked(GtkButton *button, MCSMAppWindow *win)
     g_thread_unref(thread);
 
     mcsm_free(backups_directory);
+}
+
+static void on_run_button_clicked(GtkButton *button, MCSMAppWindow *win)
+{
+    GtkEntryBuffer *entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->start_script_Entry));
+
+    if (is_str_empty(gtk_entry_buffer_get_text(entry_buffer)))
+    {
+        perror("You did not set any starting script yet.\n");
+        return on_open_start_script_clicked(NULL, win);
+    }
+
+    char *command = concat_all_strings(5, "ptyxis -- bash -c \"bash __start_server__ \"", current_server_directory, "/", start_script_name, "\"; exec bash\" 2>/dev/null &");
+    system(command);
+    mcsm_free(command);
+
+    gtk_window_close(GTK_WINDOW(win));
 }
 
 void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
