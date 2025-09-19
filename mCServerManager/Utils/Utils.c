@@ -557,9 +557,9 @@ void easy_unzip_from_path(const char *from, const char *to)
         return;
     }
 
-    char *command = concat_all_strings(5, "unzip \"", from, "\" -d \"", to, "\"");
+    char *command = concat_all_strings(5, "unzip -o \"", from, "\" -d \"", to, "\"");
 
-    execl("/usr/bin/sh", "sh", "-c", command, 0);
+    system(command);
 
     mcsm_free(command);
 }
