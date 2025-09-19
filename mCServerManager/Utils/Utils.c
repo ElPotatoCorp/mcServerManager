@@ -527,7 +527,7 @@ void easy_zip_from_path(const char *from, const char *entry_name, const char *to
 
     chdir(from);
 
-    const char *command = concat_all_strings(5, "zip -r \"", to, "$(date +%Y-%m-%d-%H-%M-%S)\" \"", entry_name, "\"");
+    char *command = concat_all_strings(5, "zip -r \"", to, "$(date +%Y-%m-%d-%H-%M-%S)\" \"", entry_name, "\"");
 
     system(command);
 
@@ -544,7 +544,7 @@ void easy_unzip_from_path(const char *from, const char *to)
         return;
     }
 
-    const char *command = concat_all_strings(5, "unzip \"", from, "\" -d \"", to, "\"");
+    char *command = concat_all_strings(5, "unzip \"", from, "\" -d \"", to, "\"");
 
     execl("/usr/bin/sh", "sh", "-c", command, 0);
 

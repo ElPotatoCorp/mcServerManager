@@ -246,7 +246,7 @@ static void refresh_entry(GtkEntry *entry, const char *properties_file_path, con
 static void refresh_spin_button(GtkSpinButton *spin_button, const char *properties_file_path, const char *property)
 {
     int value;
-    const char *str_value = get_value_from_properties_file(properties_file_path, property);
+    char *str_value = get_value_from_properties_file(properties_file_path, property);
     if (!is_str_empty(str_value) && sscanf(str_value, "%d", &value))
     {
         gtk_spin_button_set_value(spin_button, value);
