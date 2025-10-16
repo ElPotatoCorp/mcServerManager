@@ -73,6 +73,8 @@ install_project() {
 run_project() {
     print_status "Running MCSM..."
     if [ -f "$BUILD_DIR/src/mcsm" ]; then
+        # Set environment variable for GSettings schema location
+        export GSETTINGS_SCHEMA_DIR="$BUILD_DIR/data"
         "$BUILD_DIR/src/mcsm"
     else
         print_error "Executable not found. Please build first."
