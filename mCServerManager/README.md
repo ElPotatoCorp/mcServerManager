@@ -76,19 +76,19 @@ meson compile -C build
 
 ```
 mcsm/
-├── meson.build          # Main build configuration
-├── meson_options.txt    # Build options
-├── build.sh            # Convenience build script
-├── src/                # Source code
-│   ├── meson.build     # Source build configuration
-│   ├── main.c          # Main application entry point
-│   ├── MCSMApp/        # Application classes
-│   └── Utils/          # Utility functions
-└── data/               # Resources and data files
-    ├── meson.build     # Data build configuration
+├── meson.build             # Main build configuration
+├── meson_options.txt       # Build options
+├── build.sh                # Convenience build script
+├── src/                    # Source code
+│   ├── meson.build         # Source build configuration
+│   ├── main.c              # Main application entry point
+│   ├── MCSMApp/            # Application classes
+│   └── Utils/              # Utility functions
+└── data/                   # Resources and data files
+    ├── meson.build         # Data build configuration
     ├── mcsm.gresource.xml  # Resource bundle definition
     ├── mcsm.gschema.xml    # GSettings schema
-    └── *.xml           # UI definition files
+    └── *.xml               # UI definition files
 ```
 
 ## Features
