@@ -11,7 +11,7 @@ struct _MCSMApp
 
 G_DEFINE_TYPE(MCSMApp, mcsm_app, GTK_TYPE_APPLICATION);
 
-static void preferences_activated(GSimpleAction *action, GVariant *parameter, gpointer app)
+static void preferences_activated(G_GNUC_UNUSED GSimpleAction *action, G_GNUC_UNUSED GVariant *parameter, gpointer app)
 {
   MCSMAppPrefs *prefs;
   GtkWindow *win;
@@ -22,7 +22,7 @@ static void preferences_activated(GSimpleAction *action, GVariant *parameter, gp
 }
 
 
-static void quit_activated(GSimpleAction *action, GVariant *parameter, gpointer app)
+static void quit_activated(G_GNUC_UNUSED GSimpleAction *action, G_GNUC_UNUSED GVariant *parameter, gpointer app)
 {
     GApplication *g_app = G_APPLICATION(app);
 
@@ -38,8 +38,8 @@ static void quit_activated(GSimpleAction *action, GVariant *parameter, gpointer 
 
 static GActionEntry app_entries[] =
 {
-    {"preferences", preferences_activated, NULL, NULL, NULL},
-    {"quit", quit_activated, NULL, NULL, NULL}
+    {"preferences", preferences_activated, NULL, NULL, NULL, {0}},
+    {"quit", quit_activated, NULL, NULL, NULL, {0}}
 };
 
 static void mcsm_app_startup(GApplication *app)
@@ -60,7 +60,7 @@ static void mcsm_app_activate(GApplication *app)
     gtk_window_present(GTK_WINDOW(mcsm_app->win));
 }
 
-static void mcsm_app_init(MCSMApp *app) {}
+static void mcsm_app_init(G_GNUC_UNUSED MCSMApp *app) {}
 
 static void mcsm_app_class_init(MCSMAppClass *class)
 {

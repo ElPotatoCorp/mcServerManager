@@ -116,7 +116,7 @@ inline void ptr_remaining(void)
 #pragma endregion // Memory Management
 
 char cwd[MAX_STR_LEN];
-static const int set_default_prog_path(void)
+static int set_default_prog_path(void)
 {
     if (getcwd(cwd, sizeof(cwd)) == NULL)
     {
@@ -144,8 +144,6 @@ struct StringList *new_string_list(void)
 struct StringList *new_string_list_from_strings(const int n, ...)
 {
     struct StringList *string_list = new_string_list();
-
-    char *text;
 
     va_list args;
 
@@ -224,7 +222,7 @@ char *strrst(char **__restrict__ __dest, const char *__restrict__ __src)
     return *__dest;
 }
 
-const int is_str_empty(const char *str)
+int is_str_empty(const char *str)
 {
     return str[0] == '\0';
 }
@@ -322,17 +320,17 @@ char *curl_from_url(const char *url)
 }
 #pragma endregion // CURL
 
-const int exists(const char *path)
+int exists(const char *path)
 {
     return stat(path, &st) != -1;
 }
 
-const int is_regular_file(const char *path)
+int is_regular_file(const char *path)
 {
     return exists(path) && S_ISREG(st.st_mode);
 }
 
-const int is_directory(const char *path)
+int is_directory(const char *path)
 {
     return exists(path) && S_ISDIR(st.st_mode);
 }
@@ -475,7 +473,7 @@ char *get_value_from_properties_file(const char *path, const char *property)
     return strset("");
 }
 
-const int overwrite_property_from_properties_file(const char *path, const char *property, const char *new_value)
+int overwrite_property_from_properties_file(const char *path, const char *property, const char *new_value)
 {
     if (!is_regular_file(path))
     {
@@ -497,7 +495,7 @@ const int overwrite_property_from_properties_file(const char *path, const char *
     char val[MAX_STR_LEN];
 
     int found = 1;
-    while (fgets(line, MAX_STR_LEN, file))
+    while (fgets(line, sizeof(line), file))
     {
         if (!sscanf(line, "%[^=]=%[^\n]", prop, val))
         {
@@ -507,7 +505,10 @@ const int overwrite_property_from_properties_file(const char *path, const char *
         else if (strcmp(property, prop) == 0)
         {
             found = 0;
-            sprintf(line, "%s=%s\n", prop, new_value);
+            if (sizeof(prop) + sizeof(new_value) + 2 < MAX_STR_LEN)
+            {
+                snprintf(line, sizeof(line), "%s=%s\n", prop, new_value);
+            }
         }
         append_string_list(lines, line);
     }
@@ -535,7 +536,7 @@ void easy_zip_from_path(const char *from, const char *entry_name, const char *to
         return;
     }
 
-    if (cwd == NULL && set_default_prog_path())
+    if (set_default_prog_path())
     {
         perror("There was an error setting up the default program path");
         return;
@@ -567,7 +568,7 @@ void easy_unzip_from_path(const char *from, const char *to)
     mcsm_free(command);
 }
 
-const int create_config_directory(void)
+int create_config_directory(void)
 {
     if (is_directory("./config/"))
     {
@@ -607,7 +608,7 @@ const int create_config_directory(void)
     }
 }
 
-const int create_server_config_file(const char *server_config_file)
+int create_server_config_file(const char *server_config_file)
 {
     if (exists(server_config_file))
     {

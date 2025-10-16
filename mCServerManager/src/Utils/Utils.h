@@ -48,16 +48,16 @@ void print_string_list(const struct StringList *string_list);
 /* --- String Handling --- */
 char *strset(const char *__restrict__ __src);
 char *strrst(char **__restrict__ __dest, const char *__restrict__ __src);
-const int is_str_empty(const char *str);
+int is_str_empty(const char *str);
 char *concat_all_strings(const int n, ...);
 
 /* --- CURL --- */
 char *curl_from_url(const char *url);
 
 /* --- Check the path --- */
-const int exists(const char *path);
-const int is_regular_file(const char *path);
-const int is_directory(const char *path);
+int exists(const char *path);
+int is_regular_file(const char *path);
+int is_directory(const char *path);
 
 /* --- Gather stuff in the computer --- */
 struct StringList *list_entries(const char *path);
@@ -67,10 +67,10 @@ struct StringList *list_regular_files_from_path(const char *path);
 /* --- File handling --- */
 void get_real_path(char **__dest, const char *path);
 char *get_value_from_properties_file(const char *path, const char *property);
-const int overwrite_property_from_properties_file(const char *path, const char *property, const char *new_value);
+int overwrite_property_from_properties_file(const char *path, const char *property, const char *new_value);
 void easy_zip_from_path(const char *from, const char *entry_name, const char *to);
 void easy_unzip_from_path(const char *from, const char *to);
-const int create_config_directory(void);
-const int create_server_config_file(const char *server_config_file);
+int create_config_directory(void);
+int create_server_config_file(const char *server_config_file);
 
 #endif // UTILS_H

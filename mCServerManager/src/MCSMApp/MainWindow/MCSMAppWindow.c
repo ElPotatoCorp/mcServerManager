@@ -3,6 +3,30 @@
 #include "../../Utils/Constants.h"
 #include "../../Utils/Utils.h"
 
+// Type definitions
+typedef struct
+{
+    MCSMAppWindow *win;
+    GThread *thread;
+    struct StringList *str_data;
+} ThreadData;
+
+// Forward declarations
+static void refresh_serv_infos(MCSMAppWindow *win);
+static void setup_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item);
+static void bind_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item);
+static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MCSMAppWindow *win);
+static void on_open_start_script_clicked(GtkButton *button, MCSMAppWindow *win);
+static void on_start_script_file_dialog_finished(GObject *object, GAsyncResult *res, gpointer user_data);
+static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win);
+static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win);
+static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWindow *win);
+static void on_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MCSMAppWindow *win);
+static void on_check_button_toggled(GtkCheckButton *check_button, MCSMAppWindow *win);
+static void on_make_backup_button_clicked(GtkButton *button, MCSMAppWindow *win);
+static void on_run_button_clicked(GtkButton *button, MCSMAppWindow *win);
+static void make_backup_async(ThreadData *thread_data);
+
 static char *server_directory = NULL, *server_config_file = NULL, *current_server = NULL, *current_server_directory = NULL, *start_script_name = NULL, *server_properties = NULL, *world_name = NULL;
 
 static void reverse_check_button(GtkWidget *widget)
@@ -25,13 +49,6 @@ static void gtk_entry_set_text(GtkEntry *entry, const char *str)
 
     gtk_entry_buffer_set_text(entry_buffer, str, strlen(str));
 }
-
-typedef struct
-{
-    MCSMAppWindow *win;
-    GThread *thread;
-    struct StringList *str_data;
-} ThreadData;
 
 struct _MCSMAppWindow
 {
@@ -131,7 +148,7 @@ static void init_server_name_drop_down(MCSMAppWindow *win)
     mcsm_free(config_file_path);
 }
 
-static void init_key_values(MCSMAppWindow *win)
+static void init_key_values(G_GNUC_UNUSED MCSMAppWindow *win)
 {
     server_config_file = concat_all_strings(4, CONFIG_FOLDER_PATH, "/", current_server, ".properties");
     get_real_path(&server_config_file, server_config_file);
@@ -242,7 +259,7 @@ MCSMAppWindow *mcsm_app_window_new(MCSMApp *app)
     return g_object_new(MCSM_APP_WINDOW_TYPE, "application", app, NULL);
 }
 
-void mcsm_app_window_activate(MCSMAppWindow *win) {}
+void mcsm_app_window_activate(G_GNUC_UNUSED MCSMAppWindow *win) {}
 
 #pragma region Refresh The Main Display
 static void refresh_entry(GtkEntry *entry, const char *properties_file_path, const char *property)
@@ -346,6 +363,18 @@ static void launch_server(MCSMAppWindow *win)
     gtk_window_close(GTK_WINDOW(win));
 }
 
+static gboolean launch_server_idle(gpointer user_data)
+{
+    launch_server((MCSMAppWindow *)user_data);
+    return G_SOURCE_REMOVE;
+}
+
+static gpointer make_backup_thread_func(gpointer data)
+{
+    make_backup_async((ThreadData *)data);
+    return NULL;
+}
+
 static void make_backup_async(ThreadData *thread_data)
 {
     const char *from = thread_data->str_data->strings[0];
@@ -371,18 +400,18 @@ static gpointer load_backup_async(ThreadData *thread_data)
     easy_unzip_from_path(from, to);
 
     MCSMAppWindow *win = thread_data->win;
-    GThread *thread = thread_data->thread;
+    G_GNUC_UNUSED GThread *thread = thread_data->thread;
 
     free_string_list(thread_data->str_data);
     mcsm_free(thread_data);
 
-    g_idle_add((GSourceFunc)launch_server, win);
+    g_idle_add(launch_server_idle, win);
 
     return NULL; // end thread
 }
 
 #pragma region Signals
-static void setup_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item)
+static void setup_listitem_cb(G_GNUC_UNUSED GtkListItemFactory *factory, GtkListItem *list_item)
 {
     GtkWidget *label;
 
@@ -392,7 +421,7 @@ static void setup_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_ite
     gtk_list_item_set_child(list_item, label);
 }
 
-static void bind_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item)
+static void bind_listitem_cb(G_GNUC_UNUSED GtkListItemFactory *factory, GtkListItem *list_item)
 {
     GtkWidget *label = gtk_list_item_get_child(list_item);
     if (label == NULL)
@@ -411,7 +440,7 @@ static void bind_listitem_cb(GtkListItemFactory *factory, GtkListItem *list_item
     gtk_label_set_text(GTK_LABEL(label), text ? text : "");
 }
 
-static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MCSMAppWindow *win)
+static void on_server_drop_down_selected(GtkDropDown *drop_down, G_GNUC_UNUSED GParamSpec *gparam, MCSMAppWindow *win)
 {
     if (!gtk_widget_get_realized(GTK_WIDGET(drop_down)))
     {
@@ -442,7 +471,7 @@ static void on_server_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gpa
     refresh_serv_infos(win);
 }
 
-static void on_open_start_script_clicked(GtkButton *button, MCSMAppWindow *win)
+static void on_open_start_script_clicked(G_GNUC_UNUSED GtkButton *button, MCSMAppWindow *win)
 {
     GFile *default_folder = mcsm_g_object_new(g_file_new_for_path(current_server_directory));
     GtkFileDialog *dialog = mcsm_g_object_new(gtk_file_dialog_new());
@@ -510,7 +539,7 @@ static void on_start_script_file_dialog_finished(GObject *object, GAsyncResult *
     mcsm_g_object_unref(file);
 }
 
-static void on_copy_button_clicked(GtkButton *button, MCSMAppWindow *win)
+static void on_copy_button_clicked(G_GNUC_UNUSED GtkButton *button, MCSMAppWindow *win)
 {
     GdkClipboard *clipboard = gtk_widget_get_clipboard(GTK_WIDGET(win));
 
@@ -544,7 +573,7 @@ static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
     if (entry == GTK_ENTRY(win->editable_port_Entry))
     {
         size_t n = strlen(new_value);
-        int i = 0;
+        size_t i = 0;
         int is_a_number = 1;
         while (is_a_number && i < n)
         {
@@ -565,7 +594,7 @@ static void on_entry_activated(GtkEntry *entry, MCSMAppWindow *win)
     overwrite_property_from_properties_file(server_properties, property, new_value);
 }
 
-static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWindow *win)
+static void on_spin_button_value_changed(GtkSpinButton *spin_button, G_GNUC_UNUSED MCSMAppWindow *win)
 {
     if (server_properties == NULL || is_str_empty(server_properties))
     {
@@ -583,7 +612,7 @@ static void on_spin_button_value_changed(GtkSpinButton *spin_button, MCSMAppWind
     overwrite_property_from_properties_file(server_properties, property, new_value);
 }
 
-static void on_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MCSMAppWindow *win)
+static void on_drop_down_selected(GtkDropDown *drop_down, G_GNUC_UNUSED GParamSpec *gparam, G_GNUC_UNUSED MCSMAppWindow *win)
 {
     if (server_properties == NULL || is_str_empty(server_properties))
     {
@@ -610,7 +639,7 @@ static void on_drop_down_selected(GtkDropDown *drop_down, GParamSpec *gparam, MC
     mcsm_free(new_value);
 }
 
-static void on_check_button_toggled(GtkCheckButton *check_button, MCSMAppWindow *win)
+static void on_check_button_toggled(GtkCheckButton *check_button, G_GNUC_UNUSED MCSMAppWindow *win)
 {
     if (server_properties == NULL || is_str_empty(server_properties))
     {
@@ -625,7 +654,7 @@ static void on_check_button_toggled(GtkCheckButton *check_button, MCSMAppWindow 
     overwrite_property_from_properties_file(server_properties, property, new_value);
 }
 
-static void on_make_backup_button_clicked(GtkButton *button, MCSMAppWindow *win)
+static void on_make_backup_button_clicked(G_GNUC_UNUSED GtkButton *button, MCSMAppWindow *win)
 {
     char *backups_directory = concat_all_strings(2, current_server_directory, "/backups/");
     
@@ -633,13 +662,13 @@ static void on_make_backup_button_clicked(GtkButton *button, MCSMAppWindow *win)
     thread_data->win = win;
     thread_data->str_data = new_string_list_from_strings(3, current_server_directory, world_name, backups_directory);
 
-    GThread *thread = g_thread_new("make-backup-thread", (GThreadFunc)make_backup_async, thread_data);
+    GThread *thread = g_thread_new("make-backup-thread", make_backup_thread_func, thread_data);
     g_thread_unref(thread);
 
     mcsm_free(backups_directory);
 }
 
-static void on_run_button_clicked(GtkButton *button, MCSMAppWindow *win)
+static void on_run_button_clicked(G_GNUC_UNUSED GtkButton *button, MCSMAppWindow *win)
 {
     GtkEntryBuffer *entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(win->start_script_Entry));
 
@@ -677,7 +706,7 @@ static void on_run_button_clicked(GtkButton *button, MCSMAppWindow *win)
     launch_server(win);
 }
 
-void on_window_destroyed(GtkWindow *gtk_win, MCSMAppWindow *win)
+void on_window_destroyed(G_GNUC_UNUSED GtkWindow *gtk_win, MCSMAppWindow *win)
 {
     if (win == NULL)
     {
