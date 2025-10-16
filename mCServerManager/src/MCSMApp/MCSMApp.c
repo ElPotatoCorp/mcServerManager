@@ -1,5 +1,6 @@
 #include "MCSMApp.h"
 #include "MainWindow/MCSMAppWindow.h"
+#include "MCSMAppPref/MCSMAppPref.h"
 
 struct _MCSMApp
 {
@@ -10,7 +11,16 @@ struct _MCSMApp
 
 G_DEFINE_TYPE(MCSMApp, mcsm_app, GTK_TYPE_APPLICATION);
 
-static void preferences_activated(GSimpleAction *action, GVariant *parameter, gpointer app) {}
+static void preferences_activated(GSimpleAction *action, GVariant *parameter, gpointer app)
+{
+  MCSMAppPrefs *prefs;
+  GtkWindow *win;
+
+  win = gtk_application_get_active_window (GTK_APPLICATION (app));
+  prefs = mcsm_app_prefs_new (MCSM_APP_WINDOW (win));
+  gtk_window_present (GTK_WINDOW (prefs));
+}
+
 
 static void quit_activated(GSimpleAction *action, GVariant *parameter, gpointer app)
 {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema path="/mcsm/" id="mcsm">
+    <key name="server-directory" type="s">
+      <default>""</default>
+      <summary>Server Directory</summary>
+      <description>The server directory used to load servers.</description>
+    </key>
+  </schema>
+</schemalist>

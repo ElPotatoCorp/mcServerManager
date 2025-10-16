@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include "Utils.h"
 
 #include <gtk/gtk.h>
@@ -5,6 +6,8 @@
 #include <stdarg.h>
 #include <dirent.h>
 #include <curl/curl.h>
+#include <stdlib.h>
+#include <limits.h>
 
 #pragma region Memory Management
 int DEBUG_PTR = 1;
@@ -17,7 +20,7 @@ void *_mcsm_malloc(size_t __size, const char *file, int line, const char *func)
     void *ptr = malloc(__size);
     if (DEBUG_PTR)
     {
-        printf("[%d] Allocated = %s, %i, %s, %p[%li]\n", PTR_COUNTER, file, line, func, ptr, __size);
+        printf("[%zu] Allocated = %s, %i, %s, %p[%zu]\n", PTR_COUNTER, file, line, func, ptr, __size);
     }
     return ptr;
 }
@@ -28,7 +31,7 @@ void *_mcsm_calloc(size_t __nmemb, size_t __size, const char *file, int line, co
     void *ptr = calloc(__nmemb, __size);
     if (DEBUG_PTR)
     {
-        printf("[%d] Callocated = %s, %i, %s, %p[%li]\n", PTR_COUNTER, file, line, func, ptr, __size);
+        printf("[%zu] Callocated = %s, %i, %s, %p[%zu]\n", PTR_COUNTER, file, line, func, ptr, __size);
     }
     return ptr;
 }
@@ -37,7 +40,7 @@ void *_mcsm_realloc(void *__ptr, size_t __size, const char *name, const char *fi
     void *ptr = realloc(__ptr, __size);
     if (DEBUG_PTR)
     {
-        printf("[%d] Rallocated [%s] = %s, %i, %s, %p[%li]\n", PTR_COUNTER, name, file, line, func, ptr, __size);
+        printf("[%zu] Rallocated [%s] = %s, %i, %s, %p[%zu]\n", PTR_COUNTER, name, file, line, func, ptr, __size);
     }
     return ptr;
 }
@@ -50,7 +53,7 @@ void *_mcsm_g_object_new(void *ptr, const char *name, const char *file, int line
     
     if (DEBUG_PTR)
     {
-        printf("[%d] New GObject [%s] = %s, %i, %s, %p\n", PTR_COUNTER, name, file, line, func, ptr);
+        printf("[%zu] New GObject [%s] = %s, %i, %s, %p\n", PTR_COUNTER, name, file, line, func, ptr);
     }
     return ptr;
 }
@@ -66,7 +69,7 @@ void _mcsm_free(void *ptr, const char *name, const char *file, int line, const c
 
     if (DEBUG_PTR)
     {
-        printf("[%d] Freed [%s] = %s, %i, %s, %p\n", PTR_COUNTER, name, file, line, func, ptr);
+        printf("[%zu] Freed [%s] = %s, %i, %s, %p\n", PTR_COUNTER, name, file, line, func, ptr);
     }
     free(ptr);
     ptr = NULL;
@@ -83,7 +86,7 @@ void _mcsm_g_object_unref(void *ptr, const char *name, const char *file, int lin
 
     if (DEBUG_PTR)
     {
-        printf("[%d] Unrefed GObject [%s] = %s, %i, %s, %p\n", PTR_COUNTER, name, file, line, func, ptr);
+        printf("[%zu] Unrefed GObject [%s] = %s, %i, %s, %p\n", PTR_COUNTER, name, file, line, func, ptr);
     }
     g_object_unref((gpointer *)ptr);
 }
@@ -98,7 +101,7 @@ void _mcsm_g_free(void *ptr, const char *name, const char *file, int line, const
 
     if (DEBUG_PTR)
     {
-        printf("[%d] Freed G Stuff [%s] = %s, %i, %s, %p\n", PTR_COUNTER, name, file, line, func, ptr);
+        printf("[%zu] Freed G Stuff [%s] = %s, %i, %s, %p\n", PTR_COUNTER, name, file, line, func, ptr);
     }
     g_clear_pointer(&ptr, g_free);
 }
@@ -107,7 +110,7 @@ inline void ptr_remaining(void)
 {
     if (DEBUG_PTR)
     {
-        printf("There are %d allocated pointers remaining.\n", PTR_COUNTER);
+        printf("There are %zu allocated pointers remaining.\n", PTR_COUNTER);
     }
 }
 #pragma endregion // Memory Management

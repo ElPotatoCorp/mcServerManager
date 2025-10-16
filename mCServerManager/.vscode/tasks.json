@@ -2,12 +2,26 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Link GResources",
+            "label": "Compile GSchema",
             "type": "shell",
             "command": "/bin/bash",
             "args": [
                 "-c",
-                "glib-compile-resources MCSM.gresource.xml --target=resources.c --generate-source"
+                "glib-compile-schemas ."
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "Compile GResources",
+            "type": "shell",
+            "command": "/bin/bash",
+            "args": [
+                "-c",
+                "glib-compile-resources mcsm.gresource.xml --target=resources.c --generate-source"
             ],
             "problemMatcher": [],
             "group": {
@@ -21,7 +35,7 @@
             "command": "/bin/bash",
             "args": [
                 "-c",
-                "gcc $( pkg-config --cflags gtk4 ) -o main main.c MCSMApp/MCSMApp.c MCSMApp/MainWindow/MCSMAppWindow.c Utils/Utils.c resources.c -lcurl $( pkg-config --libs gtk4 )"
+                "gcc $( pkg-config --cflags gtk4 ) -o main main.c MCSMApp/MCSMApp.c MCSMApp/MainWindow/MCSMAppWindow.c MCSMApp/MCSMAppPref/MCSMAppPref.c Utils/Utils.c resources.c -lcurl $( pkg-config --libs gtk4 )"
             ],
             "problemMatcher": [],
             "group": {
@@ -32,7 +46,8 @@
         {
             "label": "Build Gtk App",
             "dependsOn": [
-                "Link GResources",
+                "Compile GSchema",
+                "Compile GResources",
                 "Build with gtk"
             ],
             "dependsOrder": "sequence",

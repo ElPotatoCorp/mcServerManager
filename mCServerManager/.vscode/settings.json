@@ -23,6 +23,7 @@
         "typeinfo": "c",
         "future": "c",
         "system_error": "c",
-        "mcsmappwindow.h": "c"
+        "mcsmappwindow.h": "c",
+        "mcsmappprefwindow.h": "c"
     }
 }
