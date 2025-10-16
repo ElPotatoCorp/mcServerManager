@@ -2,58 +2,24 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Compile GSchema",
+            "label": "Build and Run MCSM",
             "type": "shell",
-            "command": "/bin/bash",
+            "command": "./build.sh",
             "args": [
-                "-c",
-                "glib-compile-schemas ."
+                "run"
             ],
             "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
-        },
-        {
-            "label": "Compile GResources",
-            "type": "shell",
-            "command": "/bin/bash",
-            "args": [
-                "-c",
-                "glib-compile-resources mcsm.gresource.xml --target=resources.c --generate-source"
-            ],
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
-        },
-        {
-            "label": "Build with gtk",
-            "type": "shell",
-            "command": "/bin/bash",
-            "args": [
-                "-c",
-                "gcc $( pkg-config --cflags gtk4 ) -o main main.c MCSMApp/MCSMApp.c MCSMApp/MainWindow/MCSMAppWindow.c MCSMApp/MCSMAppPref/MCSMAppPref.c Utils/Utils.c resources.c -lcurl $( pkg-config --libs gtk4 )"
-            ],
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
-        },
-        {
-            "label": "Build Gtk App",
-            "dependsOn": [
-                "Compile GSchema",
-                "Compile GResources",
-                "Build with gtk"
-            ],
-            "dependsOrder": "sequence",
             "group": {
                 "kind": "build",
                 "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
             }
         }
     ]
