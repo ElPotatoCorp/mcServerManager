@@ -1,11 +1,73 @@
-config
+# Build directories
+build/
+builddir/
+**/build/
+**/builddir/
 
-XML
+# Meson build files
+compile_commands.json
+meson-vscode.env
 
-Java
-
+# Compiled binaries and executables
 main
-
+mcsm
+test
 test*
+__start_server__
 
+# Generated resource files
 resources.c
+**/mcsm-resources.c
+**/mcsm-resources.h
+**/gschemas.compiled
+
+# Configuration files (may contain sensitive data)
+config/
+*.properties
+
+# Java directories (if they contain server files)
+Java/
+**/Java/
+
+# XML files (if they're generated or contain sensitive data)
+XML/
+*.xml.bak
+
+# IDE and editor files
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.cache
+
+# Package manager files
+node_modules/
+*.lock
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Core dumps
+core
+core.*
+
+# Debug files
+*.dSYM/
+*.pdb
