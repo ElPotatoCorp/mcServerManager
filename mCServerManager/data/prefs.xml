@@ -22,7 +22,7 @@
                     </layout>
                     <property name="label">_Server Directory:</property>
                     <property name="use-underline">1</property>
-                    <property name="mnemonic-widget">font</property>
+                    <property name="mnemonic-widget">server_directory_Entry</property>
                     <property name="xalign">1</property>
                 </object>
             </child>
@@ -32,7 +32,7 @@
                         <property name="column">1</property>
                         <property name="row">0</property>
                     </layout>
-                    <property name=""></property>
+                    <property name="hexpand">1</property>
                 </object>
             </child>
             <child>
@@ -41,6 +41,7 @@
                         <property name="column">2</property>
                         <property name="row">0</property>
                     </layout>
+                    <property name="label">Browse...</property>
                 </object>
             </child>
           </object>

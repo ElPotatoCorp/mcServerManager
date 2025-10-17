@@ -20,7 +20,7 @@ static void mcsm_app_prefs_init(MCSMAppPrefs *prefs)
     prefs->settings = g_settings_new("mcsm");
 
     g_settings_bind(prefs->settings, "server-directory",
-                    prefs->server_directory_Entry, "server-directory",
+                    prefs->server_directory_Entry, "text",
                     G_SETTINGS_BIND_DEFAULT);
 }
 
